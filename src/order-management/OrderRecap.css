@@ -1,0 +1,133 @@
+/* ===== Delivery info ===== */
+.delivery-info {
+  background: #f2f2f6;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.delivery-info button {
+  margin-top: 8px;
+  background: transparent;
+  border: 1px solid #5f6af2;
+  color: #5f6af2;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.delivery-info button:hover {
+  background: #5f6af2;
+  color: #fff;
+}
+
+/* ===== Items list ===== */
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* ===== Verified UPI & Card Preview ===== */
+.verified-upi,
+.card-preview {
+  font-size: 13px;
+  color: #333;
+  margin-top: 6px;
+}
+
+/* ===== Validation error ===== */
+.validation-error {
+  font-size: 12px;
+  color: red;
+  margin-top: 6px;
+}
+
+/* ===== Actions ===== */
+.payment-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.payment-actions button {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  background: #28a745;
+  color: #fff;
+  transition: all 0.2s ease-in-out;
+}
+
+.payment-actions button:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+/* ===== Disabled Pay Now ===== */
+.payment-actions button:disabled {
+  background: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+  opacity: 0.6;
+}
+
+/* ===== Processing state ===== */
+.payment-actions button.processing {
+  background: #28a745;
+  color: #fff;
+  position: relative;
+}
+
+.payment-actions button.processing::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  transform: translateY(-50%);
+}
+
+@keyframes spin {
+  to { transform: translateY(-50%) rotate(360deg); }
+}
+.pricing-breakdown {
+  margin-top: 1rem;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.price-row.total {
+  font-weight: bold;
+  border-top: 1px solid #ccc;
+  padding-top: 0.5rem;
+}

@@ -1,0 +1,140 @@
+/* Wrapper Layout */
+.admin-customer-wrapper {
+  background-color: #f9f9f9;
+  width: 100%;
+
+}
+
+/* Main Content Area
+.customer-main {
+ 
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+
+}
+
+/* Inner Container */
+/* .admin-customer {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  width: 100%;
+} */ */
+
+/* Header */
+.customer-header {
+  margin-bottom: 20px;
+}
+
+.customer-header h2 {
+  font-size: 1.6rem;
+  color: #333;
+  font-weight: 600;
+}
+
+/* Controls Row */
+.customer-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Search Bar */
+.customer-search {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 2000px;
+  margin-bottom: 20px;
+}
+
+.customer-search input {
+  flex: 1;
+  padding: 10px;
+  font-size: 1rem;
+  border: 2px solid #1e90ff;
+  border-radius: 10px;
+  outline: none;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.customer-search input:focus {
+  border-color: #0077cc;
+  box-shadow: 0 0 6px rgba(0, 119, 204, 0.3);
+}
+
+/* Sort Dropdown */
+.customer-sort {
+  max-width: 2000px;;
+  padding: 10px;
+  font-size: 1rem;
+  border: 2px solid #1e90ff;
+  border-radius: 20px;
+  background-color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.customer-sort{
+  color: #999;
+}
+
+/* Table Container */
+.table-container {
+  width: 60%;
+  position: relative;
+   overflow: hidden;
+}
+
+/* Customer Table */
+.customer-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.customer-table th,
+.customer-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.customer-table th {
+  background-color: #f0f0f0;
+  font-weight: 600;
+}
+
+/* Row Hover */
+.customer-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Clickable Row */
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Status Texts */
+.loading-text,
+.error-text,
+.empty-text {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+  margin-top: 20px;
+}

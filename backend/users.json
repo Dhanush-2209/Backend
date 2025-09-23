@@ -1,0 +1,1363 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "john",
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john@example.com",
+      "password": "password123",
+      "phone": "",
+      "addresses": [
+        {
+          "id": "addr1",
+          "type": "home",
+          "addressLine": "123 Main St",
+          "city": "New York",
+          "postCode": "10001",
+          "country": "USA",
+          "isDefault": true
+        }
+      ],
+      "paymentMethods": [],
+      "cart": [
+        {
+          "id": "7",
+          "title": "Chanel Coco Noir Eau De",
+          "description": "Coco Noir by Chanel is an elegant and mysterious fragrance, featuring notes of grapefruit, rose, and sandalwood. Perfect for evening occasions.",
+          "category": "fragrances",
+          "price": 129.99,
+          "discountPercentage": 16.51,
+          "rating": 4.26,
+          "stock": 0,
+          "tags": [
+            "fragrances",
+            "perfumes"
+          ],
+          "brand": "Chanel",
+          "sku": "FRA-CHA-CHA-007",
+          "weight": 7,
+          "dimensions": {
+            "width": 24.5,
+            "height": 25.7,
+            "depth": 25.98
+          },
+          "warrantyInformation": "3 year warranty",
+          "shippingInformation": "Ships overnight",
+          "availabilityStatus": "In Stock",
+          "reviews": [
+            {
+              "rating": 4,
+              "comment": "Highly impressed!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Ruby Andrews",
+              "reviewerEmail": "ruby.andrews@x.dummyjson.com"
+            },
+            {
+              "rating": 5,
+              "comment": "Awesome product!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Leah Henderson",
+              "reviewerEmail": "leah.henderson@x.dummyjson.com"
+            },
+            {
+              "rating": 5,
+              "comment": "Very happy with my purchase!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Xavier Wright",
+              "reviewerEmail": "xavier.wright@x.dummyjson.com"
+            }
+          ],
+          "returnPolicy": "No return policy",
+          "minimumOrderQuantity": 1,
+          "meta": {
+            "createdAt": "2025-04-30T09:41:02.053Z",
+            "updatedAt": "2025-04-30T09:41:02.053Z",
+            "barcode": "4091737746820",
+            "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+          },
+          "images": [
+            "https://cdn.dummyjson.com/product-images/fragrances/chanel-coco-noir-eau-de/1.webp",
+            "https://cdn.dummyjson.com/product-images/fragrances/chanel-coco-noir-eau-de/2.webp",
+            "https://cdn.dummyjson.com/product-images/fragrances/chanel-coco-noir-eau-de/3.webp"
+          ],
+          "thumbnail": "https://cdn.dummyjson.com/product-images/fragrances/chanel-coco-noir-eau-de/thumbnail.webp",
+          "quantity": 1
+        }
+      ],
+      "wishlist": [
+        {
+          "id": "13",
+          "title": "Bedside Table African Cherry",
+          "description": "The Bedside Table in African Cherry is a stylish and functional addition to your bedroom, providing convenient storage space and a touch of elegance.",
+          "category": "furniture",
+          "price": 299.99,
+          "discountPercentage": 19.09,
+          "rating": 2.87,
+          "stock": 64,
+          "tags": [
+            "furniture",
+            "bedside tables"
+          ],
+          "brand": "Furniture Co.",
+          "sku": "FUR-FUR-BED-013",
+          "weight": 2,
+          "dimensions": {
+            "width": 13.47,
+            "height": 24.99,
+            "depth": 27.35
+          },
+          "warrantyInformation": "5 year warranty",
+          "shippingInformation": "Ships overnight",
+          "availabilityStatus": "In Stock",
+          "reviews": [
+            {
+              "rating": 4,
+              "comment": "Excellent quality!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Aaliyah Hanson",
+              "reviewerEmail": "aaliyah.hanson@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Excellent quality!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Liam Smith",
+              "reviewerEmail": "liam.smith@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Highly recommended!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Avery Barnes",
+              "reviewerEmail": "avery.barnes@x.dummyjson.com"
+            }
+          ],
+          "returnPolicy": "7 days return policy",
+          "minimumOrderQuantity": 3,
+          "meta": {
+            "createdAt": "2025-04-30T09:41:02.053Z",
+            "updatedAt": "2025-04-30T09:41:02.053Z",
+            "barcode": "6441287925979",
+            "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+          },
+          "images": [
+            "https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/1.webp",
+            "https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/2.webp",
+            "https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/3.webp"
+          ],
+          "thumbnail": "https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/thumbnail.webp"
+        }
+      ],
+      "orders": [
+        {
+          "id": 1758630849331,
+          "userId": "1",
+          "items": [
+            {
+              "id": "7",
+              "name": "Chanel Coco Noir Eau De",
+              "price": 129.99,
+              "qty": 1,
+              "image": "https://cdn.dummyjson.com/product-images/fragrances/chanel-coco-noir-eau-de/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "Chanel",
+              "category": "fragrances",
+              "sku": "FRA-CHA-CHA-007",
+              "description": "Coco Noir by Chanel is an elegant and mysterious fragrance, featuring notes of grapefruit, rose, and sandalwood. Perfect for evening occasions."
+            },
+            {
+              "id": "2",
+              "name": "Eyeshadow Palette with Mirror",
+              "price": 34459.99,
+              "qty": 4,
+              "image": "https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "Glamour Beauty",
+              "category": "beauty",
+              "sku": "BEA-GLA-EYE-002",
+              "description": "The Eyeshadow Palette with Mirror offers a versatile range of eyeshadow shades for creating stunning eye looks. With a built-in mirror, it's convenient for on-the-go makeup application."
+            },
+            {
+              "id": "1",
+              "name": "Essence Mascara Lash Princess",
+              "price": 1999.99,
+              "qty": 1,
+              "image": "https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "Essence",
+              "category": "beauty",
+              "sku": "BEA-ESS-ESS-001",
+              "description": "The Essence Mascara Lash Princess is a popular mascara known for its volumizing and lengthening effects. Achieve dramatic lashes with this long-lasting and cruelty-free formula."
+            }
+          ],
+          "subtotal": 139969.93999999997,
+          "shipping": 3.99,
+          "tax": 2,
+          "total": 139975.92999999996,
+          "address": {
+            "id": "addr1",
+            "type": "home",
+            "addressLine": "123 Main St",
+            "city": "New York",
+            "postCode": "10001",
+            "country": "USA",
+            "isDefault": true
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "method": "Cash on Delivery"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T12:34:09.331Z",
+          "status": "Ordered"
+        }
+      ]
+    },
+    {
+      "id": "6c94",
+      "username": "haswanth",
+      "firstName": "haswanth1",
+      "lastName": "akula1",
+      "email": "haswa@gmail.com",
+      "password": "Haswanth@123",
+      "phone": "1234567890",
+      "addresses": [
+        {
+          "id": "addr-1758171789063",
+          "type": "home",
+          "addressLine": "bojjavaaari",
+          "city": "kakinada",
+          "postCode": "533450",
+          "country": "India",
+          "isDefault": false
+        },
+        {
+          "id": "addr-1758171914430",
+          "type": "home",
+          "addressLine": "cACJ",
+          "city": "VSADV",
+          "postCode": "453Y34",
+          "country": "VSAv",
+          "isDefault": true
+        }
+      ],
+      "paymentMethods": [
+        {
+          "id": "pm-1758171789063",
+          "cardType": "Visa",
+          "cardName": "haswanth",
+          "cardNumber": "1234567890123456",
+          "expiry": "08/56",
+          "cvv": "234",
+          "isDefault": true
+        }
+      ],
+      "cart": [],
+      "wishlist": [],
+      "orders": []
+    },
+    {
+      "id": "0690",
+      "username": "admin",
+      "email": "admin@example.com",
+      "password": "admin123",
+      "isAdmin": true,
+      "addresses": [],
+      "paymentMethods": [],
+      "cart": [],
+      "wishlist": [],
+      "orders": []
+    },
+    {
+      "id": "b5df",
+      "username": "pint0",
+      "firstName": "Pinto",
+      "lastName": "J",
+      "email": "pinto@gmail.com",
+      "password": "123456",
+      "phone": "",
+      "addresses": [],
+      "paymentMethods": [],
+      "cart": [],
+      "wishlist": [],
+      "orders": []
+    },
+    {
+      "id": "17cb",
+      "username": "dhanush2209",
+      "firstName": "Dhanush",
+      "lastName": "B",
+      "email": "dhanush@gmail.com",
+      "password": "123456",
+      "phone": "9490844411",
+      "addresses": [
+        {
+          "id": 1758617596301,
+          "name": "Dhanush",
+          "phone": "9490844411",
+          "line": "1-2",
+          "city": "Chittoor",
+          "pincode": "517001"
+        }
+      ],
+      "paymentMethods": [],
+      "cart": [
+        {
+          "id": "30",
+          "title": "Kiwi",
+          "description": "Nutrient-rich kiwi, perfect for snacking or adding a tropical twist to your dishes.",
+          "category": "groceries",
+          "price": "5.49",
+          "discountPercentage": 15.22,
+          "rating": 4.93,
+          "stock": 0,
+          "tags": [
+            "fruits"
+          ],
+          "sku": "GRO-BRD-KIW-030",
+          "weight": 5,
+          "dimensions": {
+            "width": 19.4,
+            "height": 18.67,
+            "depth": 17.13
+          },
+          "warrantyInformation": "6 months warranty",
+          "shippingInformation": "Ships overnight",
+          "availabilityStatus": "In Stock",
+          "reviews": [
+            {
+              "rating": 4,
+              "comment": "Highly recommended!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Emily Brown",
+              "reviewerEmail": "emily.brown@x.dummyjson.com"
+            },
+            {
+              "rating": 2,
+              "comment": "Would not buy again!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Jackson Morales",
+              "reviewerEmail": "jackson.morales@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Fast shipping!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Nora Russell",
+              "reviewerEmail": "nora.russell@x.dummyjson.com"
+            }
+          ],
+          "returnPolicy": "7 days return policy",
+          "minimumOrderQuantity": 30,
+          "meta": {
+            "createdAt": "2025-04-30T09:41:02.053Z",
+            "updatedAt": "2025-04-30T09:41:02.053Z",
+            "barcode": "2530169917252",
+            "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+          },
+          "images": [
+            "https://cdn.dummyjson.com/product-images/groceries/kiwi/1.webp"
+          ],
+          "thumbnail": "https://cdn.dummyjson.com/product-images/groceries/kiwi/thumbnail.webp",
+          "quantity": 2
+        }
+      ],
+      "wishlist": [],
+      "orders": [
+        {
+          "id": 1758619484515,
+          "userId": "17cb",
+          "items": [
+            {
+              "id": "3",
+              "name": "Powder Canister",
+              "price": 1554.99,
+              "qty": 1
+            }
+          ],
+          "total": 1554.99,
+          "address": {
+            "id": 1758617596301,
+            "name": "Dhanush",
+            "phone": "9490844411",
+            "line": "1-2",
+            "city": "Chittoor",
+            "pincode": "517001"
+          },
+          "deliveryDate": "2025-09-27",
+          "paymentMethod": {
+            "method": "Cash on Delivery"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T09:24:44.513Z",
+          "status": "Cancelled"
+        },
+        {
+          "id": 1758620124390,
+          "userId": "17cb",
+          "items": [
+            {
+              "id": "30",
+              "name": "Kiwi",
+              "price": 5.49,
+              "qty": 2
+            }
+          ],
+          "total": 10.98,
+          "address": {
+            "id": 1758617596301,
+            "name": "Dhanush",
+            "phone": "9490844411",
+            "line": "1-2",
+            "city": "Chittoor",
+            "pincode": "517001"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "method": "UPI",
+            "upiId": "1@2"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T09:35:24.390Z",
+          "status": "Ordered"
+        },
+        {
+          "id": 1758620513132,
+          "userId": "17cb",
+          "items": [
+            {
+              "id": "30",
+              "name": "Kiwi",
+              "price": 5.49,
+              "qty": 2
+            },
+            {
+              "id": "2",
+              "name": "Eyeshadow Palette with Mirror",
+              "price": 34459.99,
+              "qty": 4
+            },
+            {
+              "id": "3",
+              "name": "Powder Canister",
+              "price": 1554.99,
+              "qty": 1
+            }
+          ],
+          "total": 139405.93,
+          "address": {
+            "id": 1758617596301,
+            "name": "Dhanush",
+            "phone": "9490844411",
+            "line": "1-2",
+            "city": "Chittoor",
+            "pincode": "517001"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "method": "Cash on Delivery"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T09:41:53.130Z",
+          "status": "Ordered"
+        },
+        {
+          "id": 1758624697783,
+          "userId": "17cb",
+          "items": [
+            {
+              "id": "6",
+              "name": "Calvin Klein CK One",
+              "price": 49.99,
+              "qty": 1,
+              "image": "https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "Calvin Klein",
+              "category": "fragrances",
+              "sku": "FRA-CAL-CAL-006",
+              "description": "CK One by Calvin Klein is a classic unisex fragrance, known for its fresh and clean scent. It's a versatile fragrance suitable for everyday wear."
+            }
+          ],
+          "subtotal": 49.99,
+          "shipping": 3.99,
+          "tax": 2,
+          "total": 55.980000000000004,
+          "address": {
+            "id": 1758617596301,
+            "name": "Dhanush",
+            "phone": "9490844411",
+            "line": "1-2",
+            "city": "Chittoor",
+            "pincode": "517001"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "cardType": "Visa",
+            "cardName": "Dhanush",
+            "cardMasked": "**** **** **** 2938",
+            "cardLast4": "2938",
+            "expiry": "12/22"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T10:51:37.782Z",
+          "status": "Ordered"
+        },
+        {
+          "id": 1758625364871,
+          "userId": "17cb",
+          "items": [
+            {
+              "id": "30",
+              "name": "Kiwi",
+              "price": 5.49,
+              "qty": 1,
+              "image": "https://cdn.dummyjson.com/product-images/groceries/kiwi/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "",
+              "category": "groceries",
+              "sku": "GRO-BRD-KIW-030",
+              "description": "Nutrient-rich kiwi, perfect for snacking or adding a tropical twist to your dishes."
+            }
+          ],
+          "subtotal": 5.49,
+          "shipping": 3.99,
+          "tax": 2,
+          "total": 11.48,
+          "address": {
+            "id": 1758617596301,
+            "name": "Dhanush",
+            "phone": "9490844411",
+            "line": "1-2",
+            "city": "Chittoor",
+            "pincode": "517001"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "method": "Cash on Delivery"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T11:02:44.871Z",
+          "status": "Cancelled"
+        },
+        {
+          "id": 1758628433848,
+          "userId": "17cb",
+          "items": [
+            {
+              "id": "30",
+              "name": "Kiwi",
+              "price": 5.49,
+              "qty": 1,
+              "image": "https://cdn.dummyjson.com/product-images/groceries/kiwi/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "",
+              "category": "groceries",
+              "sku": "GRO-BRD-KIW-030",
+              "description": "Nutrient-rich kiwi, perfect for snacking or adding a tropical twist to your dishes."
+            }
+          ],
+          "subtotal": 5.49,
+          "shipping": 3.99,
+          "tax": 2,
+          "total": 11.48,
+          "address": {
+            "id": 1758617596301,
+            "name": "Dhanush",
+            "phone": "9490844411",
+            "line": "1-2",
+            "city": "Chittoor",
+            "pincode": "517001"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "method": "Cash on Delivery"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T11:53:53.846Z",
+          "status": "Ordered"
+        },
+        {
+          "id": 1758631152099,
+          "userId": "17cb",
+          "items": [
+            {
+              "id": "30",
+              "name": "Kiwi",
+              "price": 5.49,
+              "qty": 1,
+              "image": "https://cdn.dummyjson.com/product-images/groceries/kiwi/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "",
+              "category": "groceries",
+              "sku": "GRO-BRD-KIW-030",
+              "description": "Nutrient-rich kiwi, perfect for snacking or adding a tropical twist to your dishes."
+            }
+          ],
+          "subtotal": 5.49,
+          "shipping": 3.99,
+          "tax": 2,
+          "total": 11.48,
+          "address": {
+            "id": 1758617596301,
+            "name": "Dhanush",
+            "phone": "9490844411",
+            "line": "1-2",
+            "city": "Chittoor",
+            "pincode": "517001"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "method": "Cash on Delivery"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T12:39:12.098Z",
+          "status": "Ordered"
+        },
+        {
+          "id": 1758631326061,
+          "userId": "17cb",
+          "items": [
+            {
+              "id": "30",
+              "name": "Kiwi",
+              "price": 5.49,
+              "qty": 2,
+              "image": "https://cdn.dummyjson.com/product-images/groceries/kiwi/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "",
+              "category": "groceries",
+              "sku": "GRO-BRD-KIW-030",
+              "description": "Nutrient-rich kiwi, perfect for snacking or adding a tropical twist to your dishes."
+            }
+          ],
+          "subtotal": 10.98,
+          "shipping": 3.99,
+          "tax": 2,
+          "total": 16.97,
+          "address": {
+            "id": 1758617596301,
+            "name": "Dhanush",
+            "phone": "9490844411",
+            "line": "1-2",
+            "city": "Chittoor",
+            "pincode": "517001"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "method": "Cash on Delivery"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T12:42:06.061Z",
+          "status": "Ordered"
+        },
+        {
+          "id": 1758633504562,
+          "userId": "17cb",
+          "items": [
+            {
+              "id": "30",
+              "name": "Kiwi",
+              "price": 5.49,
+              "qty": 2,
+              "image": "https://cdn.dummyjson.com/product-images/groceries/kiwi/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "",
+              "category": "groceries",
+              "sku": "GRO-BRD-KIW-030",
+              "description": "Nutrient-rich kiwi, perfect for snacking or adding a tropical twist to your dishes."
+            }
+          ],
+          "subtotal": 10.98,
+          "shipping": 3.99,
+          "tax": 2,
+          "total": 16.97,
+          "address": {
+            "id": 1758617596301,
+            "name": "Dhanush",
+            "phone": "9490844411",
+            "line": "1-2",
+            "city": "Chittoor",
+            "pincode": "517001"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "method": "Cash on Delivery"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T13:18:24.562Z",
+          "status": "Ordered"
+        },
+        {
+          "id": 1758634032542,
+          "userId": "17cb",
+          "items": [
+            {
+              "id": "30",
+              "name": "Kiwi",
+              "price": 5.49,
+              "qty": 2,
+              "image": "https://cdn.dummyjson.com/product-images/groceries/kiwi/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "",
+              "category": "groceries",
+              "sku": "GRO-BRD-KIW-030",
+              "description": "Nutrient-rich kiwi, perfect for snacking or adding a tropical twist to your dishes."
+            }
+          ],
+          "subtotal": 10.98,
+          "shipping": 3.99,
+          "tax": 2,
+          "total": 16.97,
+          "address": {
+            "id": 1758617596301,
+            "name": "Dhanush",
+            "phone": "9490844411",
+            "line": "1-2",
+            "city": "Chittoor",
+            "pincode": "517001"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "cardType": "Visa",
+            "cardName": "Dhanush",
+            "cardMasked": "**** **** **** 2938",
+            "cardLast4": "2938",
+            "expiry": "12/22"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T13:27:12.542Z",
+          "status": "Ordered"
+        }
+      ],
+      "paymentDetails": [
+        {
+          "cardType": "Visa",
+          "cardName": "Dhanush",
+          "cardMasked": "**** **** **** 2938",
+          "cardLast4": "2938",
+          "expiry": "12/22"
+        }
+      ]
+    },
+    {
+      "id": "80c3",
+      "username": "sai divyagna",
+      "firstName": "Gothula",
+      "lastName": "",
+      "email": "sai@gmail.com",
+      "password": "123456",
+      "phone": "",
+      "addresses": [
+        {
+          "id": 1758621827876,
+          "name": "Sai Divyagna",
+          "phone": "3456123412",
+          "line": "Ongole",
+          "city": "ongole",
+          "pincode": "628353"
+        }
+      ],
+      "paymentMethods": [],
+      "cart": [
+        {
+          "id": "8",
+          "title": "Dior J'adore",
+          "description": "J'adore by Dior is a luxurious and floral fragrance, known for its blend of ylang-ylang, rose, and jasmine. It embodies femininity and sophistication.",
+          "category": "fragrances",
+          "price": 89.99,
+          "discountPercentage": 14.72,
+          "rating": 3.8,
+          "stock": 98,
+          "tags": [
+            "fragrances",
+            "perfumes"
+          ],
+          "brand": "Dior",
+          "sku": "FRA-DIO-DIO-008",
+          "weight": 4,
+          "dimensions": {
+            "width": 27.67,
+            "height": 28.28,
+            "depth": 11.83
+          },
+          "warrantyInformation": "1 week warranty",
+          "shippingInformation": "Ships in 2 weeks",
+          "availabilityStatus": "In Stock",
+          "reviews": [
+            {
+              "rating": 5,
+              "comment": "Great value for money!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Nicholas Bailey",
+              "reviewerEmail": "nicholas.bailey@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Great value for money!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Penelope Harper",
+              "reviewerEmail": "penelope.harper@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Great product!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Emma Miller",
+              "reviewerEmail": "emma.miller@x.dummyjson.com"
+            }
+          ],
+          "returnPolicy": "7 days return policy",
+          "minimumOrderQuantity": 10,
+          "meta": {
+            "createdAt": "2025-04-30T09:41:02.053Z",
+            "updatedAt": "2025-04-30T09:41:02.053Z",
+            "barcode": "1445086097250",
+            "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+          },
+          "images": [
+            "https://cdn.dummyjson.com/product-images/fragrances/dior-j'adore/1.webp",
+            "https://cdn.dummyjson.com/product-images/fragrances/dior-j'adore/2.webp",
+            "https://cdn.dummyjson.com/product-images/fragrances/dior-j'adore/3.webp"
+          ],
+          "thumbnail": "https://cdn.dummyjson.com/product-images/fragrances/dior-j'adore/thumbnail.webp",
+          "quantity": 2
+        }
+      ],
+      "wishlist": [],
+      "orders": [
+        {
+          "id": 1758621861120,
+          "userId": "80c3",
+          "items": [
+            {
+              "id": "7",
+              "name": "Chanel Coco Noir Eau De",
+              "price": 129.99,
+              "qty": 1,
+              "image": "https://cdn.dummyjson.com/product-images/fragrances/chanel-coco-noir-eau-de/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "Chanel",
+              "category": "fragrances",
+              "sku": "FRA-CHA-CHA-007",
+              "description": "Coco Noir by Chanel is an elegant and mysterious fragrance, featuring notes of grapefruit, rose, and sandalwood. Perfect for evening occasions."
+            },
+            {
+              "id": "91",
+              "name": "Apple airpods",
+              "price": 350,
+              "qty": 1,
+              "image": "/images/apple-airpods.jpg",
+              "unit": "pcs",
+              "brand": "Apple",
+              "category": "electronics",
+              "sku": "",
+              "description": "ANC"
+            }
+          ],
+          "total": 479.99,
+          "address": {
+            "id": 1758621827876,
+            "name": "Sai Divyagna",
+            "phone": "3456123412",
+            "line": "Ongole",
+            "city": "ongole",
+            "pincode": "628353"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "method": "Cash on Delivery"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T10:04:21.120Z",
+          "status": "Ordered"
+        },
+        {
+          "id": 1758623542614,
+          "userId": "80c3",
+          "items": [
+            {
+              "id": "91",
+              "name": "Apple airpods",
+              "price": 350,
+              "qty": 1,
+              "image": "/images/apple-airpods.jpg",
+              "unit": "pcs",
+              "brand": "Apple",
+              "category": "electronics",
+              "sku": "",
+              "description": "ANC"
+            }
+          ],
+          "subtotal": 350,
+          "shipping": 3.99,
+          "tax": 2,
+          "total": 355.99,
+          "address": {
+            "id": 1758621827876,
+            "name": "Sai Divyagna",
+            "phone": "3456123412",
+            "line": "Ongole",
+            "city": "ongole",
+            "pincode": "628353"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "method": "Cash on Delivery"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T10:32:22.614Z",
+          "status": "Ordered"
+        },
+        {
+          "id": 1758623741776,
+          "userId": "80c3",
+          "items": [
+            {
+              "id": "8",
+              "name": "Dior J'adore",
+              "price": 89.99,
+              "qty": 2,
+              "image": "https://cdn.dummyjson.com/product-images/fragrances/dior-j'adore/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "Dior",
+              "category": "fragrances",
+              "sku": "FRA-DIO-DIO-008",
+              "description": "J'adore by Dior is a luxurious and floral fragrance, known for its blend of ylang-ylang, rose, and jasmine. It embodies femininity and sophistication."
+            }
+          ],
+          "subtotal": 179.98,
+          "shipping": 3.99,
+          "tax": 2,
+          "total": 185.97,
+          "address": {
+            "id": 1758621827876,
+            "name": "Sai Divyagna",
+            "phone": "3456123412",
+            "line": "Ongole",
+            "city": "ongole",
+            "pincode": "628353"
+          },
+          "deliveryDate": "2025-09-26",
+          "paymentMethod": {
+            "method": "UPI",
+            "upiId": "1@2"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T10:35:41.775Z",
+          "status": "Ordered"
+        }
+      ]
+    },
+    {
+      "id": "6f99",
+      "username": "ashish",
+      "firstName": "Ashish",
+      "lastName": "Q",
+      "email": "ashish@gmail.com",
+      "password": "123456",
+      "phone": "1234567890",
+      "addresses": [
+        {
+          "id": 1758625625735,
+          "name": "Ashish",
+          "phone": "3456123412",
+          "line": "SAD1",
+          "city": "Kadapa",
+          "pincode": "512433"
+        }
+      ],
+      "paymentMethods": [],
+      "cart": [
+        {
+          "id": "2",
+          "title": "Eyeshadow Palette with Mirror",
+          "description": "The Eyeshadow Palette with Mirror offers a versatile range of eyeshadow shades for creating stunning eye looks. With a built-in mirror, it's convenient for on-the-go makeup application.",
+          "category": "beauty",
+          "price": 34459.99,
+          "discountPercentage": 18.19,
+          "rating": 2.86,
+          "stock": 34,
+          "tags": [
+            "beauty",
+            "eyeshadow"
+          ],
+          "brand": "Glamour Beauty",
+          "sku": "BEA-GLA-EYE-002",
+          "weight": 9,
+          "dimensions": {
+            "width": 9.26,
+            "height": 22.47,
+            "depth": 27.67
+          },
+          "warrantyInformation": "1 year warranty",
+          "shippingInformation": "Ships in 2 weeks",
+          "availabilityStatus": "In Stock",
+          "reviews": [
+            {
+              "rating": 5,
+              "comment": "Great product!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Savannah Gomez",
+              "reviewerEmail": "savannah.gomez@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Awesome product!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Christian Perez",
+              "reviewerEmail": "christian.perez@x.dummyjson.com"
+            },
+            {
+              "rating": 1,
+              "comment": "Poor quality!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Nicholas Bailey",
+              "reviewerEmail": "nicholas.bailey@x.dummyjson.com"
+            }
+          ],
+          "returnPolicy": "7 days return policy",
+          "minimumOrderQuantity": 20,
+          "meta": {
+            "createdAt": "2025-04-30T09:41:02.053Z",
+            "updatedAt": "2025-04-30T09:41:02.053Z",
+            "barcode": "9170275171413",
+            "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+          },
+          "images": [
+            "https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/1.webp"
+          ],
+          "thumbnail": "https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/thumbnail.webp",
+          "quantity": 1
+        }
+      ],
+      "wishlist": [],
+      "orders": [
+        {
+          "id": 1758625733316,
+          "userId": "6f99",
+          "items": [
+            {
+              "id": "2",
+              "name": "Eyeshadow Palette with Mirror",
+              "price": 34459.99,
+              "qty": 1,
+              "image": "https://cdn.dummyjson.com/product-images/beauty/eyeshadow-palette-with-mirror/thumbnail.webp",
+              "unit": "pcs",
+              "brand": "Glamour Beauty",
+              "category": "beauty",
+              "sku": "BEA-GLA-EYE-002",
+              "description": "The Eyeshadow Palette with Mirror offers a versatile range of eyeshadow shades for creating stunning eye looks. With a built-in mirror, it's convenient for on-the-go makeup application."
+            }
+          ],
+          "subtotal": 34459.99,
+          "shipping": 3.99,
+          "tax": 2,
+          "total": 34465.979999999996,
+          "address": {
+            "id": 1758625625735,
+            "name": "Ashish",
+            "phone": "3456123412",
+            "line": "SAD1",
+            "city": "Kadapa",
+            "pincode": "512433"
+          },
+          "deliveryDate": "2025-09-25",
+          "paymentMethod": {
+            "cardType": "MasterCard",
+            "cardName": "Ahsish",
+            "cardMasked": "**** **** **** 3451",
+            "cardLast4": "3451",
+            "expiry": "12/22"
+          },
+          "orderedDate": "2025-09-23",
+          "orderedDay": "Tuesday",
+          "orderedTime": "2025-09-23T11:08:53.316Z",
+          "status": "Cancelled"
+        }
+      ],
+      "paymentDetails": [
+        {
+          "cardType": "MasterCard",
+          "cardName": "Ahsish",
+          "cardMasked": "**** **** **** 3451",
+          "cardLast4": "3451",
+          "expiry": "12/22"
+        }
+      ]
+    },
+    {
+      "id": "6980",
+      "username": "1",
+      "firstName": "1",
+      "lastName": "1",
+      "email": "1@gmail.com",
+      "password": "123456",
+      "phone": "",
+      "addresses": [],
+      "paymentMethods": [],
+      "cart": [
+        {
+          "id": "13",
+          "title": "Bedside Table African Cherry",
+          "description": "The Bedside Table in African Cherry is a stylish and functional addition to your bedroom, providing convenient storage space and a touch of elegance.",
+          "category": "furniture",
+          "price": 299.99,
+          "discountPercentage": 19.09,
+          "rating": 2.87,
+          "stock": 64,
+          "tags": [
+            "furniture",
+            "bedside tables"
+          ],
+          "brand": "Furniture Co.",
+          "sku": "FUR-FUR-BED-013",
+          "weight": 2,
+          "dimensions": {
+            "width": 13.47,
+            "height": 24.99,
+            "depth": 27.35
+          },
+          "warrantyInformation": "5 year warranty",
+          "shippingInformation": "Ships overnight",
+          "availabilityStatus": "In Stock",
+          "reviews": [
+            {
+              "rating": 4,
+              "comment": "Excellent quality!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Aaliyah Hanson",
+              "reviewerEmail": "aaliyah.hanson@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Excellent quality!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Liam Smith",
+              "reviewerEmail": "liam.smith@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Highly recommended!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Avery Barnes",
+              "reviewerEmail": "avery.barnes@x.dummyjson.com"
+            }
+          ],
+          "returnPolicy": "7 days return policy",
+          "minimumOrderQuantity": 3,
+          "meta": {
+            "createdAt": "2025-04-30T09:41:02.053Z",
+            "updatedAt": "2025-04-30T09:41:02.053Z",
+            "barcode": "6441287925979",
+            "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+          },
+          "images": [
+            "https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/1.webp",
+            "https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/2.webp",
+            "https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/3.webp"
+          ],
+          "thumbnail": "https://cdn.dummyjson.com/product-images/furniture/bedside-table-african-cherry/thumbnail.webp",
+          "quantity": 1
+        },
+        {
+          "id": "6",
+          "title": "Calvin Klein CK One",
+          "description": "CK One by Calvin Klein is a classic unisex fragrance, known for its fresh and clean scent. It's a versatile fragrance suitable for everyday wear.",
+          "category": "fragrances",
+          "price": 49.99,
+          "discountPercentage": 1.89,
+          "rating": 4.37,
+          "stock": 29,
+          "tags": [
+            "fragrances",
+            "perfumes"
+          ],
+          "brand": "Calvin Klein",
+          "sku": "FRA-CAL-CAL-006",
+          "weight": 7,
+          "dimensions": {
+            "width": 29.36,
+            "height": 27.76,
+            "depth": 20.72
+          },
+          "warrantyInformation": "1 week warranty",
+          "shippingInformation": "Ships overnight",
+          "availabilityStatus": "In Stock",
+          "reviews": [
+            {
+              "rating": 2,
+              "comment": "Very disappointed!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Layla Young",
+              "reviewerEmail": "layla.young@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Fast shipping!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Daniel Cook",
+              "reviewerEmail": "daniel.cook@x.dummyjson.com"
+            },
+            {
+              "rating": 3,
+              "comment": "Not as described!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Jacob Cooper",
+              "reviewerEmail": "jacob.cooper@x.dummyjson.com"
+            }
+          ],
+          "returnPolicy": "90 days return policy",
+          "minimumOrderQuantity": 9,
+          "meta": {
+            "createdAt": "2025-04-30T09:41:02.053Z",
+            "updatedAt": "2025-04-30T09:41:02.053Z",
+            "barcode": "2451534060749",
+            "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+          },
+          "images": [
+            "https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/1.webp",
+            "https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/2.webp",
+            "https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/3.webp"
+          ],
+          "thumbnail": "https://cdn.dummyjson.com/product-images/fragrances/calvin-klein-ck-one/thumbnail.webp",
+          "quantity": 1
+        },
+        {
+          "id": "30",
+          "title": "Kiwi",
+          "description": "Nutrient-rich kiwi, perfect for snacking or adding a tropical twist to your dishes.",
+          "category": "groceries",
+          "price": "5.49",
+          "discountPercentage": 15.22,
+          "rating": 4.93,
+          "stock": 0,
+          "tags": [
+            "fruits"
+          ],
+          "sku": "GRO-BRD-KIW-030",
+          "weight": 5,
+          "dimensions": {
+            "width": 19.4,
+            "height": 18.67,
+            "depth": 17.13
+          },
+          "warrantyInformation": "6 months warranty",
+          "shippingInformation": "Ships overnight",
+          "availabilityStatus": "In Stock",
+          "reviews": [
+            {
+              "rating": 4,
+              "comment": "Highly recommended!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Emily Brown",
+              "reviewerEmail": "emily.brown@x.dummyjson.com"
+            },
+            {
+              "rating": 2,
+              "comment": "Would not buy again!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Jackson Morales",
+              "reviewerEmail": "jackson.morales@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Fast shipping!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Nora Russell",
+              "reviewerEmail": "nora.russell@x.dummyjson.com"
+            }
+          ],
+          "returnPolicy": "7 days return policy",
+          "minimumOrderQuantity": 30,
+          "meta": {
+            "createdAt": "2025-04-30T09:41:02.053Z",
+            "updatedAt": "2025-04-30T09:41:02.053Z",
+            "barcode": "2530169917252",
+            "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+          },
+          "images": [
+            "https://cdn.dummyjson.com/product-images/groceries/kiwi/1.webp"
+          ],
+          "thumbnail": "https://cdn.dummyjson.com/product-images/groceries/kiwi/thumbnail.webp",
+          "quantity": 1
+        }
+      ],
+      "wishlist": [
+        {
+          "id": "30",
+          "title": "Kiwi",
+          "description": "Nutrient-rich kiwi, perfect for snacking or adding a tropical twist to your dishes.",
+          "category": "groceries",
+          "price": "5.49",
+          "discountPercentage": 15.22,
+          "rating": 4.93,
+          "stock": 0,
+          "tags": [
+            "fruits"
+          ],
+          "sku": "GRO-BRD-KIW-030",
+          "weight": 5,
+          "dimensions": {
+            "width": 19.4,
+            "height": 18.67,
+            "depth": 17.13
+          },
+          "warrantyInformation": "6 months warranty",
+          "shippingInformation": "Ships overnight",
+          "availabilityStatus": "In Stock",
+          "reviews": [
+            {
+              "rating": 4,
+              "comment": "Highly recommended!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Emily Brown",
+              "reviewerEmail": "emily.brown@x.dummyjson.com"
+            },
+            {
+              "rating": 2,
+              "comment": "Would not buy again!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Jackson Morales",
+              "reviewerEmail": "jackson.morales@x.dummyjson.com"
+            },
+            {
+              "rating": 4,
+              "comment": "Fast shipping!",
+              "date": "2025-04-30T09:41:02.053Z",
+              "reviewerName": "Nora Russell",
+              "reviewerEmail": "nora.russell@x.dummyjson.com"
+            }
+          ],
+          "returnPolicy": "7 days return policy",
+          "minimumOrderQuantity": 30,
+          "meta": {
+            "createdAt": "2025-04-30T09:41:02.053Z",
+            "updatedAt": "2025-04-30T09:41:02.053Z",
+            "barcode": "2530169917252",
+            "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+          },
+          "images": [
+            "https://cdn.dummyjson.com/product-images/groceries/kiwi/1.webp"
+          ],
+          "thumbnail": "https://cdn.dummyjson.com/product-images/groceries/kiwi/thumbnail.webp"
+        }
+      ],
+      "orders": []
+    }
+  ]
+}

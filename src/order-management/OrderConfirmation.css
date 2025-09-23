@@ -1,0 +1,252 @@
+/* ===== Page container ===== */
+.order-confirmation {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to bottom, #f5f6fa, #e9ebf5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== Confetti burst ===== */
+.confetti-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: 0;
+  width: 8px;
+  height: 14px;
+  background-color: #ff4081;
+  opacity: 0.9;
+  animation: confettiFall 1.8s ease-out forwards;
+  border-radius: 2px;
+}
+
+/* Random colors */
+.confetti-piece:nth-child(odd) { background-color: #5f6af2; }
+.confetti-piece:nth-child(3n) { background-color: #00c853; }
+.confetti-piece:nth-child(4n) { background-color: #ff9800; }
+.confetti-piece:nth-child(5n) { background-color: #e91e63; }
+
+/* Confetti animation */
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* ===== Confirmation card ===== */
+.confirmation-card {
+  width: 100%;
+  max-width: 960px;
+  background: #fff;
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: slideFadeIn 0.5s ease-out;
+  box-sizing: border-box;
+}
+
+/* ===== Heading with pulse + bounce ===== */
+.confirmation-card h2.pulse {
+  animation: pulse 1.2s ease-in-out infinite, bounce 0.6s ease-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bounce {
+  0% { transform: translateY(-20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.order-id {
+  font-size: 14px;
+  color: #666;
+  margin-top: -6px;
+}
+
+/* ===== Grid layout ===== */
+.confirmation-grid {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.left-column,
+.right-column {
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===== Section blocks ===== */
+.section {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.6;
+  background: #f9f9fc;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #e0e0e8;
+  animation: fadeIn 0.8s ease forwards;
+  opacity: 0;
+}
+
+.section strong {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.section ul {
+  padding-left: 18px;
+  margin: 6px 0;
+}
+
+.section li {
+  margin-bottom: 6px;
+}
+
+.section.total {
+  background: #fff8e6;
+  border: 1px solid #ffe8b3;
+}
+
+.section p {
+  margin: 0;
+}
+
+.delivery-note {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: #888;
+}
+
+/* ===== Slide-in animation for items ===== */
+.slide-in {
+  animation: slideIn 0.6s ease-out forwards;
+  transform: translateX(30px);
+  opacity: 0;
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ===== Fade-in animation for sections ===== */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===== Button row ===== */
+.confirmation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+  animation: fadeIn 0.8s ease forwards;
+  opacity: 0;
+}
+
+.confirmation-actions button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.confirmation-actions button:first-child {
+  background: #f2f2f6;
+  color: #333;
+}
+
+.confirmation-actions button:last-child {
+  background: #5f6af2;
+  color: #fff;
+}
+
+.confirmation-actions button:last-child:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+/* ===== Page transition animation ===== */
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== Responsive tweaks ===== */
+@media (max-width: 768px) {
+  .confirmation-card {
+    padding: 24px;
+    border-radius: 16px;
+    max-width: 100%;
+  }
+
+  .confirmation-grid {
+    flex-direction: column;
+  }
+
+  .confirmation-card h2 {
+    font-size: 24px;
+  }
+
+  .section {
+    font-size: 14px;
+    padding: 14px;
+  }
+
+  .confirmation-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .confirmation-actions button {
+    width: 100%;
+  }
+}

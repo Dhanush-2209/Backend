@@ -1,0 +1,128 @@
+/* ===== Container ===== */
+.payment-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #f5f6fa;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  color: #222;
+  overflow-y: auto;
+  gap: 20px;
+}
+
+/* ===== Top bar ===== */
+.payment-top-row {
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 44px;
+}
+
+.top-left,
+.top-right {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+}
+
+.top-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.main-heading {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* Back button */
+.back-checkout-btn {
+  background: transparent;
+  border: none;
+  color: #5f6af2;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  padding: 0;
+}
+.back-checkout-btn:hover {
+  opacity: 0.7;
+}
+
+/* ===== Main layout ===== */
+.payment-main {
+  display: flex;
+  gap: 24px;
+}
+
+.payment-left,
+.payment-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.payment-left {
+  max-width: 45%;
+}
+.payment-right {
+  max-width: 45%;
+  position: relative;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .payment-container {
+    padding: 16px;
+  }
+  .payment-main {
+    flex-direction: column;
+  }
+  .payment-left,
+  .payment-right {
+    max-width: 100%;
+  }
+  .main-heading {
+    font-size: 22px;
+  }
+  .top-center {
+    position: static;
+    transform: none;
+    margin: 8px 0 0 0;
+  }
+  .payment-top-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+/* Highlight selected payment method block */
+.method-block.selected {
+  background: rgba(95, 106, 242, 0.08);
+  border: 1px solid #5f6af2;
+  border-radius: 8px;
+  padding: 6px;
+}
+
+/* Verified UPI display */
+.verified-upi {
+  font-size: 13px;
+  color: #333;
+  margin-top: 6px;
+}
