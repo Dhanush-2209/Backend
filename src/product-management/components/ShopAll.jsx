@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { fetchProducts } from "../api/productApi";
 import ProductCard from "../components/ProductCard";
 import { Search, ChevronDown, Star, X } from "lucide-react";
-import "../../index.css";
+import "./ShopAllPage.css";
 
 const PRODUCTS_PER_PAGE = 9;
 
@@ -14,7 +14,6 @@ const ShopAllPage = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
   const [minRating, setMinRating] = useState(0);
-
   const [sortBy, setSortBy] = useState("featured");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -76,12 +75,12 @@ const ShopAllPage = () => {
       case "rating":
         filtered.sort((a, b) => b.rating - a.rating);
         break;
-      default: // 'featured'
+      default:
         break;
     }
 
     setDisplayedProducts(filtered);
-    setCurrentPage(1); // Reset page on any filter change
+    setCurrentPage(1);
   }, [
     searchTerm,
     selectedBrands,
@@ -122,21 +121,17 @@ const ShopAllPage = () => {
   );
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <aside className="lg:col-span-1 bg-white p-6 rounded-lg shadow-sm h-fit">
-            <div className="flex justify-between items-center ">
-              <h2 className="text-xl font-bold">Filters</h2>
-              <button
-                onClick={resetFilters}
-                className="text-sm text-gray-600 hover:underline flex items-center gap-1"
-              >
+    <div className="p-shop-wrapper">
+      <div className="p-shop-container">
+        <div className="p-shop-grid">
+          <aside className="p-shop-filters">
+            <div className="p-shop-filters-header">
+              <h2 className="p-shop-filters-title">Filters</h2>
+              <button onClick={resetFilters} className="p-clear-button">
                 <X size={14} /> Clear All
               </button>
             </div>
 
-            {/* Category Filter */}
             <FilterSection title="Category">
               {availableCategories.map((category) => (
                 <Checkbox
@@ -148,7 +143,6 @@ const ShopAllPage = () => {
               ))}
             </FilterSection>
 
-            {/* Brand Filter */}
             <FilterSection title="Brand">
               {availableBrands.map((brand) => (
                 <Checkbox
@@ -160,9 +154,8 @@ const ShopAllPage = () => {
               ))}
             </FilterSection>
 
-            {/* Price Filter */}
             <FilterSection title="Price">
-              <div className="flex items-center gap-2">
+              <div className="p-price-inputs">
                 <input
                   type="number"
                   placeholder="Min"
@@ -170,7 +163,7 @@ const ShopAllPage = () => {
                   onChange={(e) =>
                     setPriceRange((p) => ({ ...p, min: e.target.value }))
                   }
-                  className="w-full border p-2 rounded-md text-sm"
+                  className="p-price-input"
                 />
                 <span>-</span>
                 <input
@@ -180,103 +173,82 @@ const ShopAllPage = () => {
                   onChange={(e) =>
                     setPriceRange((p) => ({ ...p, max: e.target.value }))
                   }
-                  className="w-full border p-2 rounded-md text-sm"
+                  className="p-price-input"
                 />
               </div>
             </FilterSection>
 
-            {/* Rating Filter */}
             <FilterSection title="Rating">
-              <div className="flex space-x-1">
+              <div className="p-rating-buttons">
                 {[4, 3, 2, 1].map((rating) => (
                   <button
                     key={rating}
                     onClick={() => setMinRating(rating)}
-                    className={`p-2 rounded-md border ${
-                      minRating === rating
-                        ? "bg-gray-600 text-white border-gray-600"
-                        : "bg-white"
+                    className={`p-rating-button ${
+                      minRating === rating ? "active" : ""
                     }`}
                   >
-                    {rating}{" "}
-                    <Star
-                      size={14}
-                      className="inline-block fill-current -mt-1"
-                    />{" "}
-                    & Up
+                    {rating} <Star size={14} className="p-star-icon" /> & Up
                   </button>
                 ))}
               </div>
             </FilterSection>
           </aside>
 
-          {/* ===== MAIN CONTENT (PRODUCTS) ===== */}
-          <main className="lg:col-span-3">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-              <div className="relative w-full md:w-2/3 lg:w-1/2 duration-300 ease-in-out hover:shadow-xl hover:-translate-y-0.5  ">
+          <main className="p-shop-main">
+            <div className="p-shop-controls">
+              <div className="p-search-wrapper">
                 <input
                   type="text"
                   placeholder="Search products..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 rounded rounded-lg outline-none border border-gray-100"
+                  className="p-search-input"
                 />
-                <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={20}
-                />
+                <Search className="p-search-icon" size={20} />
               </div>
-              <div className="relative w-full md:w-auto">
+              <div className="p-sort-wrapper">
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full appearance-none bg-white  rounded-lg py-2 pl-4 pr-10  outline-none"
+                  className="p-sort-select"
                 >
                   <option value="featured">Featured items</option>
                   <option value="price-asc">Price: Low to High</option>
                   <option value="price-desc">Price: High to Low</option>
                   <option value="rating">By Rating</option>
                 </select>
-                <ChevronDown
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                  size={20}
-                />
+                <ChevronDown className="p-sort-icon" size={20} />
               </div>
             </div>
 
-            {/* --- Product Grid --- */}
             {paginatedProducts.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
+              <div className="p-product-grid">
                 {paginatedProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-20">
-                <h3 className="text-2xl font-semibold">No Products Found</h3>
-                <p className="text-gray-500 mt-2">
-                  Try adjusting your filters to find what you're looking for.
-                </p>
+              <div className="p-no-results">
+                <h3>No Products Found</h3>
+                <p>Try adjusting your filters to find what you're looking for.</p>
               </div>
             )}
 
-            {/* --- Pagination Controls --- */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center mt-12 space-x-2">
+              <div className="p-pagination">
                 <button
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage((p) => p - 1)}
-                  className="px-4 py-2 border rounded-md bg-white disabled:opacity-50"
                 >
                   Prev
                 </button>
-                <span className="px-4 py-2">
+                <span>
                   Page {currentPage} of {totalPages}
                 </span>
                 <button
                   disabled={currentPage === totalPages}
                   onClick={() => setCurrentPage((p) => p + 1)}
-                  className="px-4 py-2 border rounded-md bg-white disabled:opacity-50"
                 >
                   Next
                 </button>
@@ -289,23 +261,22 @@ const ShopAllPage = () => {
   );
 };
 
-// --- Helper Components for Minimalist UI ---
 const FilterSection = ({ title, children }) => (
-  <div className="py-6 border-b last:border-b-0">
-    <h3 className="font-semibold mb-3 text-gray-800">{title}</h3>
-    <div className="space-y-2">{children}</div>
+  <div className="p-filter-section">
+    <h3 className="p-filter-title">{title}</h3>
+    <div className="p-filter-options">{children}</div>
   </div>
 );
 
 const Checkbox = ({ label, checked, onChange }) => (
-  <label className="flex items-center space-x-3 cursor-pointer">
+  <label className="p-checkbox">
     <input
       type="checkbox"
       checked={checked}
       onChange={onChange}
-      className="h-4 w-4 rounded border-gray-300 text-gray-600 focus:ring-gray-500"
+      className="p-checkbox-input"
     />
-    <span className="text-gray-700 capitalize text-sm">{label}</span>
+    <span className="p-checkbox-label">{label}</span>
   </label>
 );
 

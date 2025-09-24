@@ -83,22 +83,20 @@ export default function Orders() {
   );
 
   return (
-    <div className="orders-wrapper">
-      <div className="orders-page">
-        {/* Header */}
-        <div className="orders-header">
+    <div className="o-orders-wrapper">
+      <div className="o-orders-page">
+        <div className="o-orders-header">
           <h2>Your Orders</h2>
-          <button className="back-home-btn" onClick={() => navigate("/")}>
+          <button className="o-back-home-btn" onClick={() => navigate("/")}>
             ← Back to Home
           </button>
         </div>
 
-        {/* Filters */}
-        <div className="orders-filters">
+        <div className="o-orders-filters">
           {["All", ...STATUS_STAGES, "Cancelled"].map(status => (
             <button
               key={status}
-              className={`filter-tab ${activeStatus === status ? "active" : ""}`}
+              className={`o-filter-tab ${activeStatus === status ? "o-active" : ""}`}
               onClick={() => setActiveStatus(status)}
             >
               {status}
@@ -106,44 +104,42 @@ export default function Orders() {
           ))}
           <input
             type="text"
-            className="search-bar"
+            className="o-search-bar"
             placeholder="Search by product or order ID"
+            aria-label="Search orders by product name or order ID"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />
         </div>
 
-        {/* Loading / Empty */}
         {loading ? (
-          <p className="loading-text">Loading your orders...</p>
+          <p className="o-loading-text">Loading your orders...</p>
         ) : filteredOrders.length === 0 ? (
-          <div className="empty-orders">
+          <div className="o-empty-orders">
             <img src="/images/empty-box.png" alt="No orders" />
             <p>You haven’t placed any orders yet.</p>
             <button onClick={() => navigate("/")}>Start Shopping</button>
           </div>
         ) : (
           <>
-            {/* Orders List */}
-            <div className="orders-list">
+            <div className="o-orders-list">
               {paginatedOrders.map(order => (
                 <div
                   key={order.id}
-                  className={`order-card ${order.status === "Cancelled" ? "cancelled" : ""}`}
+                  className={`o-order-card ${order.status === "Cancelled" ? "o-cancelled" : ""}`}
                 >
-                  {/* Summary */}
-                  <div className="order-summary">
-                    <div className="order-meta">
+                  <div className="o-order-summary">
+                    <div className="o-order-meta">
                       <div>
-                        <span className="meta-label">ORDER PLACED</span>
+                        <span className="o-meta-label">ORDER PLACED</span>
                         <p>{order.orderedDay}, {order.orderedDate}</p>
                       </div>
                       <div>
-                        <span className="meta-label">TOTAL</span>
+                        <span className="o-meta-label">TOTAL</span>
                         <p>₹{order.total}</p>
                       </div>
                       <div>
-                        <span className="meta-label">SHIP TO</span>
+                        <span className="o-meta-label">SHIP TO</span>
                         <p>
                           {order.address.name}<br />
                           {order.address.line}, {order.address.city} - {order.address.pincode}<br />
@@ -152,19 +148,22 @@ export default function Orders() {
                       </div>
                     </div>
 
-                    <div className="delivery-status">
-                      <p className={`delivery-date ${order.status === "Cancelled" ? "cancelled-text" : ""}`}>
+                    <div className="o-delivery-status">
+                      <p
+                        className={`o-delivery-date ${order.status === "Cancelled" ? "o-cancelled-text" : ""}`}
+                        aria-live="polite"
+                      >
                         {order.countdown}
                       </p>
-                      <div className="status-timeline">
+                      <div className="o-status-timeline">
                         {STATUS_STAGES.map(stage => (
                           <span
                             key={stage}
-                            className={`status-step ${
+                            className={`o-status-step ${
                               order.status === "Cancelled"
-                                ? "inactive"
+                                ? "o-inactive"
                                 : order.status === stage || STATUS_STAGES.indexOf(order.status) > STATUS_STAGES.indexOf(stage)
-                                ? "active"
+                                ? "o-active"
                                 : ""
                             }`}
                           >
@@ -175,11 +174,10 @@ export default function Orders() {
                     </div>
                   </div>
 
-                  {/* Products + Actions */}
-                  <div className="order-body">
-                    <div className="product-thumbnails">
+                  <div className="o-order-body">
+                    <div className="o-product-thumbnails">
                       {order.items.map(item => (
-                        <div key={item.id} className="product-item">
+                        <div key={item.id} className="o-product-item">
                           <img
                             src={item.image}
                             alt={item.name}
@@ -189,15 +187,11 @@ export default function Orders() {
                             }}
                           />
                           <p>{item.name} × {item.qty}</p>
-                          <p className="item-brand">{item.brand}</p>
-                          <p className="item-category">{item.category}</p>
-                          <p className="item-sku">SKU: {item.sku}</p>
-                          <p className="item-description">{item.description}</p>
                         </div>
                       ))}
                     </div>
 
-                    <div className="order-actions">
+                    <div className="o-order-actions">
                       <button
                         onClick={() => navigate("/order-details", {
                           state: { orderId: order.id }
@@ -208,7 +202,7 @@ export default function Orders() {
 
                       {order.status !== "Cancelled" && (
                         <button
-                          className="track-btn"
+                          className="o-track-btn"
                           onClick={() => navigate(`/track-package/${order.id}`)}
                         >
                           Track Package
@@ -220,14 +214,14 @@ export default function Orders() {
               ))}
             </div>
 
-            {/* Pagination */}
             {filteredOrders.length > PAGE_SIZE && (
-              <div className="pagination">
+              <div className="o-pagination">
                 {Array.from({ length: Math.ceil(filteredOrders.length / PAGE_SIZE) }, (_, i) => (
                   <button
                     key={i}
-                    className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
+                    className={`o-page-btn ${currentPage === i + 1 ? "o-active" : ""}`}
                     onClick={() => setCurrentPage(i + 1)}
+                    aria-label={`Go to page ${i + 1}`}
                   >
                     {i + 1}
                   </button>

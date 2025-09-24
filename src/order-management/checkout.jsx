@@ -151,7 +151,7 @@ export default function Checkout() {
 
   useEffect(() => {
     if (showAdd) {
-      const firstInput = document.querySelector(".modal-card input");
+      const firstInput = document.querySelector(".o-modal-card input");
       firstInput?.focus();
       const handleEsc = (e) => e.key === "Escape" && setShowAdd(false);
       window.addEventListener("keydown", handleEsc);
@@ -162,17 +162,14 @@ export default function Checkout() {
   const visibleAddresses = addresses.slice(0, 2);
   const extraAddresses = addresses.slice(2);
 
-  return (
-    <div className="checkout-container">
-      {/* Sticky top heading with perfectly centered title */}
-      <div className="checkout-top-row">
-        
-        
-        <div className="top-right"></div>
+    return (
+    <div className="o-checkout-container">
+      <div className="o-checkout-top-row">
+        <div className="o-top-right"></div>
       </div>
 
-      <div className="checkout-main">
-        <div className="checkout-left">
+      <div className="o-checkout-main">
+        <div className="o-checkout-left">
           <AddressList
             addresses={visibleAddresses}
             extraAddresses={extraAddresses}
@@ -182,7 +179,7 @@ export default function Checkout() {
           />
         </div>
 
-        <div className="checkout-right" ref={rightColRef}>
+        <div className="o-checkout-right" ref={rightColRef}>
           <OrderSummary
             addresses={addresses}
             selectedAddressId={selectedAddressId}
@@ -199,8 +196,8 @@ export default function Checkout() {
       </div>
 
       {showAdd && (
-        <div className="modal">
-          <form className="modal-card" onSubmit={handleAddAddress}>
+        <div className="o-modal">
+          <form className="o-modal-card" onSubmit={handleAddAddress}>
             <h4>Add Address</h4>
 
             <input
@@ -246,7 +243,7 @@ export default function Checkout() {
               title="Pincode should be exactly 6 digits"
             />
 
-            <div className="modal-actions">
+            <div className="o-modal-actions">
               <button type="button" onClick={() => setShowAdd(false)}>Cancel</button>
               <button type="submit">Save</button>
             </div>
@@ -255,4 +252,5 @@ export default function Checkout() {
       )}
     </div>
   );
+
 }

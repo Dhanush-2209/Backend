@@ -36,7 +36,6 @@ export default function Register() {
     }
 
     try {
-      // check email
       const r1 = await fetch(`${API}/users?email=${encodeURIComponent(email.trim().toLowerCase())}`);
       const e1 = await r1.json();
       if (e1.length > 0) {
@@ -44,7 +43,6 @@ export default function Register() {
         return;
       }
 
-      // check username
       const r2 = await fetch(`${API}/users?username=${encodeURIComponent(username.trim().toLowerCase())}`);
       const e2 = await r2.json();
       if (e2.length > 0) {
@@ -52,7 +50,6 @@ export default function Register() {
         return;
       }
 
-      // create user with initialized empty arrays
       const payload = {
         username: username.trim().toLowerCase(),
         firstName: firstName.trim(),
@@ -75,7 +72,6 @@ export default function Register() {
 
       if (!resp.ok) throw new Error('Failed to register');
 
-      // show success toast then redirect to login
       setNotif({ message: `Registered successfully as ${payload.username}`, type: 'success', visible: true });
       setTimeout(() => {
         setNotif(v => ({ ...v, visible: false }));
@@ -90,21 +86,22 @@ export default function Register() {
 
   return (
     <>
-      <div className="auth-page container">
-        <div className="register-card">
-          <h2 className="title">Create Your Account</h2>
-          <p className="subtitle">Join us and start shopping smarter</p>
+      <div className="u-auth-page">
+        <div className="u-register-card">
+          <h2 className="u-title">Create Your Account</h2>
+          <p className="u-subtitle">Join us and start shopping smarter</p>
 
-          <form className="reg-form" onSubmit={onSubmit} noValidate>
-            <div className="grid">
+          <form className="u-reg-form" onSubmit={onSubmit} noValidate>
+            <div className="u-grid">
               <div>
                 <label>Username*</label>
                 <input
                   value={username}
                   onChange={e => setUsername(e.target.value)}
                   placeholder="Choose a username"
+                  aria-label="Username"
                 />
-                {errors.username && <div className="field-err">{errors.username}</div>}
+                {errors.username && <div className="u-field-err" aria-live="polite">{errors.username}</div>}
               </div>
 
               <div>
@@ -113,6 +110,7 @@ export default function Register() {
                   value={firstName}
                   onChange={e => setFirst(e.target.value)}
                   placeholder="First name"
+                  aria-label="First name"
                 />
               </div>
 
@@ -122,6 +120,7 @@ export default function Register() {
                   value={lastName}
                   onChange={e => setLast(e.target.value)}
                   placeholder="Last name"
+                  aria-label="Last name"
                 />
               </div>
 
@@ -131,8 +130,9 @@ export default function Register() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="Email"
+                  aria-label="Email"
                 />
-                {errors.email && <div className="field-err">{errors.email}</div>}
+                {errors.email && <div className="u-field-err" aria-live="polite">{errors.email}</div>}
               </div>
 
               <div style={{ gridColumn: '1 / -1' }}>
@@ -142,8 +142,9 @@ export default function Register() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   placeholder="Password (min 6 chars)"
+                  aria-label="Password"
                 />
-                {errors.password && <div className="field-err">{errors.password}</div>}
+                {errors.password && <div className="u-field-err" aria-live="polite">{errors.password}</div>}
               </div>
 
               <div>
@@ -152,15 +153,16 @@ export default function Register() {
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   placeholder="Phone (optional)"
+                  aria-label="Phone"
                 />
               </div>
             </div>
 
-            <div className="auth-actions">
-              <button className="btn primary" type="submit">Register</button>
+            <div className="u-auth-actions">
+              <button className="u-btn-primary" type="submit">Register</button>
             </div>
 
-            <div className="alt-login">
+            <div className="u-alt-login">
               Already shopping with us? <Link to="/login">Sign in here</Link>
             </div>
           </form>

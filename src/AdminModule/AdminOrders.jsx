@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './AdminOrders.css';
 import Sidebar from './Sidebar.jsx';
-import { useAuth } from '../user-authentication/context/AuthContext'; // ✅ import auth context
+import { useAuth } from '../user-authentication/context/AuthContext';
 
 function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -11,9 +11,7 @@ function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState('');
   const ordersPerPage = 5;
 
-  const { user } = useAuth(); // ✅ get logged-in user
-
-  // ✅ build adminProfile dynamically
+  const { user } = useAuth();
   const adminProfile = {
     name: user?.username || user?.name || 'Admin',
     email: user?.email || 'admin@example.com'
@@ -22,54 +20,49 @@ function AdminOrders() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [ordersRes, customersRes] = await Promise.all([
-          fetch('http://localhost:5000/orders'),
-          fetch('http://localhost:5000/customers')
-        ]);
+        const res = await fetch('http://localhost:3001/users');
+        const usersData = await res.json();
 
-        const ordersData = await ordersRes.json();
-        const customersData = await customersRes.json();
+        const allOrders = [];
 
-        const customersMap = new Map(
-          customersData.map(c => {
-            const id = c.id?.toString();
-            const name = `${c.name?.firstname ?? ''} ${c.name?.lastname ?? ''}`.trim() || 'Unnamed';
-            return [id, name];
-          })
-        );
+        usersData.forEach(u => {
+          const userName = `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim() || u.username || 'Unnamed';
 
-        const rawOrders = Array.isArray(ordersData)
-          ? ordersData
-          : Array.isArray(ordersData.orders)
-          ? ordersData.orders
-          : Array.isArray(ordersData.data?.orders)
-          ? ordersData.data.orders
-          : [];
+          if (Array.isArray(u.orders)) {
+            u.orders.forEach(o => {
+              const productsArr = Array.isArray(o.items) ? o.items : o.products;
+              const itemCount = Array.isArray(productsArr)
+                ? productsArr.reduce((sum, p) => sum + (p.qty || p.quantity || 0), 0)
+                : 0;
+              const productNames = Array.isArray(productsArr)
+                ? productsArr.map(p => p.name).join(', ')
+                : '';
 
-        const mapped = rawOrders.map(o => {
-          const customerId = o.customersId?.toString();
-          const customerName = customersMap.get(customerId) ?? 'Unknown';
-          const itemCount = Array.isArray(o.products)
-            ? o.products.reduce((sum, p) => sum + (p.quantity || 0), 0)
-            : 0;
-          const formattedDate = o.orderDate
-            ? new Date(o.orderDate).toLocaleDateString()
-            : new Date().toLocaleDateString();
+              const formattedDate = o.orderedDate
+                ? new Date(o.orderedDate).toLocaleDateString()
+                : new Date().toLocaleDateString();
+              const deliveryDate = o.deliveryDate
+                ? new Date(o.deliveryDate).toLocaleDateString()
+                : '';
 
-          return {
-            id: o.id ?? o._id ?? `ORD-${Math.random().toString(36).slice(2, 8)}`,
-            orderId: o.orderId ?? o.id ?? o._id,
-            customer: customerName,
-            items: itemCount,
-            status: o.status ?? 'Confirmed',
-            date: formattedDate
-          };
+              allOrders.push({
+                id: o.id ?? `ORD-${Math.random().toString(36).slice(2, 8)}`,
+                orderId: o.id ?? o.orderId,
+                user: userName,
+                items: itemCount,
+                products: productNames,
+                status: o.status ?? 'Confirmed',
+                deliveryDate,
+                date: formattedDate
+              });
+            });
+          }
         });
 
-        setOrders(mapped);
+        setOrders(allOrders);
         setLoading(false);
       } catch (err) {
-        console.error('Failed to fetch orders or customers:', err);
+        console.error('Failed to fetch users/orders:', err);
         setError(true);
         setLoading(false);
       }
@@ -78,27 +71,7 @@ function AdminOrders() {
     fetchData();
   }, []);
 
-  const handleStatusChange = (id, newStatus) => {
-    fetch(`http://localhost:5000/orders/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus })
-    })
-      .then(() => {
-        setOrders(prev =>
-          prev.map(o => (o.id === id ? { ...o, status: newStatus } : o))
-        );
-      })
-      .catch(err => console.error('Failed to update order status:', err));
-  };
-
-  const handleCancel = id => {
-    fetch(`http://localhost:5000/orders/${id}`, { method: 'DELETE' })
-      .then(() => {
-        setOrders(prev => prev.filter(o => o.id !== id));
-      })
-      .catch(err => console.error('Failed to cancel order:', err));
-  };
+  const uniqueStatuses = Array.from(new Set(orders.map(o => o.status))).filter(Boolean);
 
   const filteredOrders = statusFilter
     ? orders.filter(o => o.status === statusFilter)
@@ -109,17 +82,16 @@ function AdminOrders() {
   const currentOrders = filteredOrders.slice(indexOfFirst, indexOfFirst + ordersPerPage);
 
   return (
-    <div className="admin-orders-wrapper">
-      {/* ✅ Sidebar now gets dynamic adminProfile */}
+    <div className="a-admin-orders-wrapper">
       <Sidebar adminProfile={adminProfile} />
-      <div className="orders-main">
-        <div className="admin-orders">
-          <div className="orders-header">
+      <div className="a-orders-main">
+        <div className="a-admin-orders">
+          <div className="a-orders-header">
             <h2>Order Management</h2>
           </div>
 
-          <div className="table-container">
-            <div className="filter-controls">
+          <div className="a-table-container">
+            <div className="a-filter-controls">
               <label htmlFor="statusFilter">Filter by Status:</label>
               <select
                 id="statusFilter"
@@ -130,32 +102,30 @@ function AdminOrders() {
                 }}
               >
                 <option value="">All</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Shipping">Shipping</option>
-                <option value="Shipped">Shipped</option>
-                <option value="Delivered">Delivered</option>
-                <option value="Cancelled">Cancelled</option>
+                {uniqueStatuses.map(status => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
               </select>
             </div>
 
             {loading ? (
-              <p className="loading-text">Loading orders...</p>
+              <p className="a-loading-text">Loading orders...</p>
             ) : error ? (
-              <p className="error-text">Failed to load orders.</p>
+              <p className="a-error-text">Failed to load orders.</p>
             ) : currentOrders.length === 0 ? (
-              <p className="empty-text">No orders found.</p>
+              <p className="a-empty-text">No orders found.</p>
             ) : (
               <>
-                <table className="orders-table">
+                <table className="a-orders-table">
                   <thead>
                     <tr>
                       <th>Sno</th>
                       <th>Order ID</th>
-                      <th>Customer</th>
+                      <th>User</th>
+                      <th>Products</th>
                       <th>Items</th>
                       <th>Status</th>
-                      <th>Date</th>
-                      <th>Actions</th>
+                      <th>Delivery Date</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -163,34 +133,19 @@ function AdminOrders() {
                       <tr key={o.id}>
                         <td>{indexOfFirst + i + 1}</td>
                         <td>{o.orderId}</td>
-                        <td>{o.customer}</td>
+                        <td>{o.user}</td>
+                        <td>{o.products}</td>
                         <td>{o.items}</td>
-                        <td>
-                          <select
-                            value={o.status}
-                            onChange={e => handleStatusChange(o.id, e.target.value)}
-                          >
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Shipping">Shipping</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
-                          </select>
-                        </td>
-                        <td>{o.date}</td>
-                        <td>
-                          <button className="delete-btn" onClick={() => handleCancel(o.id)}>
-                            Cancel
-                          </button>
-                        </td>
+                        <td>{o.status}</td>
+                        <td>{o.deliveryDate}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
 
-                <div className="pagination">
+                <div className="a-pagination">
                   <button
-                    className="page-btn arrow"
+                    className="a-page-btn a-arrow"
                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
                   >
@@ -199,14 +154,14 @@ function AdminOrders() {
                   {Array.from({ length: totalPages }, (_, i) => (
                     <button
                       key={i}
-                      className={`page-btn ${currentPage === i + 1 ? 'active' : ''}`}
+                      className={`a-page-btn ${currentPage === i + 1 ? 'a-active' : ''}`}
                       onClick={() => setCurrentPage(i + 1)}
                     >
                       {i + 1}
                     </button>
                   ))}
                   <button
-                    className="page-btn arrow"
+                    className="a-page-btn a-arrow"
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                     disabled={currentPage === totalPages}
                   >

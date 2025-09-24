@@ -15,6 +15,8 @@ export default function Header({ minimal = false }) {
   const pathname = location.pathname;
   const isAuthPage = pathname === '/login' || pathname === '/register';
 
+  if (user?.isAdmin) return null;
+
   let minimalHeading = '';
   if (pathname.startsWith('/checkout')) minimalHeading = '🧾 Review & Confirm';
   else if (pathname.startsWith('/payment')) minimalHeading = '💳 Secure Payment';
@@ -81,27 +83,27 @@ export default function Header({ minimal = false }) {
   }
 
   return (
-    <header className="site-header">
-      <div className="container header-inner">
+    <header className="u-site-header">
+      <div className="u-header-inner">
         {/* Left: Logo */}
-        <div className="left">
-          <Link to="/" className="logo" aria-label="Home">
-            <svg className="logo-icon" width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden>
-              <rect x="3" y="7" width="18" height="13" rx="2" fill="#5e66e7"/>
+        <div className="u-left">
+          <Link to="/" className="u-logo" aria-label="Home">
+            <svg className="u-logo-icon" width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <rect x="3" y="7" width="18" height="13" rx="2" fill="#5e66e7" />
               <path d="M3 7l9-4 9 4" stroke="#fff" strokeWidth="0.8" />
             </svg>
-            <span className="brand">E4Everything</span>
+            <span className="u-brand">E4Everything</span>
           </Link>
         </div>
 
         {minimal ? (
           <>
-            <div className="center-nav minimal-heading">
+            <div className="u-center-nav u-minimal-heading">
               {minimalHeading}
             </div>
-            <div className="top-right-return">
+            <div className="u-top-right-return">
               {pathname === '/checkout' && (
-                <button className="return-btn" onClick={() => navigate('/cart')}>
+                <button className="u-return-btn" onClick={() => navigate('/cart')}>
                   ← Return to Cart
                 </button>
               )}
@@ -109,55 +111,55 @@ export default function Header({ minimal = false }) {
           </>
         ) : isAuthPage ? (
           <>
-            <div className="center-nav auth-heading">
+            <div className="u-center-nav u-auth-heading">
               {pathname === '/login' ? 'Welcome Back' : 'Join Us'}
             </div>
 
-            <div className="right auth-links">
-              <Link to="/" className="nav-link">Home</Link>
+            <div className="u-right u-auth-links">
+              <Link to="/" className="u-nav-link">Home</Link>
               {pathname === '/login' ? (
-                <Link to="/register" className="nav-link">Register</Link>
+                <Link to="/register" className="u-nav-link">Register</Link>
               ) : (
-                <Link to="/login" className="nav-link">Login</Link>
+                <Link to="/login" className="u-nav-link">Login</Link>
               )}
             </div>
           </>
         ) : (
           <>
-            <nav className="center-nav">
-              <HashLink smooth to="/#deals" className="nav-link">Deals of the Day</HashLink>
-              <HashLink smooth to="/#new-arrivals" className="nav-link">New Arrivals</HashLink>
-              <Link to="/shop" className="nav-link">Shop</Link>
+            <nav className="u-center-nav">
+              <HashLink smooth to="/#deals" className="u-nav-link">Deals of the Day</HashLink>
+              <HashLink smooth to="/#new-arrivals" className="u-nav-link">New Arrivals</HashLink>
+              <Link to="/shop" className="u-nav-link">Shop</Link>
             </nav>
 
-            <div className="right" ref={containerRef}>
-              <button className="icon-btn with-label" title="Wishlist" onClick={handleWishlistClick} aria-label="Wishlist">
+            <div className="u-right" ref={containerRef}>
+              <button className="u-icon-btn u-with-label" title="Wishlist" onClick={handleWishlistClick} aria-label="Wishlist">
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" fill="none" stroke="#374151" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" fill="none" stroke="#374151" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <span className="icon-label">Wishlist</span>
+                <span className="u-icon-label">Wishlist</span>
               </button>
 
-              <button className="icon-btn with-label" title="Cart" onClick={handleCartClick} aria-label="Cart">
+              <button className="u-icon-btn u-with-label" title="Cart" onClick={handleCartClick} aria-label="Cart">
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
-                  <path d="M7 4h-2l-1 2h2l3.6 7.59-1.35 2.44A1 1 0 0 0 9.1 18h8.45a1 1 0 0 0 .92-.62L22 8H6.21" fill="none" stroke="#374151" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M7 4h-2l-1 2h2l3.6 7.59-1.35 2.44A1 1 0 0 0 9.1 18h8.45a1 1 0 0 0 .92-.62L22 8H6.21" fill="none" stroke="#374151" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <span className="icon-label">Cart</span>
+                <span className="u-icon-label">Cart</span>
               </button>
 
               {user && (
-                <button className="icon-btn with-label" title="Orders" onClick={handleOrdersClick} aria-label="Orders">
+                <button className="u-icon-btn u-with-label" title="Orders" onClick={handleOrdersClick} aria-label="Orders">
                   <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
-                    <path d="M3 6h18M3 12h18M3 18h18" stroke="#374151" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M3 6h18M3 12h18M3 18h18" stroke="#374151" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <span className="icon-label">Orders</span>
+                  <span className="u-icon-label">Orders</span>
                 </button>
               )}
 
-              <div className="account-wrap">
-                <div className="account">
+              <div className="u-account-wrap">
+                <div className="u-account">
                   <button
-                    className={`account-button ${user ? 'direct' : ''}`}
+                    className={`u-account-button ${user ? 'u-direct' : ''}`}
                     aria-haspopup={!user}
                     aria-expanded={open}
                     onClick={handleAccountClick}
@@ -167,24 +169,24 @@ export default function Header({ minimal = false }) {
                       <path d="M4 20c0-4 3.6-6 8-6s8 2 8 6" fill="#374151" />
                     </svg>
 
-                    <span className="account-name">{user ? user.username : 'Account'}</span>
+                    <span className="u-account-name">{user ? user.username : 'Account'}</span>
 
-                    <svg className={`chev ${open ? 'open' : ''}`} width="12" height="12" viewBox="0 0 24 24" aria-hidden>
-                      <path d="M6 9l6 6 6-6" stroke="#374151" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                    <svg className={`u-chev ${open ? 'u-open' : ''}`} width="12" height="12" viewBox="0 0 24 24" aria-hidden>
+                      <path d="M6 9l6 6 6-6" stroke="#374151" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
 
                   {!user && (
-                    <div className={`dropdown ${open ? 'show' : ''}`} role="menu" aria-hidden={!open}>
-                      <Link className="drop-link" to="/login" onClick={() => setOpen(false)}>Login</Link>
-                      <Link className="drop-link" to="/register" onClick={() => setOpen(false)}>Register</Link>
+                    <div className={`u-dropdown ${open ? 'u-show' : ''}`} role="menu" aria-hidden={!open}>
+                      <Link className="u-drop-link" to="/login" onClick={() => setOpen(false)}>Login</Link>
+                      <Link className="u-drop-link" to="/register" onClick={() => setOpen(false)}>Register</Link>
                     </div>
                   )}
                 </div>
 
                 {user && (
-                  <button className="btn-logout" onClick={handleLogout} title="Logout">Logout</button>
-                )}
+                  <button className="u-btn-logout" onClick={handleLogout} title="Logout">Logout</button>
+                                )}
               </div>
             </div>
           </>

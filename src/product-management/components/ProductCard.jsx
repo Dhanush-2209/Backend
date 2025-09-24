@@ -4,6 +4,7 @@ import { useCart } from "../../user-authentication/context/CartContext";
 import { useWishlist } from "../../user-authentication/context/WishlistContext";
 import { useAuth } from "../../user-authentication/context/AuthContext";
 import Notification from "../../user-authentication/components/Notification/Notification";
+import "./ProductCard.css";
 
 const ProductCard = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -70,12 +71,11 @@ const ProductCard = ({ product }) => {
   return (
     <>
       <div
-        className="relative bg-white border border-gray-100 rounded-xl shadow-sm flex flex-col justify-between h-full group 
-                   transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1"
+        className={`p-product-card ${isHovered ? "hovered" : ""}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="image-container relative w-full h-48 flex items-center justify-center mb-4 overflow-hidden rounded-t-lg">
+        <div className="p-image-container">
           <img
             src={
               isHovered && product.images?.[0]
@@ -83,21 +83,14 @@ const ProductCard = ({ product }) => {
                 : product.thumbnail
             }
             alt={product.title}
-            className="max-h-full max-w-full object-contain 
-                       transition-transform duration-500 ease-in-out group-hover:scale-110"
+            className="p-product-image"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent
-                          opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-center items-center space-x-3
-                          transform translate-y-full group-hover:translate-y-0 
-                          transition-transform duration-500 ease-in-out">
+          <div className="p-image-overlay" />
+          <div className="p-action-buttons">
             <button
               onClick={handleAddToCart}
               disabled={inCart}
-              className={`bg-white text-secondary p-3 rounded-full shadow-lg transform
-                         hover:scale-110 transition-all duration-200 ${
-                           inCart ? "opacity-50 cursor-not-allowed" : "hover:opacity-50"
-                         }`}
+              className={`p-icon-button ${inCart ? "disabled" : ""}`}
               title={inCart ? "Already in Cart" : "Add to Cart"}
             >
               <ShoppingCart size={18} />
@@ -105,10 +98,7 @@ const ProductCard = ({ product }) => {
             <button
               onClick={handleAddToWishlist}
               disabled={inWishlist}
-              className={`bg-white text-secondary p-3 rounded-full shadow-lg transform
-                         hover:scale-110 transition-all duration-200 ${
-                           inWishlist ? "opacity-50 cursor-not-allowed" : "hover:opacity-50"
-                         }`}
+              className={`p-icon-button ${inWishlist ? "disabled" : ""}`}
               title={inWishlist ? "Already in Wishlist" : "Add to Wishlist"}
             >
               <Heart size={18} />
@@ -116,18 +106,14 @@ const ProductCard = ({ product }) => {
           </div>
         </div>
 
-        <div className="text-left p-4 pt-0 flex-grow flex flex-col">
-          <div className="flex justify-between items-center w-full mb-1">
-            <p className="text-sm text-gray-500">{product.category}</p>
-            <div className="flex items-center">
+        <div className="p-product-info">
+          <div className="p-product-meta">
+            <p className="p-category">{product.category}</p>
+            <div className="p-rating">
               {[...Array(5)].map((_, i) => (
                 <svg
                   key={i}
-                  className={`w-4 h-4 ${
-                    i < Math.round(product.rating)
-                      ? "text-yellow-400"
-                      : "text-gray-300"
-                  }`}
+                  className={`p-star ${i < Math.round(product.rating) ? "filled" : ""}`}
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -137,35 +123,23 @@ const ProductCard = ({ product }) => {
             </div>
           </div>
 
-          <h3 className="text-md font-semibold text-secondary line-clamp-2 my-1 h-12">
-            {product.title}
-          </h3>
+          <h3 className="p-title">{product.title}</h3>
 
-          <div className="flex justify-between items-end mt-auto">
-            <div>
-              <span className="text-lg font-bold text-slate-900 tracking-tight">
-                ₹{product.price}
-              </span>
-            </div>
-
+          <div className="p-price-stock">
+            <span className="p-price">₹{product.price}</span>
             {product.stock > 0 ? (
               product.stock <= 10 ? (
-                <span className="text-sm text-yellow-500">
-                  only {product.stock} left
-                </span>
+                <span className="p-stock-warning">only {product.stock} left</span>
               ) : (
-                <span className="text-sm text-gray-500">
-                  {product.stock} {product.unit || "in stock"}
-                </span>
+                <span className="p-stock">{product.stock} {product.unit || "in stock"}</span>
               )
             ) : (
-              <span className="text-sm font-bold text-red-500">Out Of Stock</span>
+              <span className="p-out-of-stock">Out Of Stock</span>
             )}
           </div>
         </div>
       </div>
 
-      {/* Notification */}
       <Notification message={notif.message} type={notif.type} visible={notif.visible} />
     </>
   );

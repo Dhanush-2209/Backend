@@ -1,21 +1,21 @@
 import React from 'react';
 import './Footer.css';
 
-export default function Footer(){
+export default function Footer() {
   return (
-    <footer className="site-footer">
-      <div className="container footer-inner">
-        <div className="col brand-col">
-          <div className="brand-row">
-            <div className="logoSquare" />
+    <footer className="u-site-footer">
+      <div className="u-footer-inner">
+        <div className="u-col u-brand-col">
+          <div className="u-brand-row">
+            <div className="u-logo-square" />
             <div>
-              <div className="footer-brand">E4Everything</div>
-              <div className="footer-sub">Empowering merchants with great tooling.</div>
+              <div className="u-footer-brand">E4Everything</div>
+              <div className="u-footer-sub">Empowering merchants with great tooling.</div>
             </div>
           </div>
         </div>
 
-        <div className="col links-col">
+        <div className="u-col u-links-col">
           <h4>Explore</h4>
           <nav>
             <a href="/">Homepage</a>
@@ -25,15 +25,17 @@ export default function Footer(){
           </nav>
         </div>
 
-        <div className="col contact-col">
+        <div className="u-col u-contact-col">
           <h4>Contact</h4>
-          <div className="contact-item">
-            <strong>Email:</strong> <a href="mailto:support@example.com">support@cognizant.com</a>
+          <div className="u-contact-item">
+            <strong>Email:</strong>{' '}
+            <a href="mailto:support@example.com">support@cognizant.com</a>
           </div>
-          <div className="contact-item">
-            <strong>Phone:</strong> <a href="tel:+11234567890">+91 9876543210</a>
+          <div className="u-contact-item">
+            <strong>Phone:</strong>{' '}
+            <a href="tel:+11234567890">+91 9876543210</a>
           </div>
-          <div className="socials">
+          <div className="u-socials">
             <a aria-label="Facebook" href="https://facebook.com" target="_blank" rel="noreferrer">Fb</a>
             <a aria-label="X" href="https://twitter.com" target="_blank" rel="noreferrer">X</a>
             <a aria-label="LinkedIn" href="https://linkedin.com" target="_blank" rel="noreferrer">In</a>
@@ -42,7 +44,7 @@ export default function Footer(){
         </div>
       </div>
 
-      <div className="copyright">
+      <div className="u-copyright">
         © {new Date().getFullYear()} E4Everything. All rights reserved. · Built with care.
       </div>
     </footer>

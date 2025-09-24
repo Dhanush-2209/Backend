@@ -192,59 +192,57 @@ export default function Payment() {
   }
 
   return (
-    <div className="payment-container">
-      <div className="payment-top-row">
-        
-        
-        <div className="top-right"></div>
-      </div>
-
-      <div className="payment-main">
-        <PaymentOptions
-          paymentMethod={paymentMethod}
-          setPaymentMethod={setPaymentMethod}
-          paymentDetails={paymentDetails}
-          selectedCardIndex={selectedCardIndex}
-          setSelectedCardIndex={setSelectedCardIndex}
-          showCardModal={showCardModal}
-          setShowCardModal={setShowCardModal}
-          showUpiModal={showUpiModal}
-          setShowUpiModal={setShowUpiModal}
-          newCard={newCard}
-          setNewCard={setNewCard}
-          handleSaveCard={handleSaveCard}
-          handleExpiryChange={handleExpiryChange}
-          upiId={upiId}
-          setUpiId={setUpiId}
-          handleVerifyUpi={handleVerifyUpi}
-        />
-
-        <OrderRecap
-          orderData={orderData}
-          canPay={canPay}
-          isProcessing={isProcessing}
-          payNowLabel={payNowLabel}
-          handlePayNow={() => setShowConfirmModal(true)}
-          paymentMethod={paymentMethod}
-          navigate={navigate}
-                    upiVerified={upiVerified}
-          upiId={upiId}
-          selectedCardIndex={selectedCardIndex}
-          paymentDetails={paymentDetails}
-        />
-      </div>
-
-      {showConfirmModal && (
-        <ConfirmModal
-          orderData={orderData}
-          paymentMethod={paymentMethod}
-          upiId={upiId}
-          selectedCardIndex={selectedCardIndex}
-          paymentDetails={paymentDetails}
-          onConfirm={handlePayNow}
-          onCancel={() => setShowConfirmModal(false)}
-        />
-      )}
+  <div className="o-payment-container">
+    <div className="o-payment-top-row">
+      <div className="o-top-right"></div>
     </div>
-  );
+
+    <div className="o-payment-main">
+      <PaymentOptions
+        paymentMethod={paymentMethod}
+        setPaymentMethod={setPaymentMethod}
+        paymentDetails={paymentDetails}
+        selectedCardIndex={selectedCardIndex}
+        setSelectedCardIndex={setSelectedCardIndex}
+        showCardModal={showCardModal}
+        setShowCardModal={setShowCardModal}
+        showUpiModal={showUpiModal}
+        setShowUpiModal={setShowUpiModal}
+        newCard={newCard}
+        setNewCard={setNewCard}
+        handleSaveCard={handleSaveCard}
+        handleExpiryChange={handleExpiryChange}
+        upiId={upiId}
+        setUpiId={setUpiId}
+        handleVerifyUpi={handleVerifyUpi}
+      />
+
+      <OrderRecap
+        orderData={orderData}
+        canPay={canPay}
+        isProcessing={isProcessing}
+        payNowLabel={payNowLabel}
+        handlePayNow={() => setShowConfirmModal(true)}
+        paymentMethod={paymentMethod}
+        navigate={navigate}
+        upiVerified={upiVerified}
+        upiId={upiId}
+        selectedCardIndex={selectedCardIndex}
+        paymentDetails={paymentDetails}
+      />
+    </div>
+
+    {showConfirmModal && (
+      <ConfirmModal
+        orderData={orderData}
+        paymentMethod={paymentMethod}
+        upiId={upiId}
+        selectedCardIndex={selectedCardIndex}
+        paymentDetails={paymentDetails}
+        onConfirm={handlePayNow}
+        onCancel={() => setShowConfirmModal(false)}
+      />
+    )}
+  </div>
+);
 }

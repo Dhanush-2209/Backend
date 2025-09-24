@@ -6,7 +6,7 @@
 }
 
 /* Wrapper Layout */
-.admin-customer-wrapper {
+.a-admin-user-wrapper {
   display: flex;
   height: 100vh;
   width: 100%;
@@ -14,11 +14,10 @@
   overflow: hidden;
 }
 
-/* Sidebar */
-
+/* Sidebar — assumed to be styled separately as .a-sidebar */
 
 /* Main Content Area */
-.customer-main {
+.a-user-main {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -27,7 +26,7 @@
 }
 
 /* Admin Container */
-.admin-customer {
+.a-admin-user {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -35,23 +34,24 @@
 }
 
 /* Controls */
-.product-controls {
+.a-product-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
+
 /* Search Bar Container */
-.search-bar {
+.a-search-bar {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  max-width: 900px; /* Increased from 600px */
-  margin:20px;
+  max-width: 900px;
+  margin: 20px;
 }
 
-.search-bar input {
+.a-search-bar input {
   flex: 1;
   padding: 10px 20px;
   font-size: 1rem;
@@ -63,15 +63,14 @@
   transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.search-bar input:focus {
+.a-search-bar input:focus {
   border-color: #0077cc;
   box-shadow: 0 0 6px rgba(0, 119, 204, 0.3);
 }
 
-
-
-.top-add-btn {
-  margin:5px;
+/* Add Button */
+.a-top-add-btn {
+  margin: 5px;
   padding: 10px;
   background-color: #1e90ff;
   color: white;
@@ -81,12 +80,12 @@
   cursor: pointer;
 }
 
-.top-add-btn:hover {
+.a-top-add-btn:hover {
   background-color: #0077cc;
 }
 
-/* Table */
-.product-table {
+/* Product Table */
+.a-product-table {
   width: 100%;
   border-collapse: collapse;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -97,7 +96,7 @@
   overflow-x: auto;
 }
 
-.product-table th {
+.a-product-table th {
   background-color: #f0f2f5;
   font-weight: 600;
   padding: 0.75rem;
@@ -106,26 +105,26 @@
   border-bottom: 2px solid #e0e0e0;
 }
 
-.product-table td {
+.a-product-table td {
   padding: 0.75rem;
   color: #555;
   border-bottom: 1px solid #eee;
 }
 
-.product-table tr:hover {
+.a-product-table tr:hover {
   background-color: #fafafa;
   transition: background-color 0.2s ease-in-out;
 }
 
 /* Pagination */
-.pagination {
+.a-pagination {
   display: flex;
   justify-content: center;
   margin-top: 20px;
   gap: 8px;
 }
 
-.page-btn {
+.a-page-btn {
   padding: 6px 12px;
   border: 1px solid #ccc;
   background-color: #fff;
@@ -136,22 +135,22 @@
   transition: background-color 0.2s ease;
 }
 
-.page-btn:hover {
+.a-page-btn:hover {
   background-color: #f0f0f0;
 }
 
-.page-btn.active {
+.a-page-btn.a-active {
   background-color: #1e90ff;
   color: white;
   border-color: #1e90ff;
 }
 
-.page-btn.arrow {
+.a-page-btn.a-arrow {
   font-weight: bold;
 }
 
 /* Modal Overlay */
-.modal-overlay {
+.a-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -165,7 +164,7 @@
 }
 
 /* Modal Content */
-.modal-content {
+.a-modal-content {
   background-color: white;
   padding: 30px;
   border-radius: 8px;
@@ -173,51 +172,53 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.modal-content h3 {
+.a-modal-content h3 {
   margin-bottom: 20px;
   font-size: 1.2rem;
   color: #333;
 }
 
 /* Form */
-.add-product-form input {
+.a-add-product-form input,
+.a-add-product-form textarea {
   width: 100%;
   padding: 8px 10px;
   margin-bottom: 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.95rem;
+  resize: vertical;
 }
 
 /* Star Rating */
-.star-rating {
+.a-star-rating {
   display: flex;
   justify-content: center;
   margin-bottom: 16px;
 }
 
-.star-rating label {
+.a-star-rating label {
   cursor: pointer;
   font-size: 1.2rem;
   margin: 0 4px;
 }
 
-.star-rating input {
+.a-star-rating input {
   display: none;
 }
 
-.star-rating .filled {
+.a-star-rating .a-filled {
   color: gold;
 }
 
 /* Modal Actions */
-.modal-actions {
+.a-modal-actions {
   display: flex;
   justify-content: space-between;
   gap: 10px;
 }
 
-.modal-actions button {
+.a-modal-actions button {
   flex: 1;
   padding: 8px 12px;
   font-size: 0.9rem;
@@ -226,17 +227,17 @@
   cursor: pointer;
 }
 
-.modal-actions button[type="submit"] {
+.a-modal-actions button[type="submit"] {
   background-color: #28a745;
   color: white;
 }
 
-.modal-actions button[type="button"]:first-of-type {
+.a-modal-actions button[type="button"]:first-of-type {
   background-color: #dc3545;
   color: white;
 }
 
-.modal-actions button[type="button"]:last-of-type {
+.a-modal-actions button[type="button"]:last-of-type {
   background-color: #6c757d;
   color: white;
 }

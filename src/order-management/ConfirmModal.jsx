@@ -20,12 +20,12 @@ export default function ConfirmModal({
     return "Not selected";
   };
 
-  return (
-    <div className="confirm-modal">
-      <div className="confirm-card">
+    return (
+    <div className="o-confirm-modal">
+      <div className="o-confirm-card">
         <h3>Confirm Your Order</h3>
 
-        <div className="confirm-section">
+        <div className="o-confirm-section">
           <strong>Delivery Address:</strong>
           <p>
             {orderData.address.line}, {orderData.address.city} -{" "}
@@ -33,12 +33,12 @@ export default function ConfirmModal({
           </p>
         </div>
 
-        <div className="confirm-section">
+        <div className="o-confirm-section">
           <strong>Delivery Date:</strong>
           <p>{orderData.deliveryDate}</p>
         </div>
 
-        <div className="confirm-section">
+        <div className="o-confirm-section">
           <strong>Items:</strong>
           <ul>
             {orderData.items.map((item) => (
@@ -49,16 +49,16 @@ export default function ConfirmModal({
           </ul>
         </div>
 
-        <div className="confirm-section">
+        <div className="o-confirm-section">
           <strong>Total:</strong> ₹{orderData.total}
         </div>
 
-        <div className="confirm-section">
+        <div className="o-confirm-section">
           <strong>Payment Method:</strong>
           <p>{paymentSummary()}</p>
         </div>
 
-        <div className="confirm-actions">
+        <div className="o-confirm-actions">
           <button onClick={onCancel}>Cancel</button>
           <button onClick={onConfirm}>Confirm & Pay</button>
         </div>

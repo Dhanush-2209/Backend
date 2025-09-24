@@ -28,96 +28,93 @@ export default function OrderSummary({
   const dropdownDates = hasChangedDate ? availableDates : availableDates.slice(1);
 
   return (
-    <>
-      {selectedAddress && (
-        <div className="checkout-card">
-          <h3>Selected Delivery Address</h3>
-          <div className="selected-addr">
-            <p>
-              <strong>{selectedAddress.name}</strong> • {selectedAddress.phone}
-            </p>
-            <p>
-              {selectedAddress.line}, {selectedAddress.city} - {selectedAddress.pincode}
-            </p>
-          </div>
+  <>
+    {selectedAddress && (
+      <div className="o-checkout-card">
+        <h3>Selected Delivery Address</h3>
+        <div className="o-selected-addr">
+          <p>
+            <strong>{selectedAddress.name}</strong> • {selectedAddress.phone}
+          </p>
+          <p>
+            {selectedAddress.line}, {selectedAddress.city} - {selectedAddress.pincode}
+          </p>
+        </div>
 
-          {/* Estimated Date with Change button */}
-          <div className="estimated-date">
-            <span>
-              <strong>Estimated Delivery Date:</strong>{" "}
-              <span className="default-date">
-                {selectedLabel}
-                <span className="date-status">
-                  {isDefaultDate
-                    ? " (Default)"
-                    : ` (delayed by ${delayDays} day${delayDays > 1 ? "s" : ""})`}
-                </span>
+        <div className="o-estimated-date">
+          <span>
+            <strong>Estimated Delivery Date:</strong>{" "}
+            <span className="o-default-date">
+              {selectedLabel}
+              <span className="o-date-status" aria-live="polite">
+                {isDefaultDate
+                  ? " (Default)"
+                  : ` (delayed by ${delayDays} day${delayDays > 1 ? "s" : ""})`}
               </span>
             </span>
-            <button
-              className="change-date-btn"
-              aria-label="Change estimated delivery date"
-              onClick={() => setShowDateDropdown(!showDateDropdown)}
-            >
-              {showDateDropdown ? "Close" : "Change"}
-            </button>
-          </div>
-
-          {/* Dropdown */}
-          <div className={`delay-section ${showDateDropdown ? "open" : ""}`}>
-            {showDateDropdown && (
-              <select
-                id="delayDate"
-                aria-label="Select a different delivery date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-              >
-                {dropdownDates.map((d) => (
-                  <option key={d.value} value={d.value}>
-                    {d.label}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
+          </span>
+          <button
+            className="o-change-date-btn"
+            aria-label="Change estimated delivery date"
+            onClick={() => setShowDateDropdown(!showDateDropdown)}
+          >
+            {showDateDropdown ? "Close" : "Change"}
+          </button>
         </div>
-      )}
 
-      {/* Order Summary */}
-      <div className="checkout-card">
-        <h3>Order Summary</h3>
-        <div className="items-list">
-          {cartItems.map((it) => (
-            <div
-              className="item-row"
-              key={it.id}
-              aria-label={`${it.name}, quantity ${it.qty}, price ₹${(it.price * it.qty).toFixed(2)}`}
+        <div className={`o-delay-section ${showDateDropdown ? "o-open" : ""}`}>
+          {showDateDropdown && (
+            <select
+              id="delayDate"
+              aria-label="Select a different delivery date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
             >
-              <div>{it.name} x{it.qty}</div>
-              <div>₹{(it.price * it.qty).toFixed(2)}</div>
-            </div>
-          ))}
-        </div>
-        <div className="total pulse-on-hover">
-          Total: ₹{calcTotal().toFixed(2)}
+              {dropdownDates.map((d) => (
+                <option key={d.value} value={d.value}>
+                  {d.label}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
+    )}
 
-      <button
-        className="proceed-btn"
-        onClick={onProceed}
-        disabled={!selectedAddressId || !selectedDate}
-        aria-disabled={!selectedAddressId || !selectedDate}
-        title={
-          !selectedAddressId
-            ? "Please select a delivery address"
-            : !selectedDate
-            ? "Please select a delivery date"
-            : "Proceed to payment"
-        }
-      >
-        Proceed to Payment
-      </button>
-    </>
-  );
+    <div className="o-checkout-card">
+      <h3>Order Summary</h3>
+      <div className="o-items-list">
+        {cartItems.map((it) => (
+          <div
+            className="o-item-row"
+            key={it.id}
+            aria-label={`${it.name}, quantity ${it.qty}, price ₹${(it.price * it.qty).toFixed(2)}`}
+          >
+            <div>{it.name} x{it.qty}</div>
+            <div>₹{(it.price * it.qty).toFixed(2)}</div>
+          </div>
+        ))}
+      </div>
+      <div className="o-total o-pulse-on-hover">
+        Total: ₹{calcTotal().toFixed(2)}
+      </div>
+    </div>
+
+    <button
+      className="o-proceed-btn"
+      onClick={onProceed}
+      disabled={!selectedAddressId || !selectedDate}
+      aria-disabled={!selectedAddressId || !selectedDate}
+      title={
+        !selectedAddressId
+          ? "Please select a delivery address"
+          : !selectedDate
+          ? "Please select a delivery date"
+          : "Proceed to payment"
+      }
+    >
+      Proceed to Payment
+    </button>
+  </>
+);
 }

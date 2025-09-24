@@ -1,4 +1,3 @@
-// src/user-authentication/pages/Login/Login.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -17,7 +16,6 @@ export default function Login() {
   const navigate = useNavigate();
   const { user, login, redirectPath, setRedirectPath } = useAuth();
 
-  // 🚦 If already logged in, don’t allow staying on login page
   useEffect(() => {
     if (user) {
       if (user.isAdmin) {
@@ -69,13 +67,11 @@ export default function Login() {
       }
 
       const u = data[0];
-      login(u); // set user in context
+      login(u);
       setNotif({ message: `Welcome back, ${u.username}`, type: 'success', visible: true });
 
       setTimeout(() => {
         setNotif(v => ({ ...v, visible: false }));
-
-        // ✅ redirect logic
         if (u.isAdmin) {
           navigate('/admin', { replace: true });
           setRedirectPath(null);
@@ -96,12 +92,12 @@ export default function Login() {
 
   return (
     <>
-      <div className="auth-page container">
-        <div className="auth-card">
-          <h2 className="title">Log <span>In</span></h2>
-          <p className="subtitle">Sign in with your email or username</p>
+      <div className="u-auth-page">
+        <div className="u-auth-card">
+          <h2 className="u-title">Log <span>In</span></h2>
+          <p className="u-subtitle">Sign in with your email or username</p>
 
-          <form className="auth-form" onSubmit={onSubmit} noValidate>
+          <form className="u-auth-form" onSubmit={onSubmit} noValidate>
             <label>Email or Username*</label>
             <input
               value={identifier}
@@ -109,8 +105,9 @@ export default function Login() {
               placeholder="Email or username"
               type="text"
               autoComplete="username"
+              aria-label="Email or username"
             />
-            {errors.identifier && <div className="field-err">{errors.identifier}</div>}
+            {errors.identifier && <div className="u-field-err" aria-live="polite">{errors.identifier}</div>}
 
             <label>Password*</label>
             <input
@@ -119,18 +116,19 @@ export default function Login() {
               placeholder="Enter Your Password"
               type="password"
               autoComplete="current-password"
+              aria-label="Password"
             />
-            {errors.password && <div className="field-err">{errors.password}</div>}
+            {errors.password && <div className="u-field-err" aria-live="polite">{errors.password}</div>}
 
-            <div className="forgot-wrap">
-              <Link to="#" className="link small">Forgot your password?</Link>
+            <div className="u-forgot-wrap">
+              <Link to="#" className="u-link-small">Forgot your password?</Link>
             </div>
 
-            <div className="auth-actions" style={{ marginTop: 12 }}>
-              <button className="btn primary" type="submit" disabled={loading}>
+            <div className="u-auth-actions">
+              <button className="u-btn-primary" type="submit" disabled={loading}>
                 {loading ? 'Logging in...' : 'Login'}
               </button>
-              <span className="alt-register">
+              <span className="u-alt-register">
                 New to our store? <Link to="/register">Create your account</Link>
               </span>
             </div>

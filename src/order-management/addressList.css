@@ -1,12 +1,10 @@
-/* ===== Address list layout ===== */
-.addresses {
+.o-addresses {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-/* ===== Individual address card ===== */
-.addr-card {
+.o-addr-card {
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -18,55 +16,59 @@
   transition: all 0.3s ease-in-out, transform 0.25s ease;
   opacity: 0;
   transform: translateY(10px);
-  animation: fadeInUp 0.4s forwards;
+  animation: o-fadeInUp 0.4s forwards;
 }
 
-@keyframes fadeInUp {
+@keyframes o-fadeInUp {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.addr-card:hover {
+.o-addr-card:hover {
   box-shadow: 0 12px 28px rgba(95,106,242,0.1);
   background: linear-gradient(90deg, #f5f5ff, #eaeaff);
 }
 
-.addr-card.selected {
+.o-addr-card.o-selected {
   border-color: #dfe7ff;
   background: #f9f9ff;
   box-shadow: 0 10px 28px rgba(95,106,242,0.16);
   transform: scale(1.02);
 }
 
-.addr-card input[type="radio"] {
+.o-addr-card input[type="radio"] {
   margin-top: 6px;
+  accent-color: #5f6af2;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  appearance: auto;
 }
 
-.addr-card div {
+
+.o-addr-card div {
   display: flex;
   flex-direction: column;
   font-size: 14px;
   color: #333;
 }
 
-.addr-name {
+.o-addr-name {
   font-weight: 700;
 }
 
-.addr-line {
+.o-addr-line {
   color: #666;
   font-size: 13px;
 }
 
-/* ===== No address message ===== */
-.no-addr {
+.o-no-addr {
   padding: 12px;
   border-radius: 10px;
   background: #fff6f6;
   color: #777;
 }
 
-/* Inline "Add one now" button inside no-addr */
-.inline-add-btn {
+.o-inline-add-btn {
   background: none;
   border: none;
   color: #5f6af2;
@@ -74,12 +76,11 @@
   cursor: pointer;
   padding: 0;
 }
-.inline-add-btn:hover {
+.o-inline-add-btn:hover {
   text-decoration: underline;
 }
 
-/* ===== Add address button ===== */
-.add-btn {
+.o-add-btn {
   margin-top: 16px;
   align-self: flex-start;
   background: transparent;
@@ -92,13 +93,12 @@
   transition: all 0.2s ease-in-out;
 }
 
-.add-btn:hover {
+.o-add-btn:hover {
   background: #f5f5ff;
   box-shadow: 0 6px 18px rgba(95,106,242,0.06);
 }
 
-/* ===== Toggle extra addresses button ===== */
-.toggle-extra-btn {
+.o-toggle-extra-btn {
   margin-top: 8px;
   background: transparent;
   border: 1px solid #cfcff7;
@@ -111,25 +111,23 @@
   transition: all 0.2s ease-in-out;
 }
 
-.toggle-extra-btn:hover {
+.o-toggle-extra-btn:hover {
   background: #f5f5ff;
   box-shadow: 0 4px 12px rgba(95,106,242,0.08);
 }
 
-/* ===== Smooth expand/collapse for extra addresses ===== */
-.extra-addresses {
+.o-extra-addresses {
   overflow: hidden;
   max-height: 0;
   transition: max-height 0.35s ease;
 }
 
-.extra-addresses.open {
-  max-height: 500px; /* enough to show all extra addresses */
+.o-extra-addresses.o-open {
+  max-height: 500px;
 }
 
-/* ===== Responsive tweaks ===== */
 @media (max-width: 900px) {
-  .addresses {
+  .o-addresses {
     gap: 12px;
   }
 }

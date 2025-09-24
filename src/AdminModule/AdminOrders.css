@@ -4,7 +4,7 @@
 }
 
 /* Wrapper Layout */
-.admin-orders-wrapper {
+.a-admin-orders-wrapper {
   display: flex;
   min-height: 100vh;
   background-color: #f9f9f9;
@@ -12,7 +12,7 @@
 }
 
 /* Main Content Area */
-.orders-main {
+.a-orders-main {
   flex: 1;
   max-width: 1200px;
   margin: 0 auto;
@@ -22,23 +22,23 @@
 }
 
 /* Admin Orders Container */
-.admin-orders {
+.a-admin-orders {
   width: 100%;
 }
 
 /* Header Section */
-.orders-header {
+.a-orders-header {
   margin-bottom: 20px;
 }
 
-.orders-header h2 {
+.a-orders-header h2 {
   font-size: 1.6rem;
   color: #333;
   font-weight: 600;
 }
 
 /* Table Container */
-.table-container {
+.a-table-container {
   width: 100%;
   background-color: white;
   padding: 20px;
@@ -48,19 +48,19 @@
 }
 
 /* Filter Controls */
-.filter-controls {
+.a-filter-controls {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;
 }
 
-.filter-controls label {
+.a-filter-controls label {
   font-weight: 500;
   color: #333;
 }
 
-.filter-controls select {
+.a-filter-controls select {
   padding: 6px 10px;
   border-radius: 4px;
   font-size: 0.9rem;
@@ -70,7 +70,7 @@
 }
 
 /* Table Base */
-.orders-table {
+.a-orders-table {
   width: 100%;
   border-collapse: collapse;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -78,7 +78,7 @@
 }
 
 /* Header Styling */
-.orders-table th {
+.a-orders-table th {
   background-color: #f0f2f5;
   font-weight: 600;
   padding: 0.75rem;
@@ -88,7 +88,7 @@
 }
 
 /* Cell Styling */
-.orders-table td {
+.a-orders-table td {
   padding: 0.75rem;
   color: #555;
   vertical-align: middle;
@@ -96,13 +96,13 @@
 }
 
 /* Row Hover Effect */
-.orders-table tr:hover {
+.a-orders-table tr:hover {
   background-color: #fafafa;
   transition: background-color 0.2s ease-in-out;
 }
 
 /* Status Dropdown */
-.orders-table select {
+.a-orders-table select {
   padding: 6px;
   border-radius: 4px;
   font-size: 0.9rem;
@@ -111,13 +111,13 @@
   color: #333;
 }
 
-.orders-table select:focus {
+.a-orders-table select:focus {
   outline: none;
   border-color: #1e90ff;
 }
 
 /* Cancel Button */
-.delete-btn {
+.a-delete-btn {
   padding: 6px 10px;
   background-color: #ff4d4f;
   color: white;
@@ -127,14 +127,14 @@
   font-size: 0.85rem;
 }
 
-.delete-btn:hover {
+.a-delete-btn:hover {
   background-color: #d9363e;
 }
 
 /* Loading, Error, Empty States */
-.loading-text,
-.error-text,
-.empty-text {
+.a-loading-text,
+.a-error-text,
+.a-empty-text {
   font-size: 1rem;
   color: #777;
   margin: 20px;
@@ -142,14 +142,14 @@
 }
 
 /* Pagination Controls */
-.pagination {
+.a-pagination {
   display: flex;
   justify-content: center;
   margin-top: 20px;
   gap: 8px;
 }
 
-.page-btn {
+.a-page-btn {
   padding: 6px 12px;
   border: 1px solid #ccc;
   background-color: #fff;
@@ -160,16 +160,16 @@
   transition: background-color 0.2s ease;
 }
 
-.page-btn:hover {
+.a-page-btn:hover {
   background-color: #f0f0f0;
 }
 
-.page-btn.active {
+.a-page-btn.a-active {
   background-color: #1e90ff;
   color: white;
   border-color: #1e90ff;
 }
 
-.page-btn.arrow {
+.a-page-btn.a-arrow {
   font-weight: bold;
 }

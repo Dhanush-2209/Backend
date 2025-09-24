@@ -16,55 +16,53 @@ ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip,
 function SalesChart() {
   const [weeklySales, setWeeklySales] = useState({
     thisMonth: [],
-    lastMonth: [0, 0, 0, 0],
     completedWeeks: 0,
   });
+  const [totalMonthSales, setTotalMonthSales] = useState(0);
 
   useEffect(() => {
-    fetch('http://localhost:5000/orders')
+    fetch('http://localhost:3001/users')
       .then(res => res.json())
-      .then(orders => {
+      .then(users => {
         const now = new Date();
-        const currentMonth = now.getMonth(); // e.g. 8 for September
-        const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+        const currentMonth = now.getMonth();
         const currentYear = now.getFullYear();
         const today = now.getDate();
         const completedWeeks = Math.ceil(today / 7);
 
         const thisMonthSales = [0, 0, 0, 0];
-        const lastMonthSales = [0, 0, 0, 0];
+        let monthTotal = 0;
 
-        orders.forEach(order => {
-          if (order.status !== 'Completed') return;
+        users.forEach(user => {
+          if (!Array.isArray(user.orders)) return;
 
-          // Use orderDate instead of date
-          const orderDate = new Date(order.orderDate);
-          const month = orderDate.getMonth();
-          const year = orderDate.getFullYear();
-          const day = orderDate.getDate();
+          user.orders.forEach(order => {
+            const orderDate = new Date(order.orderDate || order.orderedDate);
+            const month = orderDate.getMonth();
+            const year = orderDate.getFullYear();
+            const day = orderDate.getDate();
 
-          let weekIndex = 0;
-          if (day <= 7) weekIndex = 0;
-          else if (day <= 14) weekIndex = 1;
-          else if (day <= 21) weekIndex = 2;
-          else weekIndex = 3;
+            if (month !== currentMonth || year !== currentYear) return;
 
-          order.products.forEach(item => {
-            const soldUnits = item.quantity;
+            let weekIndex = 0;
+            if (day <= 7) weekIndex = 0;
+            else if (day <= 14) weekIndex = 1;
+            else if (day <= 21) weekIndex = 2;
+            else weekIndex = 3;
 
-            if (month === currentMonth && year === currentYear) {
+            if (Array.isArray(order.items)) {
+              const soldUnits = order.items.reduce((sum, item) => sum + (item.qty || 0), 0);
               thisMonthSales[weekIndex] += soldUnits;
-            } else if (month === lastMonth && year === currentYear) {
-              lastMonthSales[weekIndex] += soldUnits;
+              monthTotal += soldUnits;
             }
           });
         });
 
         setWeeklySales({
           thisMonth: thisMonthSales.slice(0, completedWeeks),
-          lastMonth: lastMonthSales,
           completedWeeks,
         });
+        setTotalMonthSales(monthTotal);
       })
       .catch(err => console.error('Failed to fetch sales data:', err));
   }, []);
@@ -83,14 +81,7 @@ function SalesChart() {
         borderColor: '#2ed573',
         backgroundColor: '#2ed57333',
         tension: 0.3,
-      },
-      {
-        label: 'Last Month',
-        data: weeklySales.lastMonth.map(val => val || 0),
-        borderColor: '#ff4757',
-        backgroundColor: '#ff475733',
-        tension: 0.3,
-      },
+      }
     ],
   };
 
@@ -119,8 +110,11 @@ function SalesChart() {
   };
 
   return (
-    <div className="chart-wrapper">
+    <div className="a-chart-wrapper">
       <h3>Monthly Sales Overview</h3>
+      <div className="a-monthly-sales-summary">
+        Total Sales This Month: <b>{totalMonthSales}</b>
+      </div>
       <Line data={data} options={options} />
     </div>
   );

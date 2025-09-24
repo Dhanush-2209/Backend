@@ -1,7 +1,7 @@
-// src/layouts/MainLayout.jsx
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "../user-authentication/components/Header/Header";
 import Footer from "../user-authentication/components/Footer/Footer";
+import "./MainLayout.css";
 
 export default function MainLayout() {
   const location = useLocation();
@@ -23,8 +23,8 @@ export default function MainLayout() {
 
       {/* Footer logic */}
       {isAuthPage ? (
-        <footer className="minimal-footer">
-          <div className="container text-center py-4 text-sm text-gray-500">
+        <footer className="u-minimal-footer">
+          <div className="u-container u-text-center u-py-4 u-text-sm u-text-muted">
             © {new Date().getFullYear()} E4Everything — Please login or register to continue
           </div>
         </footer>

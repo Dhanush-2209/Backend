@@ -14,14 +14,14 @@ body, html, #root {
 }
 
 /* ===== Layout ===== */
-.orders-wrapper {
+.o-orders-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
   padding: 40px 0;
 }
 
-.orders-page {
+.o-orders-page {
   width: 100%;
   max-width: 1280px;
   padding: 0 32px;
@@ -31,20 +31,20 @@ body, html, #root {
 }
 
 /* ===== Header ===== */
-.orders-header {
+.o-orders-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.orders-header h2 {
+.o-orders-header h2 {
   font-size: 32px;
   font-weight: 700;
   margin: 0;
 }
 
-.back-home-btn {
+.o-back-home-btn {
   background: none;
   border: none;
   color: #5f6af2;
@@ -53,19 +53,19 @@ body, html, #root {
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
-.back-home-btn:hover {
+.o-back-home-btn:hover {
   opacity: 0.7;
 }
 
 /* ===== Filters ===== */
-.orders-filters {
+.o-orders-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
 }
 
-.filter-tab {
+.o-filter-tab {
   padding: 8px 14px;
   border: none;
   border-radius: 20px;
@@ -75,15 +75,15 @@ body, html, #root {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.filter-tab.active {
+.o-filter-tab.o-active {
   background: #5f6af2;
   color: white;
 }
-.filter-tab:hover {
+.o-filter-tab:hover {
   background: #d0d0d0;
 }
 
-.search-bar {
+.o-search-bar {
   flex: 1;
   min-width: 200px;
   padding: 8px 14px;
@@ -93,29 +93,29 @@ body, html, #root {
 }
 
 /* ===== Loading & Empty States ===== */
-.loading-text {
+.o-loading-text {
   font-size: 16px;
   color: #666;
   text-align: center;
   margin-top: 60px;
 }
 
-.empty-orders {
+.o-empty-orders {
   text-align: center;
   margin-top: 80px;
 }
 
-.empty-orders img {
+.o-empty-orders img {
   width: 120px;
   margin-bottom: 16px;
 }
 
-.empty-orders p {
+.o-empty-orders p {
   font-size: 16px;
   margin-bottom: 12px;
 }
 
-.empty-orders button {
+.o-empty-orders button {
   padding: 10px 16px;
   background: #5f6af2;
   color: white;
@@ -126,14 +126,14 @@ body, html, #root {
 }
 
 /* ===== Orders List ===== */
-.orders-list {
+.o-orders-list {
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
 
 /* ===== Order Card ===== */
-.order-card {
+.o-order-card {
   width: 100%;
   background: #fff;
   border-radius: 12px;
@@ -142,57 +142,65 @@ body, html, #root {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  animation: fadeIn 0.3s ease;
+  animation: o-fadeIn 0.3s ease;
+}
+.o-order-card.o-cancelled {
+  opacity: 0.7;
+  border: 1px solid #f44336;
 }
 
 /* ===== Summary Section ===== */
-.order-summary {
+.o-order-summary {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 20px;
 }
 
-.order-meta {
+.o-order-meta {
   display: flex;
   gap: 40px;
   flex-wrap: wrap;
 }
 
-.meta-label {
+.o-meta-label {
   font-size: 12px;
   color: #888;
   text-transform: uppercase;
   font-weight: 600;
 }
 
-.order-meta p {
+.o-order-meta p {
   margin: 4px 0 0;
   font-size: 14px;
   color: #222;
   line-height: 1.4;
 }
 
-.delivery-status {
+.o-delivery-status {
   text-align: right;
 }
 
-.delivery-date {
+.o-delivery-date {
   font-size: 16px;
   font-weight: 600;
   color: #2e7d32;
   margin-bottom: 8px;
 }
+.o-delivery-date.o-cancelled-text {
+  color: #f44336;
+  font-weight: 600;
+}
 
 /* ===== Status Timeline ===== */
-.status-timeline {
+.o-status-timeline {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
   flex-wrap: wrap;
 }
 
-.status-step {
+.o-status-step {
   font-size: 12px;
   padding: 6px 10px;
   border-radius: 12px;
@@ -200,13 +208,19 @@ body, html, #root {
   color: #555;
   transition: all 0.2s ease;
 }
-.status-step.active {
+.o-status-step.o-active {
   background: #5f6af2;
   color: white;
 }
+.o-status-step.o-inactive {
+  color: #aaa;
+  background: #eee;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
 
 /* ===== Product Section ===== */
-.order-body {
+.o-order-body {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -214,13 +228,14 @@ body, html, #root {
   gap: 20px;
 }
 
-.product-thumbnails {
+.o-product-thumbnails {
   display: flex;
-  gap: 24px;
+  gap: 16px;
   flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
-.product-item {
+.o-product-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -232,20 +247,11 @@ body, html, #root {
   box-shadow: 0 2px 6px rgba(0,0,0,0.04);
   transition: box-shadow 0.2s ease;
 }
-
-.product-item:hover {
+.o-product-item:hover {
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.product-item img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-  border-radius: 8px;
-  background: #f0f0f0;
-}
-
-.product-item img {
+.o-product-item img {
   width: 60px;
   height: 60px;
   object-fit: contain;
@@ -253,11 +259,11 @@ body, html, #root {
   background: #f0f0f0;
   transition: transform 0.2s ease;
 }
-.product-item img:hover {
+.o-product-item img:hover {
   transform: scale(1.05);
 }
 
-.product-item p {
+.o-product-item p {
   font-size: 12px;
   color: #444;
   text-align: center;
@@ -265,10 +271,10 @@ body, html, #root {
   line-height: 1.4;
 }
 
-.item-brand,
-.item-category,
-.item-sku,
-.item-description {
+.o-item-brand,
+.o-item-category,
+.o-item-sku,
+.o-item-description {
   font-size: 11px;
   color: #666;
   text-align: center;
@@ -278,12 +284,12 @@ body, html, #root {
 }
 
 /* ===== Actions ===== */
-.order-actions {
+.o-order-actions {
   display: flex;
   gap: 12px;
 }
 
-.order-actions button {
+.o-order-actions button {
   padding: 8px 14px;
   border: none;
   border-radius: 8px;
@@ -292,30 +298,28 @@ body, html, #root {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-
-.order-actions button:hover {
+.o-order-actions button:hover {
   transform: translateY(-1px);
 }
-
-.order-actions button:first-child {
+.o-order-actions button:first-child {
   background: #5f6af2;
   color: white;
 }
 
-.track-btn {
+.o-track-btn {
   background: #f2f2f2;
   color: #333;
 }
 
 /* ===== Pagination ===== */
-.pagination {
+.o-pagination {
   display: flex;
   justify-content: center;
   gap: 8px;
   margin-top: 24px;
 }
 
-.page-btn {
+.o-page-btn {
   padding: 6px 12px;
   border: none;
   border-radius: 6px;
@@ -324,72 +328,50 @@ body, html, #root {
   font-weight: 600;
   cursor: pointer;
 }
-.page-btn.active {
+.o-page-btn.o-active {
   background: #5f6af2;
   color: white;
 }
-.page-btn:hover {
+.o-page-btn:hover {
   background: #d0d0d0;
 }
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .orders-page {
+  .o-orders-page {
     padding: 0 16px;
   }
 
-  .order-meta {
+  .o-order-meta {
     flex-direction: column;
     gap: 16px;
   }
 
-  .order-body {
+  .o-order-body {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .product-thumbnails {
+  .o-product-thumbnails {
     justify-content: flex-start;
   }
 
-  .order-actions {
+  .o-order-actions {
     justify-content: flex-start;
   }
 
-  .orders-filters {
+  .o-orders-filters {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .search-bar {
+  .o-search-bar {
     width: 100%;
   }
 }
 
 /* ===== Animation ===== */
-@keyframes fadeIn {
+@keyframes o-fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
-}
-.order-card.cancelled {
-  opacity: 0.7;
-  border: 1px solid #f44336;
-}
-
-.delivery-date.cancelled-text {
-  color: #f44336;
-  font-weight: 600;
-}
-
-.status-step.inactive {
-  color: #aaa;
-  background: #eee;
-  border-radius: 4px;
-  padding: 2px 6px;
-}
-.product-thumbnails {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  justify-content: flex-start;
 }

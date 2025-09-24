@@ -1,6 +1,5 @@
 import fetch from "node-fetch";
 
-// Wait 3 seconds to ensure json-server is ready
 await new Promise(resolve => setTimeout(resolve, 3000));
 
 const BASE_URL = "http://localhost:3001/users";
@@ -16,7 +15,6 @@ async function updateStatuses() {
 
       for (const order of user.orders || []) {
         if (order.status === "Cancelled") {
-          console.log(`⏭️ Skipped cancelled order ${order.id} (User ${user.id})`);
           updatedOrders.push(order);
           continue;
         }
@@ -37,14 +35,9 @@ async function updateStatuses() {
           newStatus = "Ordered";
         }
 
-        if (newStatus !== order.status) {
-          console.log(`✅ Order ${order.id} (User ${user.id}) updated to ${newStatus}`);
-        }
-
         updatedOrders.push({ ...order, status: newStatus });
       }
 
-      // Patch updated orders back to user
       await fetch(`${BASE_URL}/${user.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -52,10 +45,9 @@ async function updateStatuses() {
       });
     }
   } catch (err) {
-    console.error("❌ Status update failed:", err.message);
+    // silently fail
   }
 }
 
-// Run every 5 minutes
 setInterval(updateStatuses, 5 * 60 * 1000);
 updateStatuses();

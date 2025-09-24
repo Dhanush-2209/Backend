@@ -9,9 +9,9 @@ import './Notification.css';
  */
 export default function Notification({ message = '', type = 'info', visible = false }) {
   return (
-    <div className={`notif-wrap ${visible ? 'show' : ''}`} aria-live="polite">
-      <div className={`notif ${type}`}>
-        <div className="notif-body">{message}</div>
+    <div className={`u-notif-wrap ${visible ? 'u-show' : ''}`} aria-live="polite">
+      <div className={`u-notif u-${type}`}>
+        <div className="u-notif-body">{message}</div>
       </div>
     </div>
   );

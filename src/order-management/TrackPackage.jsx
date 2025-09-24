@@ -61,98 +61,96 @@ export default function TrackPackage() {
   const stageTimes = order ? getStageTimestamps(order.orderedTime, order.deliveryDate) : {};
 
   return (
-    <div className="track-wrapper" aria-label="Track Package Page">
-      <div className="track-page">
-        <div className="track-header">
-          <h2 tabIndex="0">📦 Track Package</h2>
-          <button className="back-btn" onClick={() => navigate("/orders")} aria-label="Back to Orders">
-            ← Back to Orders
-          </button>
-        </div>
+  <div className="o-track-wrapper" aria-label="Track Package Page">
+    <div className="o-track-page">
+      <div className="o-track-header">
+        <h2 tabIndex="0">📦 Track Package</h2>
+        <button className="o-back-btn" onClick={() => navigate("/orders")} aria-label="Back to Orders">
+          ← Back to Orders
+        </button>
+      </div>
 
-        {loading ? (
-          <p className="loading-text">Loading tracking info...</p>
-        ) : !order ? (
-          <p className="loading-text">Order not found.</p>
-        ) : (
-          <div className={`track-card ${order.status === "Cancelled" ? "cancelled" : ""}`}>
-            {/* Order Summary */}
-            <div className="track-summary">
-              <div>
-                <span className="meta-label">ORDER PLACED</span>
-                <p>{order.orderedDay}, {order.orderedDate}</p>
-              </div>
-              <div>
-                <span className="meta-label">TOTAL</span>
-                <p>₹{order.total.toFixed(2)}</p>
-              </div>
-              <div>
-                <span className="meta-label">SHIP TO</span>
-                <p>
-                  {order.address.name}<br />
-                  {order.address.line}, {order.address.city} - {order.address.pincode}<br />
-                  Phone: {order.address.phone}
-                </p>
-              </div>
+      {loading ? (
+        <p className="o-loading-text">Loading tracking info...</p>
+      ) : !order ? (
+        <p className="o-loading-text">Order not found.</p>
+      ) : (
+        <div className={`o-track-card ${order.status === "Cancelled" ? "o-cancelled" : ""}`}>
+          <div className="o-track-summary">
+            <div>
+              <span className="o-meta-label">ORDER PLACED</span>
+              <p>{order.orderedDay}, {order.orderedDate}</p>
             </div>
-
-            {/* Timeline */}
-            {order.status !== "Cancelled" ? (
-              <div className="track-timeline">
-                <p className="delivery-countdown">{getDeliveryCountdown(order.deliveryDate, order.status)}</p>
-
-                <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${(currentStageIndex / 3) * 100}%` }} />
-                </div>
-
-                <div className="timeline-bar">
-                  {STATUS_STAGES.map((stage, i) => (
-                    <div key={stage} className={`timeline-step ${i <= currentStageIndex ? "active" : ""}`}>
-                      <div className="step-dot" />
-                      <span>{stage}</span>
-                      <p className="stage-time">
-                        {stageTimes[stage]?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="cancelled-message">
-                <p>❌ This order was cancelled. Tracking is disabled.</p>
-              </div>
-            )}
-
-            {/* Delivery Agent */}
-            {order.status !== "Cancelled" && (
-              <div className="agent-info">
-                <img src="/images/delivery-agent.png" alt="Agent" />
-                <div>
-                  <p className="agent-name">Delivery by: Rajesh Kumar</p>
-                  <p className="agent-contact">Phone: 9876543210</p>
-                </div>
-              </div>
-            )}
-
-            {/* Products */}
-            <div className="track-products">
-              {order.items.map(item => (
-                <div key={item.id} className="track-item">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "/images/default-product.jpg";
-                    }}
-                  />
-                  <p>{item.name} × {item.qty}</p>
-                </div>
-              ))}
+            <div>
+              <span className="o-meta-label">TOTAL</span>
+              <p>₹{order.total.toFixed(2)}</p>
+            </div>
+            <div>
+              <span className="o-meta-label">SHIP TO</span>
+              <p>
+                {order.address.name}<br />
+                {order.address.line}, {order.address.city} - {order.address.pincode}<br />
+                Phone: {order.address.phone}
+              </p>
             </div>
           </div>
-        )}
-      </div>
+
+          {order.status !== "Cancelled" ? (
+            <div className="o-track-timeline">
+              <p className="o-delivery-countdown" aria-live="polite">
+  {getDeliveryCountdown(order.deliveryDate, order.status)}
+</p>
+
+              <div className="o-progress-bar">
+                <div className="o-progress-fill" style={{ width: `${(currentStageIndex / 3) * 100}%` }} />
+              </div>
+
+              <div className="o-timeline-bar">
+                {STATUS_STAGES.map((stage, i) => (
+                  <div key={stage} className={`o-timeline-step ${i <= currentStageIndex ? "o-active" : ""}`}>
+                    <div className="o-step-dot" />
+                    <span>{stage}</span>
+                    <p className="o-stage-time">
+                      {stageTimes[stage]?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="o-cancelled-message">
+              <p>❌ This order was cancelled. Tracking is disabled.</p>
+            </div>
+          )}
+
+          {order.status !== "Cancelled" && (
+            <div className="o-agent-info">
+              <img src="/images/delivery-agent.png" alt="Agent" />
+              <div>
+                <p className="o-agent-name">Delivery by: Rajesh Kumar</p>
+                <p className="o-agent-contact">Phone: 9876543210</p>
+              </div>
+            </div>
+          )}
+
+          <div className="o-track-products">
+            {order.items.map(item => (
+              <div key={item.id} className="o-track-item">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/images/default-product.jpg";
+                  }}
+                />
+                <p>{item.name} × {item.qty}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
 }

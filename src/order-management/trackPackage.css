@@ -1,11 +1,11 @@
-.track-wrapper {
+.o-track-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
   padding: 40px 0;
 }
 
-.track-page {
+.o-track-page {
   width: 100%;
   max-width: 960px;
   padding: 0 32px;
@@ -14,20 +14,20 @@
   gap: 32px;
 }
 
-.track-header {
+.o-track-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.track-header h2 {
+.o-track-header h2 {
   font-size: 28px;
   font-weight: 700;
   margin: 0;
 }
 
-.back-btn {
+.o-back-btn {
   background: none;
   border: none;
   color: #5f6af2;
@@ -36,18 +36,18 @@
   cursor: pointer;
   transition: opacity 0.2s ease;
 }
-.back-btn:hover {
+.o-back-btn:hover {
   opacity: 0.7;
 }
 
-.loading-text {
+.o-loading-text {
   font-size: 16px;
   color: #666;
   text-align: center;
   margin-top: 60px;
 }
 
-.track-card {
+.o-track-card {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.06);
@@ -57,49 +57,49 @@
   gap: 24px;
   transition: box-shadow 0.3s ease;
 }
-.track-card:hover {
+.o-track-card:hover {
   box-shadow: 0 6px 20px rgba(0,0,0,0.08);
 }
 
-.track-card.cancelled {
+.o-track-card.o-cancelled {
   opacity: 0.7;
   border: 1px solid #f44336;
 }
 
-.track-summary {
+.o-track-summary {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 20px;
 }
 
-.meta-label {
+.o-meta-label {
   font-size: 12px;
   color: #888;
   text-transform: uppercase;
   font-weight: 600;
 }
 
-.track-summary p {
+.o-track-summary p {
   margin: 4px 0 0;
   font-size: 14px;
   color: #222;
   line-height: 1.4;
 }
 
-.track-timeline {
+.o-track-timeline {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.delivery-countdown {
+.o-delivery-countdown {
   font-size: 16px;
   font-weight: 600;
   color: #2e7d32;
 }
 
-.progress-bar {
+.o-progress-bar {
   height: 6px;
   background: #e0e0e0;
   border-radius: 4px;
@@ -107,13 +107,13 @@
   overflow: hidden;
 }
 
-.progress-fill {
+.o-progress-fill {
   height: 100%;
   background: #5f6af2;
   transition: width 0.4s ease;
 }
 
-.timeline-bar {
+.o-timeline-bar {
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -121,7 +121,7 @@
   margin-top: 12px;
 }
 
-.timeline-step {
+.o-timeline-step {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -131,7 +131,7 @@
   text-align: center;
 }
 
-.step-dot {
+.o-step-dot {
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -139,26 +139,26 @@
   transition: background 0.3s ease;
 }
 
-.timeline-step.active .step-dot {
+.o-timeline-step.o-active .o-step-dot {
   background: #5f6af2;
 }
 
-.timeline-step span {
+.o-timeline-step span {
   font-size: 12px;
   font-weight: 600;
   color: #555;
 }
 
-.timeline-step.active span {
+.o-timeline-step.o-active span {
   color: #5f6af2;
 }
 
-.stage-time {
+.o-stage-time {
   font-size: 11px;
   color: #888;
 }
 
-.agent-info {
+.o-agent-info {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -168,33 +168,33 @@
   border-radius: 8px;
 }
 
-.agent-info img {
+.o-agent-info img {
   width: 48px;
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.agent-name {
+.o-agent-name {
   font-size: 14px;
   font-weight: 600;
   margin: 0;
 }
 
-.agent-contact {
+.o-agent-contact {
   font-size: 13px;
   color: #555;
   margin: 2px 0 0;
 }
 
-.track-products {
+.o-track-products {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
   margin-top: 16px;
 }
 
-.track-item {
+.o-track-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -203,7 +203,7 @@
   text-align: center;
 }
 
-.track-item img {
+.o-track-item img {
   width: 60px;
   height: 60px;
   object-fit: contain;
@@ -213,18 +213,18 @@
   transition: transform 0.2s ease;
 }
 
-.track-item img:hover {
+.o-track-item img:hover {
   transform: scale(1.05);
 }
 
-.track-item p {
+.o-track-item p {
   font-size: 13px;
   color: #333;
   line-height: 1.2;
   word-break: break-word;
 }
 
-.cancelled-message {
+.o-cancelled-message {
   background: #fff0f0;
   border: 1px solid #f44336;
   padding: 16px;
@@ -234,33 +234,39 @@
   color: #d32f2f;
   text-align: center;
 }
+.o-back-btn:focus,
+.o-timeline-step:focus-within,
+.o-track-item img:focus {
+  outline: 2px solid #5f6af2;
+  outline-offset: 2px;
+}
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
-  .track-page {
+  .o-track-page {
     padding: 0 16px;
   }
 
-  .track-summary {
+  .o-track-summary {
     flex-direction: column;
     gap: 16px;
   }
 
-  .timeline-bar {
+  .o-timeline-bar {
     flex-direction: column;
     align-items: center;
   }
 
-  .track-products {
+  .o-track-products {
     justify-content: flex-start;
   }
 
-  .agent-info {
+  .o-agent-info {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .agent-info img {
+  .o-agent-info img {
     margin-bottom: 8px;
   }
 }

@@ -1,4 +1,5 @@
-.sidebar {
+/* Sidebar Layout */
+.a-sidebar {
   width: 220px;
   background-color: #86adf7;
   color: white;
@@ -10,30 +11,39 @@
   justify-content: flex-start;
 }
 
-.sidebar-header {
+/* Header */
+.a-sidebar-header {
   margin-bottom: 30px;
 }
 
-.sidebar-header h2 {
+.a-sidebar-header h2 {
   margin: 0;
   font-size: 22px;
   font-weight: bold;
 }
 
-.sidebar-email {
+.a-sidebar-name {
+  font-size: 20px;
+  color: white;
+  margin-top: 4px;
+  display: block;
+}
+
+.a-sidebar-email {
   font-size: 13px;
   color: white;
   margin-top: 4px;
   display: block;
 }
 
-.sidebar-menu {
+/* Menu */
+.a-sidebar-menu {
   list-style: none;
   padding: 0;
   margin-top: 20px;
 }
 
-.sidebar-menu li {
+.a-sidebar-menu li {
   margin-bottom: 12px;
   padding: 10px 16px;
   border-radius: 8px;
@@ -43,30 +53,24 @@
   font-weight: 500;
 }
 
-.sidebar-menu li:hover {
+.a-sidebar-menu li:hover {
   background-color: #57606f;
 }
 
-.sidebar-menu .active {
+.a-sidebar-menu .a-active {
   background-color: #7d5fff;
   color: white;
   font-weight: 600;
 }
 
-.sidebar-name{
-  font-size: 20px;
-  color:white;
-  margin-top: 4px;
-  display: block;
-}
-/* Logout Button */
-.sidebar-logout {
+/* Logout */
+.a-sidebar-logout {
   margin-top: auto;
   padding-top: 20px;
   text-align: center;
 }
 
-.logout-button {
+.a-logout-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -80,10 +84,10 @@
   transition: background-color 0.3s ease;
 }
 
-.logout-button:hover {
+.a-logout-button:hover {
   background-color: #f08b8d;
 }
 
-.logout-icon {
+.a-logout-icon {
   font-size: 1.2rem;
 }

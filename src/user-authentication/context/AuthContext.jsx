@@ -21,9 +21,10 @@ export function AuthProvider({ children }) {
 
   const [redirectPath, setRedirectPath] = useState(null);
   const hasEnsuredAdmin = useRef(false);
-
   const isAuthenticated = !!user?.id;
+  const isAdmin = user?.isAdmin === true;
 
+  // ✅ Persist user session
   useEffect(() => {
     if (user?.id) {
       localStorage.setItem("authUser", JSON.stringify(user));
@@ -32,6 +33,22 @@ export function AuthProvider({ children }) {
     }
   }, [user]);
 
+  // ✅ Auto-clean invalid sessions
+  useEffect(() => {
+    const raw = localStorage.getItem("authUser");
+    try {
+      const parsed = raw ? JSON.parse(raw) : null;
+      if (!parsed?.id || typeof parsed?.isAdmin === "undefined") {
+        localStorage.removeItem("authUser");
+        setUser(null);
+      }
+    } catch {
+      localStorage.removeItem("authUser");
+      setUser(null);
+    }
+  }, []);
+
+  // ✅ Ensure admin exists
   useEffect(() => {
     async function ensureAdmin() {
       if (hasEnsuredAdmin.current) return;
@@ -49,9 +66,9 @@ export function AuthProvider({ children }) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              username: "admin",
-              email: "admin@example.com",
-              password: "admin123",
+              username: "Admin",
+              email: "admin@gmail.com",
+              password: "Admin123",
               isAdmin: true,
               addresses: [],
               paymentMethods: [],
@@ -69,6 +86,7 @@ export function AuthProvider({ children }) {
     ensureAdmin();
   }, []);
 
+  // ✅ Login handler
   const login = (userData, onLoginSuccess) => {
     if (userData?.isAdmin) {
       setRedirectPath(null);
@@ -77,6 +95,7 @@ export function AuthProvider({ children }) {
     if (typeof onLoginSuccess === "function") onLoginSuccess(userData);
   };
 
+  // ✅ Logout handler with redirect + reload
   const logout = (onLogout) => {
     setUser(null);
     setRedirectPath(null);
@@ -88,8 +107,12 @@ export function AuthProvider({ children }) {
       // ignore
     }
     if (typeof onLogout === "function") onLogout();
+
+    // ✅ Force redirect and reload to prevent back nav
+    window.location.replace("/login");
   };
 
+  // ✅ Backend login
   const loginWithBackend = async (username, password) => {
     try {
       const res = await fetch(
@@ -119,6 +142,7 @@ export function AuthProvider({ children }) {
       value={{
         user,
         isAuthenticated,
+        isAdmin,
         login,
         logout,
         loginWithBackend,

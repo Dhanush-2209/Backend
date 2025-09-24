@@ -9,7 +9,7 @@ const Cart = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [selectedIds, setSelectedIds] = useState(cart.map(item => item.id)); // default: all selected
+  const [selectedIds, setSelectedIds] = useState(cart.map(item => item.id));
 
   const toggleSelection = (id) => {
     setSelectedIds(prev =>
@@ -59,8 +59,8 @@ const Cart = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="cart-container">
-        <div className="empty-cart">
+      <div className="u-cart-container">
+        <div className="u-empty-cart">
           <h2>Your cart is empty</h2>
           <p>Add items to your cart to purchase them</p>
         </div>
@@ -69,29 +69,29 @@ const Cart = () => {
   }
 
   return (
-    <div className="cart-container">
-      <h1 className="cart-title">
-        Cart <span className="cart-count">{cart.length} items</span>
+    <div className="u-cart-container">
+      <h1 className="u-cart-title">
+        Cart <span className="u-cart-count">{cart.length} items</span>
       </h1>
-      <div className="cart-layout">
-        <div className="cart-items">
+      <div className="u-cart-layout">
+        <div className="u-cart-items">
           {cart.map((item) => (
-            <div key={item.id} className="cart-item">
+            <div key={item.id} className="u-cart-item">
               <input
                 type="checkbox"
                 checked={selectedIds.includes(item.id)}
                 onChange={() => toggleSelection(item.id)}
-                className="item-select-checkbox"
+                className="u-item-select-checkbox"
               />
-              <div className="item-image">
+              <div className="u-item-image">
                 <img src={item.image || item.thumbnail} alt={item.name || item.title} />
               </div>
-              <div className="item-details">
+              <div className="u-item-details">
                 <h3>{item.name || item.title}</h3>
-                <p className="price">
+                <p className="u-price">
                   ₹{Number(item.price || 0).toFixed(2)} {item.unit}
                 </p>
-                <div className="quantity-controls">
+                <div className="u-quantity-controls">
                   <button
                     onClick={() => updateQuantity(item.id, Math.max(1, (item.quantity || 1) - 1))}
                     disabled={item.quantity <= 1}
@@ -102,32 +102,32 @@ const Cart = () => {
                   <button onClick={() => updateQuantity(item.id, (item.quantity || 1) + 1)}>+</button>
                 </div>
               </div>
-              <button className="remove-item" onClick={() => removeFromCart(item.id)}>
+              <button className="u-remove-item" onClick={() => removeFromCart(item.id)}>
                 <span role="img" aria-label="Remove">🗑️</span>
               </button>
             </div>
           ))}
         </div>
 
-        <div className="cart-summary">
+        <div className="u-cart-summary">
           <h3>Order summary</h3>
-          <div className="summary-row">
+          <div className="u-summary-row">
             <span>Subtotal</span>
             <span>₹{calculateSubtotal().toFixed(2)}</span>
           </div>
-          <div className="summary-row">
+          <div className="u-summary-row">
             <span>Shipping</span>
             <span>₹{shipping.toFixed(2)}</span>
           </div>
-          <div className="summary-row">
+          <div className="u-summary-row">
             <span>Tax</span>
             <span>₹{tax.toFixed(2)}</span>
           </div>
-          <div className="summary-row total">
+          <div className="u-summary-row u-total">
             <span>Total</span>
             <span>₹{total.toFixed(2)}</span>
           </div>
-          <button className="checkout-btn" onClick={handleCheckout}>
+          <button className="u-checkout-btn" onClick={handleCheckout}>
             Proceed to Checkout →
           </button>
         </div>

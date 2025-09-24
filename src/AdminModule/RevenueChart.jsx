@@ -17,13 +17,14 @@ function RevenueChart() {
     labels: [],
     datasets: [],
   });
+  const [totalRevenue, setTotalRevenue] = useState(0);
 
   useEffect(() => {
     Promise.all([
-      fetch('http://localhost:5001/products').then(res => res.json()),
-      fetch('http://localhost:5000/orders').then(res => res.json())
+      fetch('http://localhost:3000/products').then(res => res.json()),
+      fetch('http://localhost:3001/users').then(res => res.json())
     ])
-      .then(([products, orders]) => {
+      .then(([products, users]) => {
         const now = new Date();
         const currentMonth = now.getMonth();
         const currentYear = now.getFullYear();
@@ -33,28 +34,41 @@ function RevenueChart() {
           productMap.set(String(p.id), parseFloat(p.price) || 0);
         });
 
-        const revenueBuckets = [0, 0, 0, 0]; // Week 1 to Week 4
+        const revenueBuckets = [0, 0, 0, 0];
+        let monthTotal = 0;
 
-        orders.forEach(order => {
-          if (order.status !== 'Completed' || !order.deliverydate) return;
+        users.forEach(user => {
+          if (!Array.isArray(user.orders)) return;
 
-          const deliveryDate = new Date(order.deliverydate);
-          if (
-            deliveryDate.getMonth() !== currentMonth ||
-            deliveryDate.getFullYear() !== currentYear
-          ) return;
+          user.orders.forEach(order => {
+            const deliveryDate = new Date(order.deliverydate || order.deliveryDate || order.orderedDate);
+            if (
+              deliveryDate.getMonth() !== currentMonth ||
+              deliveryDate.getFullYear() !== currentYear
+            ) return;
 
-          const day = deliveryDate.getDate();
-          let weekIndex = 0;
-          if (day <= 7) weekIndex = 0;
-          else if (day <= 14) weekIndex = 1;
-          else if (day <= 21) weekIndex = 2;
-          else weekIndex = 3;
+            const day = deliveryDate.getDate();
+            let weekIndex = 0;
+            if (day <= 7) weekIndex = 0;
+            else if (day <= 14) weekIndex = 1;
+            else if (day <= 21) weekIndex = 2;
+            else weekIndex = 3;
 
-          order.products.forEach(item => {
-            const price = productMap.get(String(item.productId));
-            if (!price || isNaN(price)) return;
-            revenueBuckets[weekIndex] += price * item.quantity;
+            if (Array.isArray(order.items)) {
+              order.items.forEach(item => {
+                const price = item.price || productMap.get(String(item.productId)) || 0;
+                const qty = item.qty || item.quantity || 0;
+                revenueBuckets[weekIndex] += price * qty;
+                monthTotal += price * qty;
+              });
+            } else if (Array.isArray(order.products)) {
+              order.products.forEach(item => {
+                const price = productMap.get(String(item.productId)) || 0;
+                const qty = item.quantity || 0;
+                revenueBuckets[weekIndex] += price * qty;
+                monthTotal += price * qty;
+              });
+            }
           });
         });
 
@@ -68,6 +82,7 @@ function RevenueChart() {
             }
           ]
         });
+        setTotalRevenue(monthTotal);
       })
       .catch(err => console.error('Failed to fetch data:', err));
   }, []);
@@ -104,8 +119,11 @@ function RevenueChart() {
   };
 
   return (
-    <div className="chart-wrapper">
-      <h3>Weekly Revenue (Completed Orders This Month)</h3>
+    <div className="a-chart-wrapper">
+      <h3>Weekly Revenue (This Month)</h3>
+      <div className="a-monthly-sales-summary">
+        Total Revenue This Month: <b>₹{totalRevenue.toLocaleString()}</b>
+      </div>
       <Bar data={chartData} options={options} />
     </div>
   );

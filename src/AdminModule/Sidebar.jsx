@@ -9,31 +9,33 @@ function Sidebar({ adminProfile }) {
   const { logout, setRedirectPath } = useAuth();
 
   const menuItems = [
-    { label: 'Dashboard', path: '/admin' },
-    { label: 'Customers', path: '/admin/customers' },
+    { label: 'Dashboard', path: '/admin/' },
     { label: 'Products', path: '/admin/products' },
     { label: 'Orders', path: '/admin/orders' },
     { label: 'Users', path: '/admin/users' }
   ];
 
   const handleLogout = () => {
-    logout();                     // clear user from context + localStorage
-    setRedirectPath(null);        // clear any leftover redirect
-    navigate('/login', { replace: true }); // replace history so back button won't reopen admin
+    logout();
+    setRedirectPath(null);
+    localStorage.removeItem('admin');
+    localStorage.removeItem('authToken');
+    navigate('/login', { replace: true });
+    window.location.reload();
   };
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-header">
-        <h2><span className="sidebar-name">{adminProfile.name}</span></h2>
-        <span className="sidebar-email">{adminProfile.email}</span>
+    <div className="a-sidebar">
+      <div className="a-sidebar-header">
+        <h2><span className="a-sidebar-name">{adminProfile.name}</span></h2>
+        <span className="a-sidebar-email">{adminProfile.email}</span>
       </div>
 
-      <ul className="sidebar-menu">
+      <ul className="a-sidebar-menu">
         {menuItems.map(item => (
           <li
             key={item.label}
-            className={location.pathname === item.path ? 'active' : ''}
+            className={location.pathname === item.path ? 'a-active' : ''}
             onClick={() => navigate(item.path, { replace: true })}
           >
             {item.label}
@@ -41,9 +43,9 @@ function Sidebar({ adminProfile }) {
         ))}
       </ul>
 
-      <div className="sidebar-logout">
-        <button className="logout-button" onClick={handleLogout}>
-          <FiLogOut className="logout-icon" />
+      <div className="a-sidebar-logout">
+        <button className="a-logout-button" onClick={handleLogout}>
+          <FiLogOut className="a-logout-icon" />
           Log Out
         </button>
       </div>

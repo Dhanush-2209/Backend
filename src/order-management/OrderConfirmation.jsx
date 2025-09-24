@@ -59,14 +59,14 @@ export default function OrderConfirmation() {
     return method.method || "Unknown";
   };
 
-  if (error) {
+    if (error) {
     return (
-      <div className="order-confirmation">
-        <div className="confirmation-card fade-in">
+      <div className="o-order-confirmation">
+        <div className="o-confirmation-card o-fade-in">
           <h2>⚠️ Unable to Load Order</h2>
-          <p className="order-id">Order ID: {orderId || "Not available"}</p>
+          <p className="o-order-id">Order ID: {orderId || "Not available"}</p>
           <p>Please check your connection or try again later.</p>
-          <div className="confirmation-actions">
+          <div className="o-confirmation-actions">
             <button onClick={() => navigate("/")}>Back to Home</button>
             <button onClick={() => navigate("/orders")}>View All Orders</button>
           </div>
@@ -77,8 +77,8 @@ export default function OrderConfirmation() {
 
   if (!order) {
     return (
-      <div className="order-confirmation">
-        <div className="confirmation-card fade-in">
+      <div className="o-order-confirmation">
+        <div className="o-confirmation-card o-fade-in">
           <h2>Loading Order Confirmation...</h2>
         </div>
       </div>
@@ -86,16 +86,15 @@ export default function OrderConfirmation() {
   }
 
   return (
-    <div className="order-confirmation">
-      {/* Confetti burst wrapper with randomized positions */}
-      <div className="confetti-wrapper">
+    <div className="o-order-confirmation">
+      <div className="o-confetti-wrapper" aria-hidden="true">
         {[...Array(40)].map((_, i) => {
           const x = Math.floor(Math.random() * 300 - 150);
           const r = Math.floor(Math.random() * 360);
           return (
             <div
               key={i}
-              className="confetti-piece"
+              className="o-confetti-piece"
               style={{
                 left: `calc(50% + ${x}px)`,
                 transform: `rotate(${r}deg)`
@@ -105,13 +104,13 @@ export default function OrderConfirmation() {
         })}
       </div>
 
-      <div className="confirmation-card fade-in">
-        <h2 className="pulse bounce">🎉 Order Confirmed!</h2>
-        <p className="order-id">Order ID: {order.id}</p>
+      <div className="o-confirmation-card o-fade-in">
+        <h2 className="o-pulse o-bounce">🎉 Order Confirmed!</h2>
+        <p className="o-order-id">Order ID: {order.id}</p>
 
-        <div className="confirmation-grid">
-          <div className="left-column">
-            <div className="section fade-in">
+        <div className="o-confirmation-grid">
+          <div className="o-left-column">
+            <div className="o-section o-fade-in">
               <strong>Delivery Address:</strong>
               <p>
                 {order.address.name}, {order.address.phone}<br />
@@ -119,22 +118,22 @@ export default function OrderConfirmation() {
               </p>
             </div>
 
-            <div className="section fade-in">
+            <div className="o-section o-fade-in">
               <strong>Delivery Date:</strong>
               <p>{order.deliveryDate}</p>
-              <small className="delivery-note">
+              <small className="o-delivery-note">
                 Your order will arrive on or before this date. We'll keep you posted!
               </small>
             </div>
 
-            <div className="section fade-in">
+            <div className="o-section o-fade-in">
               <strong>Payment Method:</strong>
               <p>{paymentSummary()}</p>
             </div>
           </div>
 
-          <div className="right-column">
-            <div className="section slide-in">
+          <div className="o-right-column">
+            <div className="o-section o-slide-in">
               <strong>Items:</strong>
               <ul>
                 {order.items.map(item => (
@@ -145,13 +144,13 @@ export default function OrderConfirmation() {
               </ul>
             </div>
 
-            <div className="section total fade-in">
+            <div className="o-section o-total o-fade-in">
               <strong>Total:</strong> ₹{order.total.toFixed(2)}
             </div>
           </div>
         </div>
 
-        <div className="confirmation-actions fade-in">
+        <div className="o-confirmation-actions o-fade-in">
           <button onClick={() => navigate("/")}>Back to Home</button>
           <button onClick={() => navigate("/orders", { state: { userId: order.userId } })}>View All Orders</button>
         </div>

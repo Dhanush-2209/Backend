@@ -374,144 +374,144 @@ export default function Profile() {
   }
 
   return (
-    <div className="container profile-page">
-      <div className="profile-card">
-        <h2 className="profile-title">Profile Settings</h2>
-        <p className="profile-sub">Update your account and shipping/payment details below</p>
+  <div className="u-container u-profile-page">
+    <div className="u-profile-card">
+      <h2 className="u-profile-title">Profile Settings</h2>
+      <p className="u-profile-sub">Update your account and shipping/payment details below</p>
 
-        <form className="profile-form" onSubmit={onSubmit} noValidate>
-          <div className="row">
-            <div className="field">
-              <label>First Name*</label>
-              <input value={firstName} onChange={e => setFirstName(e.target.value)} />
-              {errors.firstName && <div className="field-err">{errors.firstName}</div>}
-            </div>
-
-            <div className="field">
-              <label>Last Name</label>
-              <input value={lastName} onChange={e => setLastName(e.target.value)} />
-            </div>
+      <form className="u-profile-form" onSubmit={onSubmit} noValidate>
+        <div className="u-row">
+          <div className="u-field">
+            <label>First Name*</label>
+            <input value={firstName} onChange={e => setFirstName(e.target.value)} />
+            {errors.firstName && <div className="u-field-err">{errors.firstName}</div>}
           </div>
 
-          <div className="row">
-            <div className="field">
-              <label>Email*</label>
-              <input value={email} onChange={e => setEmail(e.target.value)} />
-              {errors.email && <div className="field-err">{errors.email}</div>}
+          <div className="u-field">
+            <label>Last Name</label>
+            <input value={lastName} onChange={e => setLastName(e.target.value)} />
+          </div>
+        </div>
+
+        <div className="u-row">
+          <div className="u-field">
+            <label>Email*</label>
+            <input value={email} onChange={e => setEmail(e.target.value)} />
+            {errors.email && <div className="u-field-err">{errors.email}</div>}
+          </div>
+          <div className="u-field">
+            <label>Phone</label>
+            <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone number" />
+            {errors.phone && <div className="u-field-err">{errors.phone}</div>}
+          </div>
+          <div className="u-field">
+            <label>New Password (optional)</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Leave blank to keep current password" />
+            {errors.password && <div className="u-field-err">{errors.password}</div>}
+          </div>
+        </div>
+
+        <h3 className="u-section-title">Addresses</h3>
+        {addresses.map((addr, index) => (
+          <div key={addr.id} className="u-address-card">
+            <h4 className="u-address-title">{addr.type}</h4>
+            <div className="u-row">
+              <div className="u-field">
+                <label>Address Line</label>
+                <input value={addr.addressLine} onChange={e => updateAddress(addr.id, 'addressLine', e.target.value)} />
+                {errors[`u-addressLine${index}`] && <div className="u-field-err">{errors[`u-addressLine${index}`]}</div>}
+              </div>
             </div>
-            <div className="field">
-              <label>Phone</label>
-              <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone number" />
-              {errors.phone && <div className="field-err">{errors.phone}</div>}
+            <div className="u-row">
+              <div className="u-field">
+                <label>City</label>
+                <input value={addr.city} onChange={e => updateAddress(addr.id, 'city', e.target.value)} />
+                {errors[`u-city${index}`] && <div className="u-field-err">{errors[`u-city${index}`]}</div>}
+              </div>
+              <div className="u-field">
+                <label>Post Code</label>
+                <input value={addr.postCode} onChange={e => updateAddress(addr.id, 'postCode', e.target.value)} />
+                {errors[`u-postCode${index}`] && <div className="u-field-err">{errors[`u-postCode${index}`]}</div>}
+              </div>
+              <div className="u-field">
+                <label>Country</label>
+                <input value={addr.country} onChange={e => updateAddress(addr.id, 'country', e.target.value)} />
+                {errors[`u-country${index}`] && <div className="u-field-err">{errors[`u-country${index}`]}</div>}
+              </div>
             </div>
-            <div className="field">
-              <label>New Password (optional)</label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Leave blank to keep current password" />
-              {errors.password && <div className="field-err">{errors.password}</div>}
+            <div className="u-actions">
+              <button type="button" className="u-btn u-secondary" onClick={() => removeAddress(addr.id)}>Remove</button>
+              <button type="button" className="u-btn u-secondary" onClick={() => setDefaultAddress(addr.id)}>Set as default</button>
             </div>
           </div>
+        ))}
+        <button type="button" className="u-btn u-primary" onClick={addNewAddress}>Add new address</button>
 
-          <h3 className="section-title">Addresses</h3>
-          {addresses.map((addr, index) => (
-            <div key={addr.id} className="address-card">
-              <h4 className="address-title">{addr.type}</h4>
-              <div className="row">
-                <div className="field">
-                  <label>Address Line</label>
-                  <input value={addr.addressLine} onChange={e => updateAddress(addr.id, 'addressLine', e.target.value)} />
-                  {errors[`addressLine${index}`] && <div className="field-err">{errors[`addressLine${index}`]}</div>}
+        <h3 className="u-section-title">Payment Methods</h3>
+        {paymentMethods.map((pm, index) => (
+          <div key={pm.id} className="u-payment-method-card">
+            <h4 className="u-payment-method-title">{pm.cardType}</h4>
+            <div className="u-row u-payment-row">
+              <div className="u-field u-card-type-field">
+                <label>Card Type</label>
+                <div className="u-card-type-select">
+                  <div className="u-card-type-icon">{IconForCard(pm.cardType)}</div>
+                  <select value={pm.cardType} onChange={e => updatePaymentMethod(pm.id, 'cardType', e.target.value)}>
+                    <option value="Visa">Visa</option>
+                    <option value="MasterCard">MasterCard</option>
+                    <option value="Rupay">Rupay</option>
+                    <option value="American Express">American Express</option>
+                  </select>
                 </div>
               </div>
-              <div className="row">
-                <div className="field">
-                  <label>City</label>
-                  <input value={addr.city} onChange={e => updateAddress(addr.id, 'city', e.target.value)} />
-                  {errors[`city${index}`] && <div className="field-err">{errors[`city${index}`]}</div>}
-                </div>
-                <div className="field">
-                  <label>Post Code</label>
-                  <input value={addr.postCode} onChange={e => updateAddress(addr.id, 'postCode', e.target.value)} />
-                  {errors[`postCode${index}`] && <div className="field-err">{errors[`postCode${index}`]}</div>}
-                </div>
-                <div className="field">
-                  <label>Country</label>
-                  <input value={addr.country} onChange={e => updateAddress(addr.id, 'country', e.target.value)} />
-                  {errors[`country${index}`] && <div className="field-err">{errors[`country${index}`]}</div>}
-                </div>
-              </div>
-              <div className="actions">
-                <button type="button" className="btn secondary" onClick={() => removeAddress(addr.id)}>Remove</button>
-                <button type="button" className="btn secondary" onClick={() => setDefaultAddress(addr.id)}>Set as default</button>
+
+              <div className="u-field">
+                <label>Cardholder Name</label>
+                <input value={pm.cardName} onChange={e => updatePaymentMethod(pm.id, 'cardName', e.target.value)} placeholder="Name on card" />
+                {errors[`u-cardName${index}`] && <div className="u-field-err">{errors[`u-cardName${index}`]}</div>}
               </div>
             </div>
-          ))}
-          <button type="button" className="btn primary" onClick={addNewAddress}>Add new address</button>
 
-          <h3 className="section-title">Payment Methods</h3>
-          {paymentMethods.map((pm, index) => (
-            <div key={pm.id} className="payment-method-card">
-              <h4 className="payment-method-title">{pm.cardType}</h4>
-              <div className="row payment-row">
-                <div className="field card-type-field">
-                  <label>Card Type</label>
-                  <div className="card-type-select">
-                    <div className="card-type-icon">{IconForCard(pm.cardType)}</div>
-                    <select value={pm.cardType} onChange={e => updatePaymentMethod(pm.id, 'cardType', e.target.value)}>
-                      <option value="Visa">Visa</option>
-                      <option value="MasterCard">MasterCard</option>
-                      <option value="Rupay">Rupay</option>
-                      <option value="American Express">American Express</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="field">
-                  <label>Cardholder Name</label>
-                  <input value={pm.cardName} onChange={e => updatePaymentMethod(pm.id, 'cardName', e.target.value)} placeholder="Name on card" />
-                  {errors[`cardName${index}`] && <div className="field-err">{errors[`cardName${index}`]}</div>}
-                </div>
+            <div className="u-row">
+              <div className="u-field">
+                <label>Card Number</label>
+                <input value={pm.cardNumber} onChange={e => updatePaymentMethod(pm.id, 'cardNumber', e.target.value)} placeholder={pm.cardType === 'American Express' ? '15 digits' : '16 digits'} inputMode="numeric" />
+                {errors[`u-cardNumber${index}`] && <div className="u-field-err">{errors[`u-cardNumber${index}`]}</div>}
               </div>
 
-              <div className="row">
-                <div className="field">
-                  <label>Card Number</label>
-                  <input value={pm.cardNumber} onChange={e => updatePaymentMethod(pm.id, 'cardNumber', e.target.value)} placeholder={pm.cardType === 'American Express' ? '15 digits' : '16 digits'} inputMode="numeric" />
-                  {errors[`cardNumber${index}`] && <div className="field-err">{errors[`cardNumber${index}`]}</div>}
-                </div>
-
-                <div className="field">
-                  <label>Expiry (MM/YY)</label>
-                  <input value={pm.expiry} onChange={e => updatePaymentMethod(pm.id, 'expiry', e.target.value)} placeholder="MM/YY" />
-                  {errors[`expiry${index}`] && <div className="field-err">{errors[`expiry${index}`]}</div>}
-                </div>
-
-                <div className="field">
-                  <label>CVV</label>
-                  <input type="password" value={pm.cvv} onChange={e => updatePaymentMethod(pm.id, 'cvv', e.target.value)} placeholder={CARD_INFO[pm.cardType].cvvLength === 4 ? '4 digits' : '3 digits'} inputMode="numeric" />
-                  {errors[`cvv${index}`] && <div className="field-err">{errors[`cvv${index}`]}</div>}
-                  <div className="small-note">CVV is not stored.</div>
-                </div>
+              <div className="u-field">
+                <label>Expiry (MM/YY)</label>
+                <input value={pm.expiry} onChange={e => updatePaymentMethod(pm.id, 'expiry', e.target.value)} placeholder="MM/YY" />
+                {errors[`u-expiry${index}`] && <div className="u-field-err">{errors[`u-expiry${index}`]}</div>}
               </div>
-              <div className="actions">
-                <button type="button" className="btn secondary" onClick={() => removePaymentMethod(pm.id)}>Remove</button>
-                <button type="button" className="btn secondary" onClick={() => setDefaultPaymentMethod(pm.id)}>Set as default</button>
+
+              <div className="u-field">
+                <label>CVV</label>
+                <input type="password" value={pm.cvv} onChange={e => updatePaymentMethod(pm.id, 'cvv', e.target.value)} placeholder={CARD_INFO[pm.cardType].cvvLength === 4 ? '4 digits' : '3 digits'} inputMode="numeric" />
+                {errors[`u-cvv${index}`] && <div className="u-field-err">{errors[`u-cvv${index}`]}</div>}
+                <div className="u-small-note">CVV is not stored.</div>
               </div>
             </div>
-          ))}
-          <button type="button" className="btn primary" onClick={addNewPaymentMethod}>Add new payment method</button>
-
-          <div className="actions">
-            <button type="submit" className="btn primary">Save Changes</button>
-            <button type="button" className="btn secondary" onClick={() => {
-              if (user && user.id) {
-                fetch(`${API}/users/${user.id}`).then(r => r.json()).then(populateForm).catch(() => {});
-              }
-            }}>Revert</button>
+            <div className="u-actions">
+              <button type="button" className="u-btn u-secondary" onClick={() => removePaymentMethod(pm.id)}>Remove</button>
+              <button type="button" className="u-btn u-secondary" onClick={() => setDefaultPaymentMethod(pm.id)}>Set as default</button>
+            </div>
           </div>
-        </form>
-      </div>
+        ))}
+        <button type="button" className="u-btn u-primary" onClick={addNewPaymentMethod}>Add new payment method</button>
 
-      <Notification message={notif.message} type={notif.type} visible={notif.visible} />
+        <div className="u-actions">
+          <button type="submit" className="u-btn u-primary">Save Changes</button>
+          <button type="button" className="u-btn u-secondary" onClick={() => {
+            if (user && user.id) {
+              fetch(`${API}/users/${user.id}`).then(r => r.json()).then(populateForm).catch(() => {});
+            }
+          }}>Revert</button>
+        </div>
+      </form>
     </div>
-  );
+
+    <Notification message={notif.message} type={notif.type} visible={notif.visible} />
+  </div>
+);
 }

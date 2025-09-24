@@ -1,5 +1,5 @@
 /* ===== Container ===== */
-.payment-container {
+.o-payment-container {
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
@@ -16,27 +16,27 @@
 }
 
 /* ===== Top bar ===== */
-.payment-top-row {
+.o-payment-top-row {
   display: flex;
   align-items: center;
   position: relative;
   min-height: 44px;
 }
 
-.top-left,
-.top-right {
+.o-top-left,
+.o-top-right {
   flex: 1 1 0;
   display: flex;
   align-items: center;
 }
 
-.top-center {
+.o-top-center {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
 
-.main-heading {
+.o-main-heading {
   margin: 0;
   font-size: 26px;
   font-weight: 700;
@@ -44,7 +44,7 @@
 }
 
 /* Back button */
-.back-checkout-btn {
+.o-back-checkout-btn {
   background: transparent;
   border: none;
   color: #5f6af2;
@@ -53,67 +53,76 @@
   transition: opacity 0.2s;
   padding: 0;
 }
-.back-checkout-btn:hover {
+.o-back-checkout-btn:hover {
   opacity: 0.7;
 }
 
 /* ===== Main layout ===== */
-.payment-main {
+.o-payment-main {
   display: flex;
   gap: 24px;
 }
 
-.payment-left,
-.payment-right {
+.o-payment-left,
+.o-payment-right {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  animation: fadeIn 0.4s ease-in-out;
+  animation: o-fadeIn 0.4s ease-in-out;
 }
 
-.payment-left {
+.o-payment-left {
   max-width: 45%;
 }
-.payment-right {
+.o-payment-right {
   max-width: 45%;
   position: relative;
 }
 
 /* ===== Animations ===== */
-@keyframes fadeIn {
+@keyframes o-fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+.o-back-checkout-btn:focus,
+.o-change-date-btn:focus,
+.o-proceed-btn:focus,
+.o-payment-actions button:focus,
+.o-method-block:focus-within {
+  outline: 2px solid #5f6af2;
+  outline-offset: 2px;
 }
 
 /* ===== Responsive ===== */
 @media (max-width: 900px) {
-  .payment-container {
+  .o-payment-container {
     padding: 16px;
   }
-  .payment-main {
+  .o-payment-main {
     flex-direction: column;
   }
-  .payment-left,
-  .payment-right {
+  .o-payment-left,
+  .o-payment-right {
     max-width: 100%;
   }
-  .main-heading {
+  .o-main-heading {
     font-size: 22px;
   }
-  .top-center {
+  .o-top-center {
     position: static;
     transform: none;
     margin: 8px 0 0 0;
   }
-  .payment-top-row {
+  .o-payment-top-row {
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
   }
 }
+
 /* Highlight selected payment method block */
-.method-block.selected {
+.o-method-block.o-selected {
   background: rgba(95, 106, 242, 0.08);
   border: 1px solid #5f6af2;
   border-radius: 8px;
@@ -121,7 +130,7 @@
 }
 
 /* Verified UPI display */
-.verified-upi {
+.o-verified-upi {
   font-size: 13px;
   color: #333;
   margin-top: 6px;

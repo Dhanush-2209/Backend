@@ -56,6 +56,14 @@ export default function OrderDetails() {
     };
   }
 
+  function getPaymentMethodLabel(pm) {
+    if (!pm) return "N/A";
+    if (pm.method) return pm.method;
+    if (pm.cardType || pm.cardMasked || pm.cardLast4) return "Card";
+    if (pm.upiId) return "UPI";
+    return "N/A";
+  }
+
   function handleDownloadInvoice() {
     if (!order) return;
     generateInvoice(order);
@@ -100,44 +108,57 @@ export default function OrderDetails() {
   const currentStageIndex = order ? ["Ordered", "Shipped", "Out for Delivery", "Delivered"].indexOf(order.status) : 0;
 
   return (
-    <div className="details-wrapper" aria-label="Order Details Page">
+    <div className="o-details-wrapper" aria-label="Order Details Page">
       <Toaster position="bottom-right" />
-      {showConfetti && <Confetti numberOfPieces={200} recycle={false} />}
-      <div className="details-page">
-        <div className="details-header">
+      {showConfetti && (
+        <div aria-hidden="true">
+          <Confetti numberOfPieces={200} recycle={false} />
+        </div>
+      )}
+      <div className="o-details-page">
+        <div className="o-details-header">
           <h2 tabIndex="0">🧾 Order Details</h2>
-          <div className="details-actions">
-            <button className="download-btn" onClick={handleDownloadInvoice} aria-label="Download Invoice">
+          <div className="o-details-actions">
+            <button className="o-download-btn" onClick={handleDownloadInvoice} aria-label="Download Invoice">
               Download Invoice
             </button>
-            <button className="back-btn" onClick={() => navigate("/orders", { state: { userId: order?.userId } })} aria-label="Back to Orders">
+            <button className="o-back-btn" onClick={() => navigate("/orders", { state: { userId: order?.userId } })} aria-label="Back to Orders">
               ← Back to Orders
             </button>
           </div>
         </div>
 
         {loading ? (
-          <p className="loading-text">Loading order details...</p>
+          <p className="o-loading-text">Loading order details...</p>
         ) : !order ? (
-          <p className="loading-text">Order not found.</p>
+          <p className="o-loading-text">Order not found.</p>
         ) : (
-          <div className="details-card">
-            {/* Info Grid */}
-            <section className="section-block">
-              <div className="info-grid">
-                <div className="info-card">
+          <div className="o-details-card">
+            <section className="o-section-block">
+              <div className="o-info-grid">
+                <div className="o-info-card">
                   <h5>📦 Order Summary</h5>
                   <p><strong>Order ID:</strong> {order.id}</p>
                   <p><strong>Placed On:</strong> {formatDateTime(order.orderedTime)}</p>
                   <p><strong>Status:</strong> {order.status}</p>
                 </div>
-                <div className="info-card">
+                <div className="o-info-card">
                   <h5>💳 Payment Details</h5>
-                  <p><strong>Method:</strong> {order.paymentMethod?.method || "N/A"}</p>
-                  {order.paymentMethod?.upiId && <p><strong>UPI ID:</strong> {order.paymentMethod.upiId}</p>}
-                  {order.paymentMethod?.cardNumber && <p><strong>Card:</strong> **** **** **** {order.paymentMethod.cardNumber.slice(-4)}</p>}
+                  <p><strong>Method:</strong> {getPaymentMethodLabel(order.paymentMethod)}</p>
+                  {order.paymentMethod?.upiId && (
+                    <p><strong>UPI ID:</strong> {order.paymentMethod.upiId}</p>
+                  )}
+                  {order.paymentMethod?.cardMasked && (
+                    <p><strong>Card:</strong> {order.paymentMethod.cardMasked}</p>
+                  )}
+                  {order.paymentMethod?.cardType && (
+                    <p><strong>Card Type:</strong> {order.paymentMethod.cardType}</p>
+                  )}
+                  {order.paymentMethod?.expiry && (
+                    <p><strong>Expiry:</strong> {order.paymentMethod.expiry}</p>
+                  )}
                 </div>
-                <div className="info-card">
+                <div className="o-info-card">
                   <h5>🚚 Shipping Address</h5>
                   <p>{order.address.name}</p>
                   <p>{order.address.line}, {order.address.city} - {order.address.pincode}</p>
@@ -146,12 +167,11 @@ export default function OrderDetails() {
               </div>
             </section>
 
-            {/* Products */}
-            <section className="section-block">
+            <section className="o-section-block">
               <h4>🛍️ Items Ordered</h4>
-              <div className="product-list">
+              <div className="o-product-list">
                 {order.items.map(item => (
-                  <div key={item.id} className="product-row">
+                  <div key={item.id} className="o-product-row">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -160,7 +180,7 @@ export default function OrderDetails() {
                         e.target.src = "/images/default-product.jpg";
                       }}
                     />
-                    <div className="product-info">
+                    <div className="o-product-info">
                       <p><strong>{item.name}</strong></p>
                       <p>Qty: {item.qty} {item.unit}</p>
                       <p>Price: ₹{item.price.toFixed(2)}</p>
@@ -168,34 +188,33 @@ export default function OrderDetails() {
                       <p>Brand: {item.brand}</p>
                       <p>Category: {item.category}</p>
                       <p>SKU: {item.sku}</p>
-                      <p className="item-description">{item.description}</p>
+                      <p className="o-item-description">{item.description}</p>
                     </div>
                   </div>
                 ))}
-                <div className="total-row">
+                <div className="o-total-row">
                   <strong>Total Paid:</strong> ₹{order.total.toFixed(2)}
                 </div>
               </div>
             </section>
 
-            {/* Timeline */}
             {order.status !== "Cancelled" && (
-              <section className="section-block">
+              <section className="o-section-block">
                 <h4>📍 Delivery Timeline</h4>
-                <div className="progress-bar">
+                <div className="o-progress-bar">
                   <div
-                    className="progress-fill"
+                    className="o-progress-fill"
                     style={{ width: `${(currentStageIndex / 3) * 100}%` }}
                   />
                 </div>
-                <div className="timeline-bar">
+                <div className="o-timeline-bar">
                   {Object.entries(stageTimes).map(([stage, time], i) => (
                     <div
                       key={stage}
-                      className={`timeline-step ${i <= currentStageIndex ? "active" : ""}`}
+                      className={`o-timeline-step ${i <= currentStageIndex ? "o-active" : ""}`}
                     >
-                      <div className="step-dot" />
-                      <span>{stage}</span>
+                      <div className="o-step-dot" />
+                                            <span>{stage}</span>
                       <p>
                         {time.toLocaleDateString()}
                         <br />
@@ -210,18 +229,17 @@ export default function OrderDetails() {
               </section>
             )}
 
-            {/* Agent */}
             {order.status !== "Cancelled" && (
-              <section className="section-block">
+              <section className="o-section-block">
                 <h4>👤 Delivery Agent</h4>
-                <div className="agent-card">
+                <div className="o-agent-card">
                   <img src="/images/delivery-agent.png" alt="Agent" />
                   <div>
                     <p><strong>Rajesh Kumar</strong></p>
                     <p>Phone: 9876543210</p>
                     <p>
                       {order.status === "Delivered"
-                                                ? "Delivered on: " + new Date(order.deliveryDate).toLocaleDateString()
+                        ? "Delivered on: " + new Date(order.deliveryDate).toLocaleDateString()
                         : "Expected Delivery: " + new Date(order.deliveryDate).toLocaleDateString()}
                     </p>
                   </div>
@@ -229,20 +247,18 @@ export default function OrderDetails() {
               </section>
             )}
 
-            {/* Cancellation Message */}
             {order.status === "Cancelled" && (
-              <section className="section-block">
-                <div className="cancelled-message">
+              <section className="o-section-block">
+                <div className="o-cancelled-message">
                   <p>❌ This order was cancelled. No further updates will be shown.</p>
                 </div>
               </section>
             )}
 
-            {/* Actions */}
-            <section className="section-block">
+            <section className="o-section-block">
               {order.status === "Ordered" && (
                 <button
-                  className="cancel-btn"
+                  className="o-cancel-btn"
                   onClick={handleCancelOrder}
                   aria-label="Cancel Order"
                 >
@@ -250,7 +266,7 @@ export default function OrderDetails() {
                 </button>
               )}
               <button
-                className="reorder-btn"
+                className="o-reorder-btn"
                 onClick={handleReorder}
                 aria-label="Reorder Items"
               >
