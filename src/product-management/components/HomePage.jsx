@@ -1,7 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { fetchProducts } from "../api/productApi";
 import DealOfTheDayPage from "./DealOfTheDay";
 import ProductListPage from "./ProductListPage";
 
@@ -55,17 +54,10 @@ const HeroSection = ({ data, onScroll, isVisible }) => (
 
 const HomePage = () => {
   const [activeHero, setActiveHero] = useState(0);
-  const [products, setProducts] = useState([]);
-
   const dealSectionRef = useRef(null);
   const productsSectionRef = useRef(null);
 
   useEffect(() => {
-    const loadProducts = async () => {
-      setProducts(await fetchProducts());
-    };
-    loadProducts();
-
     const interval = setInterval(() => {
       setActiveHero((current) => (current + 1) % landingPagesData.length);
     }, 5000);

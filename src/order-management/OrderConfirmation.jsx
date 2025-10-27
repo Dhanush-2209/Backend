@@ -7,59 +7,53 @@ import { useAuth } from "../user-authentication/context/AuthContext";
 export default function OrderConfirmation() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { token } = useAuth();
 
   const orderId = location.state?.orderId || sessionStorage.getItem("lastOrderId");
   const [order, setOrder] = useState(null);
   const [error, setError] = useState(false);
-  const API_BASE = "http://localhost:3001";
+  const API_BASE = import.meta.env.VITE_API_URL;
 
-  // Block back navigation
+  // ✅ Block back navigation to payment
   useEffect(() => {
     window.history.pushState(null, "", window.location.href);
-    const blockBack = () => window.history.pushState(null, "", window.location.href);
+    const blockBack = () => navigate("/orders", { replace: true });
     window.addEventListener("popstate", blockBack);
     return () => window.removeEventListener("popstate", blockBack);
-  }, []);
+  }, [navigate]);
 
-  // Fetch order from user's orders
+  // ✅ Fetch order details
   useEffect(() => {
-    if (!orderId || !user?.id) {
-      toast.error("Missing order ID or user.");
-      setError(true);
-      return;
-    }
+    if (!orderId || !token) return;
 
-    fetch(`${API_BASE}/users/${user.id}`)
-      .then(res => res.json())
+    fetch(`${API_BASE}/orders/${orderId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(res => res.ok ? res.json() : Promise.reject("Unauthorized"))
       .then(data => {
-        const matchedOrder = data.orders?.find(o => o.id === Number(orderId));
-        if (!matchedOrder) throw new Error("Order not found");
-        setOrder(matchedOrder);
+        console.log("Fetched order:", data);
+        setOrder(data);
       })
       .catch(err => {
         console.error("Fetch error:", err);
         toast.error("Failed to load order.");
         setError(true);
       });
-  }, [orderId, user?.id]);
+  }, [orderId, token]);
 
-  // Clean up session
+  // ✅ Clean up session flags
   useEffect(() => {
-    return () => sessionStorage.removeItem("lastOrderId");
+    return () => {
+      sessionStorage.removeItem("lastOrderId");
+      sessionStorage.removeItem("orderPlaced");
+    };
   }, []);
 
-  const paymentSummary = () => {
-    const method = order?.paymentMethod;
-    if (!method) return "Unknown";
-    if (method.cardMasked) {
-      return `${method.cardType} - ${method.cardMasked} (Exp: ${method.expiry})`;
-    }
-    if (method.upiId) return `UPI ID: ${method.upiId}`;
-    return method.method || "Unknown";
-  };
+  const paymentSummary = () => order?.paymentMethod || "Unknown";
 
-    if (error) {
+  if (error) {
     return (
       <div className="o-order-confirmation">
         <div className="o-confirmation-card o-fade-in">
@@ -112,10 +106,7 @@ export default function OrderConfirmation() {
           <div className="o-left-column">
             <div className="o-section o-fade-in">
               <strong>Delivery Address:</strong>
-              <p>
-                {order.address.name}, {order.address.phone}<br />
-                {order.address.line}, {order.address.city} - {order.address.pincode}
-              </p>
+              <p>{order.address}</p>
             </div>
 
             <div className="o-section o-fade-in">
@@ -136,11 +127,15 @@ export default function OrderConfirmation() {
             <div className="o-section o-slide-in">
               <strong>Items:</strong>
               <ul>
-                {order.items.map(item => (
-                  <li key={item.id}>
-                    {item.name} × {item.qty} — ₹{item.price * item.qty}
-                  </li>
-                ))}
+                {Array.isArray(order.items) && order.items.length > 0 ? (
+                  order.items.map((item, i) => (
+                    <li key={i}>
+                      {item.name} × {item.qty} — ₹{item.price * item.qty}
+                    </li>
+                  ))
+                ) : (
+                  <li>No items found in this order.</li>
+                )}
               </ul>
             </div>
 
@@ -152,7 +147,7 @@ export default function OrderConfirmation() {
 
         <div className="o-confirmation-actions o-fade-in">
           <button onClick={() => navigate("/")}>Back to Home</button>
-          <button onClick={() => navigate("/orders", { state: { userId: order.userId } })}>View All Orders</button>
+          <button onClick={() => navigate("/orders")}>View All Orders</button>
         </div>
       </div>
     </div>

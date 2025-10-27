@@ -14,12 +14,14 @@ export default function OrderRecap({
   selectedCardIndex,
   paymentDetails
 }) {
-    if (!orderData || !orderData.address || !orderData.items?.length) {
+  if (!orderData || !orderData.address || !orderData.items?.length) {
     return (
       <div className="o-payment-right">
         <div className="o-payment-card">
           <h3>Order Recap</h3>
-          <p className="o-validation-error" aria-live="polite">Missing order data. Please return to checkout.</p>
+          <p className="o-validation-error" aria-live="polite">
+            Missing order data. Please return to checkout.
+          </p>
           <button
             onClick={() => navigate("/checkout")}
             className="o-back-checkout-btn"
@@ -61,7 +63,7 @@ export default function OrderRecap({
               <span>
                 {item.name} × {item.qty}
               </span>
-              <span>₹{item.price * item.qty}</span>
+              <span>₹{(item.price * item.qty).toFixed(2)}</span>
             </div>
           ))}
         </div>
@@ -100,29 +102,27 @@ export default function OrderRecap({
           </p>
         )}
 
-            {!canPay() && (
-      <p className="o-validation-error" aria-live="polite">
-        {paymentMethod === ""
-          ? "Select a payment method to continue."
-          : paymentMethod === "card"
-          ? "Select or add a card to continue."
-          : paymentMethod === "upi"
-          ? "Verify your UPI ID to continue."
-          : ""}
-      </p>
-    )}
-
+        {!canPay() && (
+          <p className="o-validation-error" aria-live="polite">
+            {paymentMethod === ""
+              ? "Select a payment method to continue."
+              : paymentMethod === "card"
+              ? "Select or add a card to continue."
+              : paymentMethod === "upi"
+              ? "Verify your UPI ID to continue."
+              : ""}
+          </p>
+        )}
 
         <div className="o-payment-actions">
-                  <button
-          onClick={handlePayNow}
-          disabled={!canPay() || isProcessing}
-          className={isProcessing ? "o-processing" : ""}
-          aria-busy={isProcessing}
-        >
-          {isProcessing ? "Processing..." : payNowLabel()}
-        </button>
-
+          <button
+            onClick={handlePayNow}
+            disabled={!canPay() || isProcessing}
+            className={isProcessing ? "o-processing" : ""}
+            aria-busy={isProcessing}
+          >
+            {isProcessing ? "Processing..." : payNowLabel()}
+          </button>
         </div>
       </div>
     </div>

@@ -11,9 +11,11 @@ const ProductListPage = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getProducts = async () => {
+      setLoading(true);
       const allProducts = await fetchProducts();
       setProducts(allProducts);
       const uniqueCategories = [
@@ -21,6 +23,7 @@ const ProductListPage = () => {
         ...new Set(allProducts.map((p) => p.category)),
       ];
       setCategories(uniqueCategories);
+      setLoading(false);
     };
     getProducts();
   }, []);
@@ -64,29 +67,35 @@ const ProductListPage = () => {
         </div>
       </div>
 
-      <div className="p-product-grid">
-        {currentProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="p-loading">Loading products...</div>
+      ) : (
+        <>
+          <div className="p-product-grid">
+            {currentProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
 
-      <div className="p-pagination">
-        <button
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
-      </div>
+          <div className="p-pagination">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Prev
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

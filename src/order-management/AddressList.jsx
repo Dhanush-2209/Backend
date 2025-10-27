@@ -1,6 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./addressList.css";
 
+/**
+ * Renders a list of delivery addresses with selection and expansion.
+ * @param {Object[]} addresses - First two addresses to show by default.
+ * @param {Object[]} extraAddresses - Additional addresses shown on toggle.
+ * @param {string|number} selectedAddressId - Currently selected address ID.
+ * @param {Function} setSelectedAddressId - Setter for selected address.
+ * @param {Function} onAdd - Callback to trigger address addition modal.
+ */
 export default function AddressList({
   addresses,
   extraAddresses = [],
@@ -9,6 +17,14 @@ export default function AddressList({
   onAdd
 }) {
   const [showAll, setShowAll] = useState(false);
+
+  // ✅ Auto-toggle if selected address is in extra list
+  useEffect(() => {
+    const isSelectedInExtra = extraAddresses.some(a => a.id === selectedAddressId);
+    if (isSelectedInExtra) {
+      setShowAll(true);
+    }
+  }, [selectedAddressId, extraAddresses]);
 
   const renderAddress = (addr) => (
     <label
@@ -58,13 +74,14 @@ export default function AddressList({
             type="button"
             className="o-toggle-extra-btn"
             onClick={() => setShowAll((prev) => !prev)}
+            aria-label={showAll ? "Hide extra addresses" : "Show all addresses"}
           >
             {showAll ? "Hide Extra Addresses ▲" : "Show All Addresses ▼"}
           </button>
         )}
       </div>
 
-      <button className="o-add-btn" onClick={onAdd}>
+      <button className="o-add-btn" onClick={onAdd} aria-label="Add new address">
         Add New Address
       </button>
     </div>

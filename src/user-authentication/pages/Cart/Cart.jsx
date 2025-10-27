@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Cart.css';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE = import.meta.env.VITE_API_URL.replace(/\/api$/, '');
+
 const Cart = () => {
   const { cart, removeFromCart, updateQuantity } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [selectedIds, setSelectedIds] = useState([]);
 
-  const [selectedIds, setSelectedIds] = useState(cart.map(item => item.id));
+  // ✅ Sync selection when cart updates
+  useEffect(() => {
+    setSelectedIds(cart.map(item => item.id));
+  }, [cart]);
 
   const toggleSelection = (id) => {
     setSelectedIds(prev =>
@@ -21,10 +27,10 @@ const Cart = () => {
     .filter(item => selectedIds.includes(item.id))
     .map(item => ({
       id: item.id,
-      name: item.name || item.title,
+      name: item.title,
       price: Number(item.price || 0),
       qty: item.quantity || 1,
-      image: item.image || item.thumbnail,
+      image: `${API_BASE}/uploads/${item.thumbnail}`,
       unit: item.unit || "pcs",
       brand: item.brand || "",
       category: item.category || "",
@@ -84,10 +90,14 @@ const Cart = () => {
                 className="u-item-select-checkbox"
               />
               <div className="u-item-image">
-                <img src={item.image || item.thumbnail} alt={item.name || item.title} />
+                <img
+                  src={`${API_BASE}/uploads/${item.thumbnail}`}
+                  alt={item.title}
+                  onError={(e) => { e.target.src = '/images/default.jpg'; }}
+                />
               </div>
               <div className="u-item-details">
-                <h3>{item.name || item.title}</h3>
+                <h3>{item.title}</h3>
                 <p className="u-price">
                   ₹{Number(item.price || 0).toFixed(2)} {item.unit}
                 </p>

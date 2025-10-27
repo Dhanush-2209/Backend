@@ -4,12 +4,14 @@ import "./checkout.css";
 import AddressList from "./AddressList";
 import OrderSummary from "./OrderSummary";
 import { toast } from "react-hot-toast";
+import { useAuth } from "../user-authentication/context/AuthContext";
 
 export default function Checkout() {
   const navigate = useNavigate();
   const location = useLocation();
   const rightColRef = useRef(null);
 
+  const { token } = useAuth();
   const cartItems = location.state?.cartItems || [];
   const userId = location.state?.userId;
 
@@ -28,27 +30,32 @@ export default function Checkout() {
   const [selectedDate, setSelectedDate] = useState("");
   const [showDateDropdown, setShowDateDropdown] = useState(false);
 
-  const API_BASE = "http://localhost:3001";
+  const API_BASE = import.meta.env.VITE_API_URL.replace(/\/api$/, "");
 
   useEffect(() => {
-    if (!userId || cartItems.length === 0) {
-      toast.error("Checkout requires items in cart and a valid user.");
-      navigate("/cart");
-    }
-  }, [userId, cartItems, navigate]);
-
-  useEffect(() => {
-    fetchUser();
+    fetchAddresses();
   }, []);
 
-  async function fetchUser() {
+  async function fetchAddresses(autoSelectLast = false) {
     try {
-      const res = await fetch(`${API_BASE}/users/${userId}`);
-      if (!res.ok) return;
+      const res = await fetch(`${API_BASE}/api/users/${userId}/addresses`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (!res.ok) throw new Error("Failed to fetch addresses");
       const data = await res.json();
-      setAddresses(Array.isArray(data.addresses) ? data.addresses : []);
+      setAddresses(Array.isArray(data) ? data : []);
+
+      // ✅ Auto-select the last address if requested
+      if (autoSelectLast && Array.isArray(data) && data.length > 0) {
+        const last = data[data.length - 1];
+        setSelectedAddressId(last.id);
+      }
     } catch (e) {
-      console.error(e);
+      console.error("Address fetch error:", e);
+      toast.error("Failed to load addresses. Please try again.");
     }
   }
 
@@ -102,7 +109,6 @@ export default function Checkout() {
     }
 
     const addr = {
-      id: Date.now(),
       name: newAddr.name,
       phone: newAddr.phone,
       line: newAddr.line,
@@ -110,44 +116,55 @@ export default function Checkout() {
       pincode: newAddr.pincode
     };
 
-    const updatedAddresses = [...addresses, addr];
-
     try {
-      await fetch(`${API_BASE}/users/${userId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ addresses: updatedAddresses }),
+      const res = await fetch(`${API_BASE}/api/users/${userId}/addresses`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(addr)
       });
+
+      if (!res.ok) throw new Error("Failed to save address");
+
       setNewAddr({ name: "", phone: "", line: "", city: "", pincode: "" });
       setShowAdd(false);
-      setSelectedAddressId(addr.id);
-      fetchUser();
+      await fetchAddresses(true); // ✅ Refresh and auto-select latest
     } catch (err) {
-      console.error(err);
+      console.error("Address save error:", err);
+      toast.error("Failed to save address. Please try again.");
     }
   }
 
   function handleProceed() {
-    const selected = addresses.find((a) => a.id === selectedAddressId) || null;
+  const selected = addresses.find((a) => a.id === selectedAddressId) || null;
 
-    const subtotal = calcSubtotal();
-    const shipping = cartItems.length > 0 ? 3.99 : 0;
-    const tax = cartItems.length > 0 ? 2.0 : 0;
-    const total = subtotal + shipping + tax;
+  const subtotal = calcSubtotal();
+  const shipping = cartItems.length > 0 ? 3.99 : 0;
+  const tax = cartItems.length > 0 ? 2.0 : 0;
+  const total = subtotal + shipping + tax;
 
-    const payload = {
-      userId,
-      items: cartItems,
-      subtotal,
-      shipping,
-      tax,
-      total,
-      address: selected,
-      deliveryDate: selectedDate
-    };
+  const payload = {
+    userId,
+    items: cartItems,
+    subtotal,
+    shipping,
+    tax,
+    total,
+    address: selected,
+    deliveryDate: selectedDate
+  };
 
-    navigate("/payment", { state: { orderData: payload } });
-  }
+  // ✅ Pass cartItems explicitly for ProtectedRoute validation
+  navigate("/payment", {
+    state: {
+      orderData: payload,
+      cartItems: cartItems
+    }
+  });
+}
+
 
   useEffect(() => {
     if (showAdd) {
@@ -162,7 +179,7 @@ export default function Checkout() {
   const visibleAddresses = addresses.slice(0, 2);
   const extraAddresses = addresses.slice(2);
 
-    return (
+  return (
     <div className="o-checkout-container">
       <div className="o-checkout-top-row">
         <div className="o-top-right"></div>
@@ -189,7 +206,7 @@ export default function Checkout() {
             showDateDropdown={showDateDropdown}
             setShowDateDropdown={setShowDateDropdown}
             cartItems={cartItems}
-            calcTotal={calcSubtotal}
+            calcSubtotal={calcSubtotal}
             onProceed={handleProceed}
           />
         </div>
@@ -252,5 +269,4 @@ export default function Checkout() {
       )}
     </div>
   );
-
 }

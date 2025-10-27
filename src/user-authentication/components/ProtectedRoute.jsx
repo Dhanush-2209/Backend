@@ -2,12 +2,16 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
 
-export default function ProtectedRoute({ children, requireAdmin = false }) {
-  const { user, setRedirectPath, logout } = useAuth();
+export default function ProtectedRoute({
+  children,
+  requireAdmin = false,
+  requireCartItems = false
+}) {
+  const { user, token, cart, setRedirectPath, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Intercept back navigation on protected routes
+  // ✅ Back navigation guard
   useEffect(() => {
     const handlePopState = () => {
       const confirmLogout = window.confirm("Do you want to logout to go back?");
@@ -25,19 +29,32 @@ export default function ProtectedRoute({ children, requireAdmin = false }) {
     };
   }, [logout, navigate, location.pathname]);
 
-  // Guard for login
-  if (!user?.id) {
+  // ✅ Auth check
+  if (!user?.id || !token) {
     setRedirectPath(location.pathname);
     return <Navigate to="/login" replace />;
   }
 
-  // Guard for admin access
+  // ✅ Admin check
   if (requireAdmin && !user.isAdmin) {
-    toast.error("Admin access required.");
+    alert("Admin access required.");
     return <Navigate to="/" replace />;
   }
 
-  // Optional fallback to prevent blank screen
+  // ✅ Cart check
+  if (requireCartItems) {
+    const stateCartItems = location.state?.cartItems;
+    const hasValidCart =
+      Array.isArray(stateCartItems) && stateCartItems.length > 0
+        ? true
+        : Array.isArray(cart) && cart.length > 0;
+
+    if (!hasValidCart) {
+      alert("You must have items in your cart to proceed.");
+      return <Navigate to="/cart" replace />;
+    }
+  }
+
   if (!children) return <div>Loading...</div>;
 
   return children;

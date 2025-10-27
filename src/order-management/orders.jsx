@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./orders.css";
 import { useAuth } from "../user-authentication/context/AuthContext";
 import { toast } from "react-hot-toast";
 
 const STATUS_STAGES = ["Ordered", "Shipped", "Out for Delivery", "Delivered"];
 const PAGE_SIZE = 5;
-const API_BASE = "http://localhost:3001";
+const API_BASE = import.meta.env.VITE_API_URL;
 
 export default function Orders() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
@@ -21,18 +20,14 @@ export default function Orders() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const userId = location.state?.userId || user?.id;
+    if (!user?.id || !token) return;
 
-    if (!userId) {
-      toast.error("You must be logged in to view orders.");
-      navigate("/");
-      return;
-    }
-
-    fetch(`${API_BASE}/users/${userId}`)
-      .then(res => res.json())
+    fetch(`${API_BASE}/orders/user/${user.id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.ok ? res.json() : Promise.reject("Unauthorized"))
       .then(data => {
-        const userOrders = (data.orders || []).map(order => ({
+        const userOrders = (data || []).map(order => ({
           ...order,
           countdown: getDeliveryCountdown(order.deliveryDate, order.status)
         }));
@@ -44,7 +39,7 @@ export default function Orders() {
         toast.error("Unable to load orders.");
         setLoading(false);
       });
-  }, [user?.id, location.state, navigate]);
+  }, [user?.id, token]);
 
   useEffect(() => {
     let filtered = [...orders];
@@ -176,8 +171,8 @@ export default function Orders() {
 
                   <div className="o-order-body">
                     <div className="o-product-thumbnails">
-                      {order.items.map(item => (
-                        <div key={item.id} className="o-product-item">
+                      {order.items.map((item, i) => (
+                        <div key={i} className="o-product-item">
                           <img
                             src={item.image}
                             alt={item.name}

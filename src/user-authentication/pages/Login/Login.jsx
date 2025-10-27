@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import './Login.css';
 import Notification from '../../components/Notification/Notification';
 
-const API = 'http://localhost:3001';
+const API = import.meta.env.VITE_API_URL;
 
 export default function Login() {
   const [identifier, setIdentifier] = useState('');
@@ -26,10 +26,6 @@ export default function Login() {
     }
   }, [user, navigate]);
 
-  function isEmail(value) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
-  }
-
   function validate() {
     const e = {};
     if (!identifier.trim()) e.identifier = 'Email or username is required';
@@ -49,38 +45,42 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const idVal = identifier.trim().toLowerCase();
-      const pwd = password;
-      const queryUrl = isEmail(idVal)
-        ? `${API}/users?email=${encodeURIComponent(idVal)}&password=${encodeURIComponent(pwd)}`
-        : `${API}/users?username=${encodeURIComponent(idVal)}&password=${encodeURIComponent(pwd)}`;
+      const payload = {
+        identifier: identifier.trim().toLowerCase(),
+        password
+      };
 
-      const res = await fetch(queryUrl);
+      const res = await fetch(`${API}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
       if (!res.ok) throw new Error('Login request failed');
-      const data = await res.json();
+      const { token, user } = await res.json();
 
-      if (data.length === 0) {
+      if (!token || !user?.id) {
         setNotif({ message: 'Invalid credentials', type: 'error', visible: true });
         setTimeout(() => setNotif(v => ({ ...v, visible: false })), 1200);
         setLoading(false);
         return;
       }
 
-      const u = data[0];
-      login(u);
-      setNotif({ message: `Welcome back, ${u.username}`, type: 'success', visible: true });
+      // ✅ Store token and user in context
+      login({ token, user });
+
+      setNotif({ message: `Welcome back, ${user.username}`, type: 'success', visible: true });
 
       setTimeout(() => {
         setNotif(v => ({ ...v, visible: false }));
-        if (u.isAdmin) {
+        if (user.isAdmin) {
           navigate('/admin', { replace: true });
-          setRedirectPath(null);
         } else if (redirectPath) {
           navigate(redirectPath, { replace: true });
-          setRedirectPath(null);
         } else {
           navigate('/', { replace: true });
         }
+        setRedirectPath(null);
       }, 700);
     } catch {
       setNotif({ message: 'Login failed. Try again.', type: 'error', visible: true });

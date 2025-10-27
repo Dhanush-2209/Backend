@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchProducts } from "../api/productApi";
+import { fetchDealProducts } from "../api/productApi"; // ✅ new API function
 import ProductCard from "./ProductCard";
 import "./DealOfTheDay.css";
 
@@ -26,12 +26,11 @@ const DealOfTheDay = () => {
   const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(targetDate));
 
   useEffect(() => {
-    const getDealProducts = async () => {
-      const allProducts = await fetchProducts();
-      const deals = allProducts.filter((p) => p.discountPercentage >= 15);
+    const getDeals = async () => {
+      const deals = await fetchDealProducts(); // ✅ backend filters deals
       setDealProducts(deals);
     };
-    getDealProducts();
+    getDeals();
   }, []);
 
   useEffect(() => {
@@ -53,22 +52,10 @@ const DealOfTheDay = () => {
 
         {Object.keys(timeLeft).length > 0 ? (
           <div className="p-countdown">
-            <div>
-              <span>{timeLeft.days}</span>
-              <p>Days</p>
-            </div>
-            <div>
-              <span>{timeLeft.hours}</span>
-              <p>Hours</p>
-            </div>
-            <div>
-              <span>{timeLeft.minutes}</span>
-              <p>Mins</p>
-            </div>
-            <div>
-              <span>{timeLeft.seconds}</span>
-              <p>Secs</p>
-            </div>
+            <div><span>{timeLeft.days}</span><p>Days</p></div>
+            <div><span>{timeLeft.hours}</span><p>Hours</p></div>
+            <div><span>{timeLeft.minutes}</span><p>Mins</p></div>
+            <div><span>{timeLeft.seconds}</span><p>Secs</p></div>
           </div>
         ) : (
           <div className="p-deal-ended">Deal has ended!</div>

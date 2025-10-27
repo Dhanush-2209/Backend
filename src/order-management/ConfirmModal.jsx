@@ -20,7 +20,7 @@ export default function ConfirmModal({
     return "Not selected";
   };
 
-    return (
+  return (
     <div className="o-confirm-modal">
       <div className="o-confirm-card">
         <h3>Confirm Your Order</h3>
@@ -43,14 +43,14 @@ export default function ConfirmModal({
           <ul>
             {orderData.items.map((item) => (
               <li key={item.id}>
-                {item.name} × {item.qty} — ₹{item.price * item.qty}
+                {item.name} × {item.qty} — ₹{(item.price * item.qty).toFixed(2)}
               </li>
             ))}
           </ul>
         </div>
 
         <div className="o-confirm-section">
-          <strong>Total:</strong> ₹{orderData.total}
+          <strong>Total:</strong> ₹{orderData.total?.toFixed(2)}
         </div>
 
         <div className="o-confirm-section">

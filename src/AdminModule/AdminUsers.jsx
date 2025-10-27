@@ -3,79 +3,77 @@ import './AdminUsers.css';
 import Sidebar from './Sidebar.jsx';
 import { useAuth } from '../user-authentication/context/AuthContext';
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [filterCity, setFilterCity] = useState('');
+  const [filterSpend, setFilterSpend] = useState('');
   const usersPerPage = 5;
 
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const adminProfile = {
     name: user?.username || user?.name || 'Admin',
     email: user?.email || 'admin@example.com'
   };
 
   useEffect(() => {
-    fetch('http://localhost:3001/users')
+    if (!token) return;
+    setLoading(true);
+
+    fetch(`${BASE_URL}/users/admin`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          const mapped = data.map(u => {
-            const id = u.id?.toString() ?? '';
-            const name = `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim();
-            const address = Array.isArray(u.addresses) && u.addresses.length > 0
-              ? u.addresses[0].city ?? ''
-              : '';
-
-            let totalItems = 0;
-            let totalPrice = 0;
-            if (Array.isArray(u.orders)) {
-              u.orders.forEach(order => {
-                if (Array.isArray(order.items)) {
-                  totalItems += order.items.reduce((sum, item) => sum + (item.qty || 0), 0);
-                }
-                totalPrice += order.total || 0;
-              });
-            }
-
-            return {
-              id,
-              username: u.username ?? '',
-              firstName: u.firstName ?? '',
-              lastName: u.lastName ?? '',
-              name,
-              email: u.email ?? '',
-              address,
-              totalItems,
-              totalPrice
-            };
-          });
-
-          setUsers(mapped);
+          const sorted = data.sort((a, b) => b.isAdmin - a.isAdmin); // Admin on top
+          setUsers(sorted);
         } else {
           console.error('Unexpected user format:', data);
         }
       })
-      .catch(err => console.error('Failed to fetch users:', err));
-  }, []);
+      .catch(err => console.error('Failed to fetch users:', err))
+      .finally(() => setLoading(false));
+  }, [token]);
 
-  const filteredUsers = users.filter(u => {
-    const search = searchTerm.toLowerCase();
-    return (
-      u.id.toLowerCase().includes(search) ||
-      u.firstName.toLowerCase().includes(search) ||
-      u.lastName.toLowerCase().includes(search) ||
-      u.name.toLowerCase().includes(search) ||
-      u.email.toLowerCase().includes(search) ||
-      u.address.toLowerCase().includes(search)
-    );
-  });
+  const filteredUsers = users
+    .filter(u => {
+      const search = searchTerm.toLowerCase();
+      return (
+        u.name.toLowerCase().includes(search) ||
+        u.email.toLowerCase().includes(search) ||
+        u.address.toLowerCase().includes(search)
+      );
+    })
+    .filter(u => (filterCity ? u.address.toLowerCase() === filterCity.toLowerCase() : true))
+    .filter(u => (filterSpend === 'high' ? u.totalPrice > 5000 : true));
 
-  if (sortOrder === 'asc') {
-    filteredUsers.sort((a, b) => a.firstName.localeCompare(b.firstName));
-  } else if (sortOrder === 'desc') {
-    filteredUsers.sort((a, b) => b.firstName.localeCompare(a.firstName));
+  switch (sortOrder) {
+    case 'asc':
+      filteredUsers.sort((a, b) => a.name.localeCompare(b.name));
+      break;
+    case 'desc':
+      filteredUsers.sort((a, b) => b.name.localeCompare(a.name));
+      break;
+    case 'itemsAsc':
+      filteredUsers.sort((a, b) => a.totalItems - b.totalItems);
+      break;
+    case 'itemsDesc':
+      filteredUsers.sort((a, b) => b.totalItems - a.totalItems);
+      break;
+    case 'priceAsc':
+      filteredUsers.sort((a, b) => a.totalPrice - b.totalPrice);
+      break;
+    case 'priceDesc':
+      filteredUsers.sort((a, b) => b.totalPrice - a.totalPrice);
+      break;
+    default:
+      break;
   }
 
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
@@ -95,7 +93,7 @@ function AdminUsers() {
           <div className="a-search-bar">
             <input
               type="text"
-              placeholder="Search by ID..."
+              placeholder="Search by name, email, address..."
               value={searchTerm}
               onChange={e => {
                 setSearchTerm(e.target.value);
@@ -111,36 +109,74 @@ function AdminUsers() {
               }}
               className="a-user-sort"
             >
-              <option value="">No Filter</option>
-              <option value="asc">Filter A–Z</option>
-              <option value="desc">Filter Z–A</option>
+              <option value="">No Sort</option>
+              <option value="asc">Name A–Z</option>
+              <option value="desc">Name Z–A</option>
+              <option value="itemsAsc">Items ↑</option>
+              <option value="itemsDesc">Items ↓</option>
+              <option value="priceAsc">Price ↑</option>
+              <option value="priceDesc">Price ↓</option>
+            </select>
+            <select
+              value={filterCity}
+              onChange={e => {
+                setFilterCity(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="a-user-filter"
+            >
+              <option value="">All Cities</option>
+              {[...new Set(users.map(u => u.address).filter(Boolean))].map(city => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
+            <select
+              value={filterSpend}
+              onChange={e => {
+                setFilterSpend(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="a-user-filter"
+            >
+              <option value="">All Spenders</option>
+              <option value="high">High Spenders</option>
             </select>
           </div>
 
-          <table className="a-user-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th>Total Items Ordered</th>
-                <th>Total Price Ordered</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentUsers.map(u => (
-                <tr key={u.id}>
-                  <td>{u.id}</td>
-                  <td>{u.name}</td>
-                  <td>{u.email}</td>
-                  <td>{u.address}</td>
-                  <td>{u.totalItems}</td>
-                  <td>{u.totalPrice}</td>
+          {loading ? (
+            <div className="a-loading">Loading users...</div>
+          ) : (
+            <table className="a-user-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Address</th>
+                  <th>Total Items Ordered</th>
+                  <th>Total Price Ordered</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {currentUsers.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="a-empty-row">No users found</td>
+                  </tr>
+                ) : (
+                  currentUsers.map((u, i) => (
+                    <tr key={u.id}>
+                      <td>{indexOfFirst + i + 1}</td>
+                      <td>{u.name}</td>
+                      <td>{u.email}</td>
+                      <td>{u.address}</td>
+                      <td>{u.totalItems}</td>
+                      <td>₹{u.totalPrice.toFixed(2)}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
 
           <div className="a-pagination">
             <button

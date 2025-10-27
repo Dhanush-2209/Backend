@@ -1,71 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ShoppingCart, Heart } from "lucide-react";
-import { useCart } from "../../user-authentication/context/CartContext";
-import { useWishlist } from "../../user-authentication/context/WishlistContext";
-import { useAuth } from "../../user-authentication/context/AuthContext";
 import Notification from "../../user-authentication/components/Notification/Notification";
+import { addToWishlist } from "../api/productApi";
+import { useAuth } from "../../user-authentication/context/AuthContext";
+import { useWishlist } from "../../user-authentication/context/WishlistContext";
+import { useCart } from "../../user-authentication/context/CartContext"; // ✅ NEW
 import "./ProductCard.css";
 
 const ProductCard = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [notif, setNotif] = useState({ message: "", type: "info", visible: false });
+  const [wishlisted, setWishlisted] = useState(false);
 
-  const { addToCart } = useCart();
-  const { addToWishlist } = useWishlist();
-  const { user, login } = useAuth();
+  const { user, token, isAuthenticated } = useAuth();
+  const { wishlist, addToWishlist: addToWishlistContext } = useWishlist();
+  const { addToCart } = useCart(); // ✅ NEW
 
-  const inCart = user?.cart?.some((item) => item.id === product.id);
-  const inWishlist = user?.wishlist?.some((item) => item.id === product.id);
+  useEffect(() => {
+    const alreadyWishlisted = wishlist.some(item => item.id === product.id);
+    setWishlisted(alreadyWishlisted);
+  }, [wishlist, product.id]);
 
   const showNotif = (message, type = "success") => {
     setNotif({ message, type, visible: true });
     setTimeout(() => setNotif((v) => ({ ...v, visible: false })), 1500);
   };
 
-  const handleAddToCart = async () => {
-    if (!user) {
-      showNotif("Please login to add items", "error");
-      return;
-    }
-    if (inCart) {
-      showNotif("Already in cart", "info");
+  const handleAddToCart = () => {
+    if (!isAuthenticated || !user?.id || !token) {
+      showNotif("Please log in to add to cart", "error");
       return;
     }
 
-    const updatedCart = [...(user.cart || []), { ...product, quantity: 1 }];
-    addToCart(product);
-
-    await fetch(`/users/${user.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cart: updatedCart }),
-    });
-
-    login({ ...user, cart: updatedCart });
-    showNotif("Added to cart ✅", "success");
+    try {
+      addToCart(product); // ✅ Assumes CartContext handles backend sync
+      showNotif("Added to cart!", "success");
+    } catch (error) {
+      showNotif("Failed to add to cart", "error");
+    }
   };
 
   const handleAddToWishlist = async () => {
-    if (!user) {
-      showNotif("Please login to add items", "error");
-      return;
-    }
-    if (inWishlist) {
+    if (wishlisted) {
       showNotif("Already in wishlist", "info");
       return;
     }
 
-    const updatedWishlist = [...(user.wishlist || []), product];
-    addToWishlist(product);
+    if (!isAuthenticated || !user?.id || !token) {
+      showNotif("Please log in to use wishlist", "error");
+      return;
+    }
 
-    await fetch(`/users/${user.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ wishlist: updatedWishlist }),
-    });
-
-    login({ ...user, wishlist: updatedWishlist });
-    showNotif("Added to wishlist ❤️", "success");
+    try {
+      await addToWishlist(user.id, product.id, token);
+      addToWishlistContext(product);
+      setWishlisted(true);
+      showNotif("Added to wishlist!", "success");
+    } catch (error) {
+      showNotif("Failed to add to wishlist", "error");
+    }
   };
 
   return (
@@ -89,19 +82,18 @@ const ProductCard = ({ product }) => {
           <div className="p-action-buttons">
             <button
               onClick={handleAddToCart}
-              disabled={inCart}
-              className={`p-icon-button ${inCart ? "disabled" : ""}`}
-              title={inCart ? "Already in Cart" : "Add to Cart"}
+              className="p-icon-button"
+              title="Add to Cart"
             >
               <ShoppingCart size={18} />
             </button>
             <button
               onClick={handleAddToWishlist}
-              disabled={inWishlist}
-              className={`p-icon-button ${inWishlist ? "disabled" : ""}`}
-              title={inWishlist ? "Already in Wishlist" : "Add to Wishlist"}
+              className={`p-icon-button ${wishlisted ? "wishlisted" : ""}`}
+              title={wishlisted ? "Already in wishlist" : "Add to Wishlist"}
+              disabled={wishlisted}
             >
-              <Heart size={18} />
+              <Heart size={18} fill={wishlisted ? "#333" : "none"} />
             </button>
           </div>
         </div>

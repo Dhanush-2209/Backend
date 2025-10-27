@@ -1,55 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Wishlist.css';
 import { useWishlist } from '../../context/WishlistContext';
 import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
-const API_URL = "http://localhost:3001/users";
+const API_BASE = import.meta.env.VITE_API_URL.replace(/\/api$/, ''); // strips `/api` to get base URL
 
 const Wishlist = () => {
-  const { wishlist, removeFromWishlist } = useWishlist();
+  const {
+    wishlist,
+    removeFromWishlistAndSync,
+    fetchUserWishlist
+  } = useWishlist();
+
   const { addToCart } = useCart();
-  const { user, login } = useAuth();
 
-  async function handleAddToCart(product) {
-    if (!user) return;
+  useEffect(() => {
+    fetchUserWishlist();
+  }, []);
+
+  function handleAddToCart(product) {
     addToCart(product);
-    removeFromWishlist(product.id);
-
-    const updatedCart = [...(user.cart || []), { ...product, quantity: 1 }];
-
-    try {
-      await fetch(`${API_URL}/${user.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cart: updatedCart })
-      });
-      login({ ...user, cart: updatedCart });
-      toast.success(`${product.name || product.title} added to cart`);
-    } catch (err) {
-      console.error("Failed to update cart:", err);
-      toast.error("Failed to add to cart");
-    }
+    removeFromWishlistAndSync(product.id);
+    toast.success(`${product.title || product.name} moved to cart`);
   }
 
-  async function handleRemoveFromWishlist(id) {
-    if (!user) return;
-    const updatedWishlist = wishlist.filter(item => item.id !== id);
-    removeFromWishlist(id);
-
-    try {
-      await fetch(`${API_URL}/${user.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wishlist: updatedWishlist })
-      });
-      login({ ...user, wishlist: updatedWishlist });
-      toast.success("Item removed from wishlist");
-    } catch (err) {
-      console.error("Failed to update wishlist:", err);
-      toast.error("Failed to remove item");
-    }
+  function handleRemoveFromWishlist(id) {
+    removeFromWishlistAndSync(id);
+    toast.success("Item removed from wishlist");
   }
 
   if (wishlist.length === 0) {
@@ -72,14 +50,20 @@ const Wishlist = () => {
         {wishlist.map((product) => (
           <div key={product.id} className="u-wishlist-item">
             <div className="u-wishlist-item-image">
-              <img src={product.image || product.thumbnail} alt={product.name || product.title} />
+              <img
+                src={`${API_BASE}/uploads/${product.thumbnail}`}
+                alt={product.title}
+                onError={(e) => { e.target.src = '/images/default.jpg'; }}
+              />
             </div>
             <div className="u-wishlist-item-details">
-              <h3 className="u-wishlist-item-title">{product.name || product.title}</h3>
+              <h3 className="u-wishlist-item-title">{product.title}</h3>
               <p className="u-wishlist-item-price">
-                ${Number(product.price || 0).toFixed(2)} {product.unit ? `/ ${product.unit}` : ""}
+                ₹{Number(product.price || 0).toFixed(2)}
               </p>
-              <p className="u-wishlist-item-desc">{product.description}</p>
+              {product.description && (
+                <p className="u-wishlist-item-desc">{product.description}</p>
+              )}
               <div className="u-wishlist-item-actions">
                 <button className="u-btn u-btn-primary" onClick={() => handleAddToCart(product)}>
                   Add to Cart

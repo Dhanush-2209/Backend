@@ -6,18 +6,13 @@ import ConfirmModal from "./ConfirmModal";
 import "./payment.css";
 import "./ConfirmModal.css";
 import { toast } from "react-hot-toast";
+import { useAuth } from "../user-authentication/context/AuthContext";
 
 export default function Payment() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { token } = useAuth();
   const orderData = location.state?.orderData;
-
-  useEffect(() => {
-    if (!orderData || !orderData.userId || !orderData.items?.length) {
-      toast.error("Invalid access. Redirecting to checkout.");
-      navigate("/checkout");
-    }
-  }, [orderData, navigate]);
 
   const [paymentDetails, setPaymentDetails] = useState([]);
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
@@ -38,7 +33,22 @@ export default function Payment() {
   const [showUpiModal, setShowUpiModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const API_BASE = "http://localhost:3001";
+  const API_BASE = import.meta.env.VITE_API_URL;
+
+  useEffect(() => {
+    const alreadyPlaced = sessionStorage.getItem("orderPlaced") === "true";
+    if (alreadyPlaced) {
+      toast.error("Order already placed. Redirecting...");
+      navigate("/orders", { replace: true });
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!orderData || !orderData.userId || !orderData.items?.length) {
+      toast.error("Invalid access. Redirecting to checkout.");
+      navigate("/checkout");
+    }
+  }, [orderData, navigate]);
 
   useEffect(() => {
     const handlePopState = () => navigate("/checkout");
@@ -56,15 +66,20 @@ export default function Payment() {
   }, []);
 
   useEffect(() => {
-    if (orderData?.userId) {
-      fetch(`${API_BASE}/users/${orderData.userId}`)
-        .then(res => res.json())
+    if (orderData?.userId && token) {
+      fetch(`${API_BASE}/users/${orderData.userId}/cards`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.ok ? res.json() : Promise.reject("Unauthorized"))
         .then(data => {
-          setPaymentDetails(Array.isArray(data.paymentDetails) ? data.paymentDetails : []);
+          setPaymentDetails(Array.isArray(data) ? data : []);
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          console.error("Failed to fetch cards:", err);
+          toast.error("Unable to load saved cards.");
+        });
     }
-  }, [orderData?.userId]);
+  }, [orderData?.userId, token]);
 
   async function handleSaveCard(e) {
     e.preventDefault();
@@ -76,23 +91,19 @@ export default function Payment() {
       return;
     }
 
-    const masked = "**** **** **** " + cardNumber.slice(-4);
-    const newCardObj = {
-      cardType,
-      cardName,
-      cardMasked: masked,
-      cardLast4: cardNumber.slice(-4),
-      expiry
-    };
-
-    const updatedCards = [...paymentDetails, newCardObj];
-
     try {
-      await fetch(`${API_BASE}/users/${orderData.userId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ paymentDetails: updatedCards })
+      const res = await fetch(`${API_BASE}/users/${orderData.userId}/cards`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ cardType, cardName, cardNumber, expiry, cvv })
       });
+
+      if (!res.ok) throw new Error("Failed to save card");
+      const updatedCards = await res.json();
+
       setPaymentDetails(updatedCards);
       setSelectedCardIndex(updatedCards.length - 1);
       setPaymentMethod("card");
@@ -101,6 +112,7 @@ export default function Payment() {
       toast.success("Card saved successfully");
     } catch (err) {
       console.error(err);
+      toast.error("Failed to save card.");
     }
   }
 
@@ -121,60 +133,63 @@ export default function Payment() {
   }
 
   async function handlePayNow() {
-    if (!canPay()) return;
-    setIsProcessing(true);
+  if (!canPay()) return;
+  setIsProcessing(true);
 
-    let paymentInfo = {};
-    if (paymentMethod === "card") {
-      paymentInfo = paymentDetails[selectedCardIndex];
-    } else if (paymentMethod === "upi") {
-      paymentInfo = { method: "UPI", upiId };
-    } else if (paymentMethod === "cod") {
-      paymentInfo = { method: "Cash on Delivery" };
-    }
+  const now = new Date();
 
-    const now = new Date();
-    const orderedDate = now.toISOString().split("T")[0];
-    const orderedDay = now.toLocaleDateString("en-US", { weekday: "long" });
+  const masked = paymentDetails[selectedCardIndex]?.cardMasked || "**** **** **** XXXX";
+  const paymentMethodString =
+    paymentMethod === "card"
+      ? `${paymentDetails[selectedCardIndex].cardType} - ${masked} (Exp: ${paymentDetails[selectedCardIndex].expiry})`
+      : paymentMethod === "upi"
+      ? `UPI ID: ${upiId}`
+      : "Cash on Delivery";
 
-    const newOrder = {
-      id: Date.now(),
-      userId: orderData.userId,
-      items: orderData.items,
-      subtotal: orderData.subtotal,
-      shipping: orderData.shipping,
-      tax: orderData.tax,
-      total: orderData.total,
-      address: orderData.address,
-      deliveryDate: orderData.deliveryDate,
-      paymentMethod: paymentInfo,
-      orderedDate,
-      orderedDay,
-      orderedTime: now.toISOString(),
-      status: "Ordered"
-    };
+  const formattedAddress = formatAddress(orderData.address);
 
-    try {
-      const res = await fetch(`${API_BASE}/users/${orderData.userId}`);
-      const user = await res.json();
-      const updatedOrders = [...(user.orders || []), newOrder];
+  const payload = {
+    ...orderData,
+    address: formattedAddress,
+    paymentMethod: paymentMethodString,
+    orderedDate: now.toISOString().split("T")[0],
+    orderedDay: now.toLocaleDateString("en-US", { weekday: "long" }),
+    orderedTime: now.toISOString(),
+    status: "Ordered"
+  };
 
-      await fetch(`${API_BASE}/users/${orderData.userId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orders: updatedOrders })
-      });
+  console.log("Payload being sent:", payload);
 
-      toast.success("Order placed successfully!");
-      sessionStorage.setItem("lastOrderId", newOrder.id);
-      navigate("/order-confirmation", { state: { orderId: newOrder.id } });
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to place order.");
-    } finally {
-      setIsProcessing(false);
-      setShowConfirmModal(false);
-    }
+  try {
+    const res = await fetch(`${API_BASE}/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error("Order failed");
+    const orderId = await res.json(); // ✅ FIXED
+
+    console.log("Order placed with ID:", orderId);
+    toast.success("Order placed successfully!");
+    sessionStorage.setItem("lastOrderId", orderId);
+    sessionStorage.setItem("orderPlaced", "true");
+    navigate("/order-confirmation", { state: { orderId } });
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to place order.");
+  } finally {
+    setIsProcessing(false);
+    setShowConfirmModal(false);
+  }
+}
+
+  function formatAddress(addr) {
+    if (!addr || typeof addr === "string") return addr;
+    return `${addr.name}, ${addr.line}, ${addr.city} - ${addr.pincode}, Ph: ${addr.phone}`;
   }
 
   function canPay() {
@@ -192,57 +207,57 @@ export default function Payment() {
   }
 
   return (
-  <div className="o-payment-container">
-    <div className="o-payment-top-row">
-      <div className="o-top-right"></div>
+    <div className="o-payment-container">
+      <div className="o-payment-top-row">
+        <div className="o-top-right"></div>
+      </div>
+
+      <div className="o-payment-main">
+        <PaymentOptions
+          paymentMethod={paymentMethod}
+          setPaymentMethod={setPaymentMethod}
+          paymentDetails={paymentDetails}
+          selectedCardIndex={selectedCardIndex}
+          setSelectedCardIndex={setSelectedCardIndex}
+          showCardModal={showCardModal}
+          setShowCardModal={setShowCardModal}
+          showUpiModal={showUpiModal}
+          setShowUpiModal={setShowUpiModal}
+          newCard={newCard}
+          setNewCard={setNewCard}
+          handleSaveCard={handleSaveCard}
+                   handleExpiryChange={handleExpiryChange}
+          upiId={upiId}
+          setUpiId={setUpiId}
+          handleVerifyUpi={handleVerifyUpi}
+        />
+
+        <OrderRecap
+          orderData={orderData}
+          canPay={canPay}
+          isProcessing={isProcessing}
+          payNowLabel={payNowLabel}
+          handlePayNow={() => setShowConfirmModal(true)}
+          paymentMethod={paymentMethod}
+          navigate={navigate}
+          upiVerified={upiVerified}
+          upiId={upiId}
+          selectedCardIndex={selectedCardIndex}
+          paymentDetails={paymentDetails}
+        />
+      </div>
+
+      {showConfirmModal && (
+        <ConfirmModal
+          orderData={orderData}
+          paymentMethod={paymentMethod}
+          upiId={upiId}
+          selectedCardIndex={selectedCardIndex}
+          paymentDetails={paymentDetails}
+          onConfirm={handlePayNow}
+          onCancel={() => setShowConfirmModal(false)}
+        />
+      )}
     </div>
-
-    <div className="o-payment-main">
-      <PaymentOptions
-        paymentMethod={paymentMethod}
-        setPaymentMethod={setPaymentMethod}
-        paymentDetails={paymentDetails}
-        selectedCardIndex={selectedCardIndex}
-        setSelectedCardIndex={setSelectedCardIndex}
-        showCardModal={showCardModal}
-        setShowCardModal={setShowCardModal}
-        showUpiModal={showUpiModal}
-        setShowUpiModal={setShowUpiModal}
-        newCard={newCard}
-        setNewCard={setNewCard}
-        handleSaveCard={handleSaveCard}
-        handleExpiryChange={handleExpiryChange}
-        upiId={upiId}
-        setUpiId={setUpiId}
-        handleVerifyUpi={handleVerifyUpi}
-      />
-
-      <OrderRecap
-        orderData={orderData}
-        canPay={canPay}
-        isProcessing={isProcessing}
-        payNowLabel={payNowLabel}
-        handlePayNow={() => setShowConfirmModal(true)}
-        paymentMethod={paymentMethod}
-        navigate={navigate}
-        upiVerified={upiVerified}
-        upiId={upiId}
-        selectedCardIndex={selectedCardIndex}
-        paymentDetails={paymentDetails}
-      />
-    </div>
-
-    {showConfirmModal && (
-      <ConfirmModal
-        orderData={orderData}
-        paymentMethod={paymentMethod}
-        upiId={upiId}
-        selectedCardIndex={selectedCardIndex}
-        paymentDetails={paymentDetails}
-        onConfirm={handlePayNow}
-        onCancel={() => setShowConfirmModal(false)}
-      />
-    )}
-  </div>
-);
+  );
 }

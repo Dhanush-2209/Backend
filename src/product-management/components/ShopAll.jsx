@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { fetchProducts } from "../api/productApi";
+import { fetchFilteredProducts } from "../api/productApi";
 import ProductCard from "../components/ProductCard";
 import { Search, ChevronDown, Star, X } from "lucide-react";
 import "./ShopAllPage.css";
@@ -8,7 +8,6 @@ const PRODUCTS_PER_PAGE = 9;
 
 const ShopAllPage = () => {
   const [allProducts, setAllProducts] = useState([]);
-  const [displayedProducts, setDisplayedProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -19,11 +18,32 @@ const ShopAllPage = () => {
 
   useEffect(() => {
     const loadProducts = async () => {
-      const products = await fetchProducts();
+      const filters = {
+        searchTerm,
+        brands: selectedBrands,
+        categories: selectedCategories,
+        priceMin: priceRange.min,
+        priceMax: priceRange.max,
+        ratingMin: minRating,
+        sortBy,
+        page: currentPage,
+        limit: PRODUCTS_PER_PAGE,
+      };
+
+      const products = await fetchFilteredProducts(filters);
       setAllProducts(products);
     };
+
     loadProducts();
-  }, []);
+  }, [
+    searchTerm,
+    selectedBrands,
+    selectedCategories,
+    priceRange,
+    minRating,
+    sortBy,
+    currentPage,
+  ]);
 
   const availableBrands = useMemo(() => {
     const brands = allProducts.map((p) => p.brand);
@@ -34,62 +54,6 @@ const ShopAllPage = () => {
     const categories = allProducts.map((p) => p.category);
     return [...new Set(categories)].sort();
   }, [allProducts]);
-
-  useEffect(() => {
-    let filtered = [...allProducts];
-
-    if (searchTerm) {
-      filtered = filtered.filter((p) =>
-        p.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (selectedBrands.length > 0) {
-      filtered = filtered.filter((p) => selectedBrands.includes(p.brand));
-    }
-
-    if (selectedCategories.length > 0) {
-      filtered = filtered.filter((p) =>
-        selectedCategories.includes(p.category)
-      );
-    }
-
-    if (priceRange.min !== "") {
-      filtered = filtered.filter((p) => p.price >= parseFloat(priceRange.min));
-    }
-    if (priceRange.max !== "") {
-      filtered = filtered.filter((p) => p.price <= parseFloat(priceRange.max));
-    }
-
-    if (minRating > 0) {
-      filtered = filtered.filter((p) => p.rating >= minRating);
-    }
-
-    switch (sortBy) {
-      case "price-asc":
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case "rating":
-        filtered.sort((a, b) => b.rating - a.rating);
-        break;
-      default:
-        break;
-    }
-
-    setDisplayedProducts(filtered);
-    setCurrentPage(1);
-  }, [
-    searchTerm,
-    selectedBrands,
-    selectedCategories,
-    priceRange,
-    minRating,
-    sortBy,
-    allProducts,
-  ]);
 
   const handleBrandChange = (brand) => {
     setSelectedBrands((prev) =>
@@ -112,13 +76,8 @@ const ShopAllPage = () => {
     setPriceRange({ min: "", max: "" });
     setMinRating(0);
     setSortBy("featured");
+    setCurrentPage(1);
   };
-
-  const totalPages = Math.ceil(displayedProducts.length / PRODUCTS_PER_PAGE);
-  const paginatedProducts = displayedProducts.slice(
-    (currentPage - 1) * PRODUCTS_PER_PAGE,
-    currentPage * PRODUCTS_PER_PAGE
-  );
 
   return (
     <div className="p-shop-wrapper">
@@ -222,9 +181,9 @@ const ShopAllPage = () => {
               </div>
             </div>
 
-            {paginatedProducts.length > 0 ? (
+            {allProducts.length > 0 ? (
               <div className="p-product-grid">
-                {paginatedProducts.map((product) => (
+                {allProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
@@ -235,25 +194,8 @@ const ShopAllPage = () => {
               </div>
             )}
 
-            {totalPages > 1 && (
-              <div className="p-pagination">
-                <button
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage((p) => p - 1)}
-                >
-                  Prev
-                </button>
-                <span>
-                  Page {currentPage} of {totalPages}
-                </span>
-                <button
-                  disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage((p) => p + 1)}
-                >
-                  Next
-                </button>
-              </div>
-            )}
+            {/* Pagination UI (optional) */}
+            {/* You can add pagination controls here if backend returns totalPages */}
           </main>
         </div>
       </div>

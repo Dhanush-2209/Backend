@@ -191,3 +191,11 @@
   font-weight: bold;
   color: #ef4444;
 }
+/* Wishlist Button Blackout */
+.p-icon-button.wishlisted {
+  background-color: #1f2937; /* dark gray */
+  color: #9ca3af; /* muted gray text/icon */
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}

@@ -113,10 +113,12 @@ function App() {
                         </ProtectedRoute>
                       }
                     />
+
+                    {/* ✅ Order Management Routes with Cart Protection */}
                     <Route
                       path="/checkout"
                       element={
-                        <ProtectedRoute>
+                        <ProtectedRoute requireCartItems={true}>
                           <Checkout />
                         </ProtectedRoute>
                       }
@@ -124,23 +126,25 @@ function App() {
                     <Route
                       path="/payment"
                       element={
-                        <ProtectedRoute>
+                        <ProtectedRoute requireCartItems={true}>
                           <Payment />
                         </ProtectedRoute>
                       }
                     />
                     <Route
-                      path="/order-confirmation"
-                      element={
-                        <ProtectedRoute>
-                          <OrderConfirmation />
-                        </ProtectedRoute>
-                      }
-                    />
+  path="/order-confirmation"
+  element={
+    <ProtectedRoute>
+      <OrderConfirmation />
+    </ProtectedRoute>
+  }
+/>
+
 
                     <Route path="*" element={<HomePage />} />
                   </Route>
 
+                  {/* ✅ Admin Routes */}
                   <Route
                     path="/admin"
                     element={

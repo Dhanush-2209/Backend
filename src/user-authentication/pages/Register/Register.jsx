@@ -3,17 +3,19 @@ import { useNavigate, Link } from 'react-router-dom';
 import './Register.css';
 import Notification from '../../components/Notification/Notification';
 
-const API = 'http://localhost:3001';
+const API = import.meta.env.VITE_API_URL;
+
 
 export default function Register() {
   const [username, setUsername] = useState('');
-  const [firstName, setFirst] = useState('');
-  const [lastName, setLast] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [errors, setErrors] = useState({});
   const [notif, setNotif] = useState({ message: '', type: 'info', visible: false });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   function validate() {
@@ -35,18 +37,22 @@ export default function Register() {
       return;
     }
 
+    setLoading(true);
+
     try {
-      const r1 = await fetch(`${API}/users?email=${encodeURIComponent(email.trim().toLowerCase())}`);
-      const e1 = await r1.json();
-      if (e1.length > 0) {
+      const emailCheck = await fetch(`${API}/users?email=${encodeURIComponent(email.trim().toLowerCase())}`);
+      const emailExists = await emailCheck.json();
+      if (emailExists) {
         setErrors({ email: 'Email already registered' });
+        setLoading(false);
         return;
       }
 
-      const r2 = await fetch(`${API}/users?username=${encodeURIComponent(username.trim().toLowerCase())}`);
-      const e2 = await r2.json();
-      if (e2.length > 0) {
+      const usernameCheck = await fetch(`${API}/users?username=${encodeURIComponent(username.trim().toLowerCase())}`);
+      const usernameExists = await usernameCheck.json();
+      if (usernameExists) {
         setErrors({ username: 'Username already taken' });
+        setLoading(false);
         return;
       }
 
@@ -56,12 +62,7 @@ export default function Register() {
         lastName: lastName.trim(),
         email: email.trim().toLowerCase(),
         password,
-        phone: phone.trim(),
-        addresses: [],
-        paymentMethods: [],
-        cart: [],
-        wishlist: [],
-        orders: []
+        phone: phone.trim()
       };
 
       const resp = await fetch(`${API}/users`, {
@@ -81,6 +82,8 @@ export default function Register() {
       console.error(err);
       setNotif({ message: 'Registration failed. Try again.', type: 'error', visible: true });
       setTimeout(() => setNotif(v => ({ ...v, visible: false })), 1200);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -100,17 +103,19 @@ export default function Register() {
                   onChange={e => setUsername(e.target.value)}
                   placeholder="Choose a username"
                   aria-label="Username"
+                  disabled={loading}
                 />
-                {errors.username && <div className="u-field-err" aria-live="polite">{errors.username}</div>}
+                {errors.username && <div className="u-field-err">{errors.username}</div>}
               </div>
 
               <div>
                 <label>First Name</label>
                 <input
                   value={firstName}
-                  onChange={e => setFirst(e.target.value)}
+                  onChange={e => setFirstName(e.target.value)}
                   placeholder="First name"
                   aria-label="First name"
+                  disabled={loading}
                 />
               </div>
 
@@ -118,9 +123,10 @@ export default function Register() {
                 <label>Last Name</label>
                 <input
                   value={lastName}
-                  onChange={e => setLast(e.target.value)}
+                  onChange={e => setLastName(e.target.value)}
                   placeholder="Last name"
                   aria-label="Last name"
+                  disabled={loading}
                 />
               </div>
 
@@ -131,8 +137,9 @@ export default function Register() {
                   onChange={e => setEmail(e.target.value)}
                   placeholder="Email"
                   aria-label="Email"
+                  disabled={loading}
                 />
-                {errors.email && <div className="u-field-err" aria-live="polite">{errors.email}</div>}
+                {errors.email && <div className="u-field-err">{errors.email}</div>}
               </div>
 
               <div style={{ gridColumn: '1 / -1' }}>
@@ -143,8 +150,9 @@ export default function Register() {
                   onChange={e => setPassword(e.target.value)}
                   placeholder="Password (min 6 chars)"
                   aria-label="Password"
+                  disabled={loading}
                 />
-                {errors.password && <div className="u-field-err" aria-live="polite">{errors.password}</div>}
+                {errors.password && <div className="u-field-err">{errors.password}</div>}
               </div>
 
               <div>
@@ -154,12 +162,15 @@ export default function Register() {
                   onChange={e => setPhone(e.target.value)}
                   placeholder="Phone (optional)"
                   aria-label="Phone"
+                  disabled={loading}
                 />
               </div>
             </div>
 
             <div className="u-auth-actions">
-              <button className="u-btn-primary" type="submit">Register</button>
+              <button className="u-btn-primary" type="submit" disabled={loading}>
+                {loading ? 'Registering...' : 'Register'}
+              </button>
             </div>
 
             <div className="u-alt-login">

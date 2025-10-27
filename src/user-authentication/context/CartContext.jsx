@@ -1,5 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import {
+  addToUserCart,
+  updateCartItem,
+  removeFromUserCart,
+  clearUserCart,
+  getUserCart
+} from '../../product-management/api/productApi';
 
 const CartContext = createContext();
 
@@ -8,66 +15,96 @@ export function useCart() {
 }
 
 export function CartProvider({ children }) {
-  const { user, login } = useAuth();
+  const { user, login, token } = useAuth();
   const [cart, setCart] = useState([]);
 
+  // ✅ Sync cart on login or token change
   useEffect(() => {
-    if (user && user.cart) {
-      setCart(user.cart);
+    if (user?.id && token) {
+      fetchUserCart();
     } else {
       setCart([]);
     }
-  }, [user]);
+  }, [user?.id, token]);
 
-  function persistCart(newCart) {
-    if (user && user.id) {
-      fetch(`http://localhost:3001/users/${user.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cart: newCart })
-      }).then(() => {
-        login({ ...user, cart: newCart });
-      });
+  // ✅ Fetch cart from backend
+  async function fetchUserCart() {
+    if (!user?.id || !token) return;
+    try {
+      const latest = await getUserCart(user.id, token);
+      const transformed = latest.map(item => ({
+        id: item.id,
+        title: item.title,
+        thumbnail: item.thumbnail,
+        description: item.description,
+        price: item.price,
+        quantity: item.quantity,
+        category: item.category,
+        brand: item.brand,
+        unit: item.unit
+      }));
+      setCart(transformed);
+      login({ user: { ...user, cart: transformed }, token });
+    } catch (error) {
+      console.error("Failed to fetch cart:", error);
     }
   }
 
-  function addToCart(product) {
-    setCart(prev => {
-      const found = prev.find(item => item.id === product.id);
-      let updated;
-      if (found) {
-        updated = prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
-      } else {
-        updated = [...prev, { ...product, quantity: 1 }];
-      }
-      persistCart(updated);
-      return updated;
-    });
+  // ✅ Add product to cart
+  async function addToCart(product) {
+    if (!user?.id || !token) return;
+    try {
+      await addToUserCart(user.id, product.id, token);
+      await fetchUserCart();
+    } catch (error) {
+      console.error("Add to cart failed:", error);
+    }
   }
 
-  function removeFromCart(id) {
-    setCart(prev => {
-      const updated = prev.filter(item => item.id !== id);
-      persistCart(updated);
-      return updated;
-    });
+  // ✅ Update quantity
+  async function updateQuantity(id, quantity) {
+    if (!user?.id || !token) return;
+    try {
+      await updateCartItem(user.id, id, quantity, token);
+      await fetchUserCart();
+    } catch (error) {
+      console.error("Update quantity failed:", error);
+    }
   }
 
-  function updateQuantity(id, quantity) {
-    setCart(prev => {
-      const updated = prev.map(item => item.id === id ? { ...item, quantity } : item);
-      persistCart(updated);
-      return updated;
-    });
+  // ✅ Remove item from cart
+  async function removeFromCart(id) {
+    if (!user?.id || !token) return;
+    try {
+      await removeFromUserCart(user.id, id, token);
+      await fetchUserCart();
+    } catch (error) {
+      console.error("Remove from cart failed:", error);
+    }
   }
 
-  function clearCart() {
-    setCart([]);
-    persistCart([]);
+  // ✅ Clear entire cart
+  async function clearCart() {
+    if (!user?.id || !token) return;
+    try {
+      await clearUserCart(user.id, token);
+      await fetchUserCart();
+    } catch (error) {
+      console.error("Clear cart failed:", error);
+    }
   }
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart,
+        fetchUserCart
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

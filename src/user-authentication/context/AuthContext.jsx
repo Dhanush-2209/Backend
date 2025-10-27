@@ -2,138 +2,106 @@ import React, {
   createContext,
   useContext,
   useEffect,
-  useState,
-  useRef
+  useState
 } from "react";
 
 const AuthContext = createContext();
+const API = import.meta.env.VITE_API_URL;
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    try {
-      const raw = localStorage.getItem("authUser");
-      const parsed = raw ? JSON.parse(raw) : null;
-      return parsed?.id ? parsed : null;
-    } catch {
-      return null;
-    }
-  });
-
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [redirectPath, setRedirectPath] = useState(null);
-  const hasEnsuredAdmin = useRef(false);
-  const isAuthenticated = !!user?.id;
+
+  const isAuthenticated = !!user?.id && !!token;
   const isAdmin = user?.isAdmin === true;
 
-  // ✅ Persist user session
+  // ✅ Load from localStorage on first mount
   useEffect(() => {
-    if (user?.id) {
-      localStorage.setItem("authUser", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("authUser");
-    }
-  }, [user]);
-
-  // ✅ Auto-clean invalid sessions
-  useEffect(() => {
-    const raw = localStorage.getItem("authUser");
     try {
-      const parsed = raw ? JSON.parse(raw) : null;
-      if (!parsed?.id || typeof parsed?.isAdmin === "undefined") {
-        localStorage.removeItem("authUser");
-        setUser(null);
+      const storedUser = localStorage.getItem("authUser");
+      const storedToken = localStorage.getItem("authToken");
+      if (storedUser && storedToken) {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser?.id) {
+          setUser(parsedUser);
+          setToken(storedToken);
+          console.log("🔁 Restored token from localStorage:", storedToken);
+        }
       }
     } catch {
       localStorage.removeItem("authUser");
-      setUser(null);
+      localStorage.removeItem("authToken");
     }
   }, []);
 
-  // ✅ Ensure admin exists
+  // ✅ Persist to localStorage on change
   useEffect(() => {
-    async function ensureAdmin() {
-      if (hasEnsuredAdmin.current) return;
-      hasEnsuredAdmin.current = true;
-
-      try {
-        const res = await fetch("http://localhost:3001/users");
-        if (!res.ok) return;
-
-        const allUsers = await res.json();
-        const admins = allUsers.filter((u) => u.isAdmin === true);
-
-        if (admins.length === 0) {
-          await fetch("http://localhost:3001/users", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              username: "Admin",
-              email: "admin@gmail.com",
-              password: "Admin123",
-              isAdmin: true,
-              addresses: [],
-              paymentMethods: [],
-              cart: [],
-              wishlist: [],
-              orders: []
-            })
-          });
-        }
-      } catch {
-        // silent fail
+    try {
+      if (user && token) {
+        localStorage.setItem("authUser", JSON.stringify(user));
+        localStorage.setItem("authToken", token);
+        console.log("✅ Stored token to localStorage:", token);
+      } else {
+        localStorage.removeItem("authUser");
+        localStorage.removeItem("authToken");
+        console.log("🧹 Cleared token from localStorage");
       }
-    }
+    } catch {}
+  }, [user, token]);
 
-    ensureAdmin();
-  }, []);
-
-  // ✅ Login handler
-  const login = (userData, onLoginSuccess) => {
-    if (userData?.isAdmin) {
-      setRedirectPath(null);
-    }
-    setUser(userData);
-    if (typeof onLoginSuccess === "function") onLoginSuccess(userData);
+  // ✅ Login with token + user
+  const login = ({ token, user }, onLoginSuccess) => {
+    console.log("🔐 Logging in with token:", token);
+    setUser(user);
+    setToken(token);
+    setRedirectPath(null);
+    if (typeof onLoginSuccess === "function") onLoginSuccess(user);
   };
 
-  // ✅ Logout handler with redirect + reload
+  // ✅ Logout and clear everything
   const logout = (onLogout) => {
+    console.log("🚪 Logging out");
     setUser(null);
+    setToken(null);
     setRedirectPath(null);
     try {
       localStorage.removeItem("authUser");
+      localStorage.removeItem("authToken");
       sessionStorage.clear();
-      localStorage.clear();
-    } catch {
-      // ignore
-    }
+    } catch {}
     if (typeof onLogout === "function") onLogout();
-
-    // ✅ Force redirect and reload to prevent back nav
     window.location.replace("/login");
   };
 
-  // ✅ Backend login
-  const loginWithBackend = async (username, password) => {
+  // ✅ Optional: login via username/password (if needed)
+  const loginWithBackend = async (identifier, password) => {
     try {
-      const res = await fetch(
-        `http://localhost:3001/users?username=${username}&password=${password}`
-      );
+      const res = await fetch(`${API}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ identifier, password })
+      });
+
       if (!res.ok) {
+        console.error("❌ Login failed: bad response");
         setUser(null);
+        setToken(null);
         return;
       }
-      const users = await res.json();
-      if (users.length > 0) {
-        const loggedInUser = users[0];
-        if (loggedInUser.isAdmin) {
-          setRedirectPath(null);
-        }
-        setUser(loggedInUser);
+
+      const { token, user } = await res.json();
+      if (token && user?.id) {
+        login({ token, user });
       } else {
+        console.error("❌ Login failed: missing token or user");
         setUser(null);
+        setToken(null);
       }
-    } catch {
+    } catch (err) {
+      console.error("❌ Login error:", err);
       setUser(null);
+      setToken(null);
     }
   };
 
@@ -141,6 +109,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
+        token,
         isAuthenticated,
         isAdmin,
         login,
