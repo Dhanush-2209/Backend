@@ -5,21 +5,55 @@ export function generateInvoice(order) {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  const address = order.address || {};
-  const payment = order.paymentMethod || {};
-  const placedDate = new Date(order.orderedTime);
-  const deliveryFee = order.deliveryFee || 0;
-  const discount = order.discount || 0;
-  const subtotal = (order.items || []).reduce((sum, item) => sum + (item.price || 0) * (item.qty || 0), 0);
-  const total = order.total || subtotal + deliveryFee - discount;
+  // 🔍 Parse flat address string
+  function parseAddressString(addrStr) {
+    if (!addrStr || typeof addrStr !== "string") return { name: "N/A", line: "", city: "", pincode: "", phone: "N/A" };
 
-  function getPaymentMethodLabel(pm) {
-    if (!pm) return "N/A";
-    if (pm.method) return pm.method;
-    if (pm.cardType || pm.cardMasked || pm.cardLast4) return "Card";
-    if (pm.upiId) return "UPI";
-    return "N/A";
+    const nameMatch = addrStr.match(/^([^,]+)/);
+    const phoneMatch = addrStr.match(/Ph:\s*(\d+)/);
+    const pincodeMatch = addrStr.match(/-\s*(\d{6})/);
+    const lineCityMatch = addrStr.match(/,\s*(.+?)\s*-/);
+
+    return {
+      name: nameMatch?.[1]?.trim() || "N/A",
+      line: lineCityMatch?.[1]?.split(",")[0]?.trim() || "",
+      city: lineCityMatch?.[1]?.split(",")[1]?.trim() || "",
+      pincode: pincodeMatch?.[1] || "",
+      phone: phoneMatch?.[1] || "N/A"
+    };
   }
+
+  // 🔍 Parse flat payment method string
+  function parsePaymentString(pmStr) {
+    if (!pmStr || typeof pmStr !== "string") return { method: "N/A" };
+
+    if (pmStr.toLowerCase().includes("upi")) {
+      return { method: "UPI", upiId: pmStr.split(":")[1]?.trim() || "N/A" };
+    }
+
+    if (pmStr.toLowerCase().includes("cash")) {
+      return { method: "Cash on Delivery" };
+    }
+
+    const cardMatch = pmStr.match(/(Visa|MasterCard|RuPay|Amex|Card)\s*-\s*(\*{4}.*\d{4})/);
+    const expiryMatch = pmStr.match(/Exp:\s*(\d{2}\/\d{2})/);
+
+    return {
+      method: "Card",
+      cardType: cardMatch?.[1] || "Card",
+      cardMasked: cardMatch?.[2] || "**** **** **** XXXX",
+      expiry: expiryMatch?.[1] || "N/A"
+    };
+  }
+
+  const address = parseAddressString(order.address);
+  const payment = parsePaymentString(order.paymentMethod);
+  const placedDate = new Date(order.orderedTime);
+  const deliveryFee = order.shipping || 0;
+  const tax = order.tax || 0;
+  const discount = order.discount || 0;
+  const subtotal = order.subtotal || (order.items || []).reduce((sum, item) => sum + (item.price || 0) * (item.qty || 0), 0);
+  const total = order.total || subtotal + deliveryFee + tax - discount;
 
   // ====== HEADER ======
   doc.setFont("helvetica", "bold");
@@ -51,16 +85,16 @@ export function generateInvoice(order) {
   doc.setFontSize(10);
   yPos += 6;
   doc.text([
-    `Name: ${address.name || "N/A"}`,
-    `Address: ${address.line || ""}, ${address.city || ""} - ${address.pincode || ""}`,
-    `Phone: ${address.phone || "N/A"}`
+    `Name: ${address.name}`,
+    `Address: ${address.line}, ${address.city} - ${address.pincode}`,
+    `Phone: ${address.phone}`
   ].join('\n'), 14, yPos);
 
   const orderDetails = [
     `Order ID: ${order.id}`,
     `Placed On: ${placedDate.toLocaleDateString()} ${placedDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`,
     `Status: ${order.status}`,
-    `Payment Method: ${getPaymentMethodLabel(payment)}`
+    `Payment Method: ${payment.method}`
   ];
 
   if (payment.cardMasked) orderDetails.push(`Card: ${payment.cardMasked}`);
@@ -110,7 +144,9 @@ export function generateInvoice(order) {
   finalY += 6;
   doc.text(`Subtotal: Rs. ${subtotal.toFixed(2)}`, pageWidth - 14, finalY, { align: "right" });
   finalY += 6;
-  doc.text(`Delivery Fee: Rs. ${deliveryFee.toFixed(2)}`, pageWidth - 14, finalY, { align: "right" });
+  doc.text(`Shipping: Rs. ${deliveryFee.toFixed(2)}`, pageWidth - 14, finalY, { align: "right" });
+  finalY += 6;
+  doc.text(`Tax: Rs. ${tax.toFixed(2)}`, pageWidth - 14, finalY, { align: "right" });
   finalY += 6;
   doc.text(`Discount: Rs. ${discount.toFixed(2)}`, pageWidth - 14, finalY, { align: "right" });
 

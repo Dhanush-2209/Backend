@@ -34,6 +34,11 @@ public class Order {
     @JsonIgnore
     private List<Item> items;
 
+    // ✅ New: Delivery agent assignment
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "agent_id")
+    private DeliveryAgent deliveryAgent;
+
     // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -76,4 +81,7 @@ public class Order {
 
     public List<Item> getItems() { return items; }
     public void setItems(List<Item> items) { this.items = items; }
+
+    public DeliveryAgent getDeliveryAgent() { return deliveryAgent; }
+    public void setDeliveryAgent(DeliveryAgent deliveryAgent) { this.deliveryAgent = deliveryAgent; }
 }

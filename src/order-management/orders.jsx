@@ -134,13 +134,18 @@ export default function Orders() {
                         <p>₹{order.total}</p>
                       </div>
                       <div>
-                        <span className="o-meta-label">SHIP TO</span>
-                        <p>
-                          {order.address.name}<br />
-                          {order.address.line}, {order.address.city} - {order.address.pincode}<br />
-                          Phone: {order.address.phone}
-                        </p>
-                      </div>
+  <span className="o-meta-label">SHIP TO</span>
+  {typeof order.address === "string" ? (
+    <p>{order.address}</p>
+  ) : (
+    <p>
+      {order.address.name}<br />
+      {order.address.line}, {order.address.city} - {order.address.pincode}<br />
+      Phone: {order.address.phone}
+    </p>
+  )}
+</div>
+
                     </div>
 
                     <div className="o-delivery-status">
@@ -178,7 +183,7 @@ export default function Orders() {
                             alt={item.name}
                             onError={(e) => {
                               e.target.onerror = null;
-                              e.target.src = "/images/default-product.jpg";
+                              e.target.src = "/images/default-product.png";
                             }}
                           />
                           <p>{item.name} × {item.qty}</p>

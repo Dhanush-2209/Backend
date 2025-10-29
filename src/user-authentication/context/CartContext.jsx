@@ -50,11 +50,20 @@ export function CartProvider({ children }) {
     }
   }
 
-  // ✅ Add product to cart
+  // ✅ Add product to cart (supports normal and reorder flows)
   async function addToCart(product) {
     if (!user?.id || !token) return;
     try {
-      await addToUserCart(user.id, product.id, token);
+      if (product.productId) {
+        // ✅ Reorder flow: use productId from previous order
+        await addToUserCart(user.id, product.productId, token);
+      } else if (product.id && typeof product.id === "string") {
+        // ✅ Normal flow: use product.id
+        await addToUserCart(user.id, product.id, token);
+      } else {
+        // Fallback: send full product object
+        await addToUserCart(user.id, product, token);
+      }
       await fetchUserCart();
     } catch (error) {
       console.error("Add to cart failed:", error);

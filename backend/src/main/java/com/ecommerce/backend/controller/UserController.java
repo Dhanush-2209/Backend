@@ -43,22 +43,29 @@ public class UserController {
         return ResponseEntity.ok(savedUser);
     }
 
-    // ✅ Check if email exists
-    @GetMapping(params = "email")
+    // ✅ Public check: email exists
+    @GetMapping("/check-email")
     public ResponseEntity<?> checkEmail(@RequestParam String email) {
         return ResponseEntity.ok(userService.emailExists(email));
     }
 
-    // ✅ Check if username exists
-    @GetMapping(params = "username")
+    // ✅ Public check: username exists
+    @GetMapping("/check-username")
     public ResponseEntity<?> checkUsername(@RequestParam String username) {
         return ResponseEntity.ok(userService.usernameExists(username));
     }
 
-    // ✅ Admin summary endpoint
+    // ✅ Admin summary endpoint (JWT protected)
     @GetMapping("/admin")
     public ResponseEntity<List<UserSummaryDTO>> getAllUserSummaries(HttpServletRequest request) {
         Claims claims = (Claims) request.getAttribute("claims");
+        return ResponseEntity.ok(userService.getUserSummaries());
+    }
+
+    // ✅ NEW: General GET /api/users for dashboard and admin use
+    @GetMapping
+    public ResponseEntity<List<UserSummaryDTO>> getAllUsers(HttpServletRequest request) {
+        Claims claims = (Claims) request.getAttribute("claims"); // Optional: enforce JWT if needed
         return ResponseEntity.ok(userService.getUserSummaries());
     }
 }

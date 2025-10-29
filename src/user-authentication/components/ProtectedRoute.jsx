@@ -1,6 +1,6 @@
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function ProtectedRoute({
   children,
@@ -10,6 +10,7 @@ export default function ProtectedRoute({
   const { user, token, cart, setRedirectPath, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
   // ✅ Back navigation guard
   useEffect(() => {
@@ -29,14 +30,20 @@ export default function ProtectedRoute({
     };
   }, [logout, navigate, location.pathname]);
 
-  // ✅ Auth check
-  if (!user?.id || !token) {
-    setRedirectPath(location.pathname);
+  // ✅ Auth check (safe setRedirectPath)
+  useEffect(() => {
+    if (!user?.id || !token) {
+      setRedirectPath(location.pathname);
+      setShouldRedirect(true);
+    }
+  }, [user, token, location.pathname, setRedirectPath]);
+
+  if (shouldRedirect) {
     return <Navigate to="/login" replace />;
   }
 
-  // ✅ Admin check
-  if (requireAdmin && !user.isAdmin) {
+  // ✅ Admin check (only if user is present)
+  if (requireAdmin && user?.id && !user.isAdmin) {
     alert("Admin access required.");
     return <Navigate to="/" replace />;
   }

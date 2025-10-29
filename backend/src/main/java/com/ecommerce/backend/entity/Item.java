@@ -11,16 +11,20 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ✅ Store productId as UUID string to match products.id
+    @Column(name = "product_id", length = 36, nullable = false)
+    private String productId;
+
     private String name;
     private double price;
     private int qty;
-
     private String unit;
+
     private String brand;
     private String category;
-    private String sku;
     private String description;
     private String image;
+    private String sku;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
@@ -30,6 +34,9 @@ public class Item {
     // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public String getProductId() { return productId; }
+    public void setProductId(String productId) { this.productId = productId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

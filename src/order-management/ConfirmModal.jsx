@@ -42,7 +42,9 @@ export default function ConfirmModal({
           <strong>Items:</strong>
           <ul>
             {orderData.items.map((item) => (
-              <li key={item.id}>
+              <li
+                key={`${item.productId || item.id}-${item.name}-${item.qty}`}
+              >
                 {item.name} × {item.qty} — ₹{(item.price * item.qty).toFixed(2)}
               </li>
             ))}

@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
         if (parsedUser?.id) {
           setUser(parsedUser);
           setToken(storedToken);
-          console.log("🔁 Restored token from localStorage:", storedToken);
+          
         }
       }
     } catch {
@@ -41,22 +41,24 @@ export function AuthProvider({ children }) {
       if (user && token) {
         localStorage.setItem("authUser", JSON.stringify(user));
         localStorage.setItem("authToken", token);
-        console.log("✅ Stored token to localStorage:", token);
+        
       } else {
         localStorage.removeItem("authUser");
         localStorage.removeItem("authToken");
-        console.log("🧹 Cleared token from localStorage");
+        
       }
     } catch {}
   }, [user, token]);
 
   // ✅ Login with token + user
   const login = ({ token, user }, onLoginSuccess) => {
-    console.log("🔐 Logging in with token:", token);
+    
     setUser(user);
     setToken(token);
     setRedirectPath(null);
-    if (typeof onLoginSuccess === "function") onLoginSuccess(user);
+    if (typeof onLoginSuccess === "function") {
+      setTimeout(() => onLoginSuccess(user), 0); // ✅ Avoid calling during render
+    }
   };
 
   // ✅ Logout and clear everything
@@ -70,11 +72,13 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("authToken");
       sessionStorage.clear();
     } catch {}
-    if (typeof onLogout === "function") onLogout();
+    if (typeof onLogout === "function") {
+      setTimeout(() => onLogout(), 0); // ✅ Avoid calling during render
+    }
     window.location.replace("/login");
   };
 
-  // ✅ Optional: login via username/password (if needed)
+  // ✅ Login via backend
   const loginWithBackend = async (identifier, password) => {
     try {
       const res = await fetch(`${API}/auth/login`, {
@@ -83,8 +87,9 @@ export function AuthProvider({ children }) {
         body: JSON.stringify({ identifier, password })
       });
 
-      if (!res.ok) {
-        console.error("❌ Login failed: bad response");
+      const contentType = res.headers.get("Content-Type");
+      if (!res.ok || !contentType?.includes("application/json")) {
+        console.error("❌ Login failed: bad response or non-JSON");
         setUser(null);
         setToken(null);
         return;

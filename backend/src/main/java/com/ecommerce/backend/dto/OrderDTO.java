@@ -21,6 +21,14 @@ public class OrderDTO {
     private String status;
     private String paymentMethod;
 
+    // ✅ Delivery agent details
+    private String agentName;
+    private String agentPhone;
+
+    // ✅ New: Readable user info for admin
+    private String userName;
+    private String userEmail;
+
     // Getters
     public Long getId() { return id; }
     public UUID getUserId() { return userId; }
@@ -36,6 +44,10 @@ public class OrderDTO {
     public String getOrderedTime() { return orderedTime; }
     public String getStatus() { return status; }
     public String getPaymentMethod() { return paymentMethod; }
+    public String getAgentName() { return agentName; }
+    public String getAgentPhone() { return agentPhone; }
+    public String getUserName() { return userName; }
+    public String getUserEmail() { return userEmail; }
 
     // Setters
     public void setId(Long id) { this.id = id; }
@@ -52,4 +64,8 @@ public class OrderDTO {
     public void setOrderedTime(String orderedTime) { this.orderedTime = orderedTime; }
     public void setStatus(String status) { this.status = status; }
     public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+    public void setAgentName(String agentName) { this.agentName = agentName; }
+    public void setAgentPhone(String agentPhone) { this.agentPhone = agentPhone; }
+    public void setUserName(String userName) { this.userName = userName; }
+    public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
 }

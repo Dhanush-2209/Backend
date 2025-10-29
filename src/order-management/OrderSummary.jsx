@@ -3,16 +3,6 @@ import "./orderSummary.css";
 
 /**
  * Displays selected address, delivery date, and full order summary.
- * @param {Object[]} addresses - List of user addresses.
- * @param {string|number} selectedAddressId - Selected address ID.
- * @param {Object[]} availableDates - List of delivery date options.
- * @param {string} selectedDate - Selected delivery date value.
- * @param {Function} setSelectedDate - Setter for delivery date.
- * @param {boolean} showDateDropdown - Whether dropdown is visible.
- * @param {Function} setShowDateDropdown - Toggle dropdown visibility.
- * @param {Object[]} cartItems - Items in cart.
- * @param {Function} calcSubtotal - Function to calculate subtotal.
- * @param {Function} onProceed - Callback to proceed to payment.
  */
 export default function OrderSummary({
   addresses,
@@ -87,7 +77,7 @@ export default function OrderSummary({
                 onChange={(e) => setSelectedDate(e.target.value)}
               >
                 {dropdownDates.map((d) => (
-                  <option key={d.value} value={d.value}>
+                  <option key={`${d.value}-${d.label}`} value={d.value}>
                     {d.label}
                   </option>
                 ))}
@@ -108,7 +98,7 @@ export default function OrderSummary({
           {cartItems.map((it) => (
             <div
               className="o-item-row"
-              key={it.id}
+              key={it.productId || it.id}
               aria-label={`${it.name}, quantity ${it.qty}, price ₹${(it.price * it.qty).toFixed(2)}`}
             >
               <div>{it.name} x{it.qty}</div>

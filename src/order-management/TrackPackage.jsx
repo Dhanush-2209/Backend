@@ -88,9 +88,15 @@ export default function TrackPackage() {
               <div>
                 <span className="o-meta-label">SHIP TO</span>
                 <p>
-                  {order.address.name}<br />
-                  {order.address.line}, {order.address.city} - {order.address.pincode}<br />
-                  Phone: {order.address.phone}
+                  {typeof order.address === "string" ? (
+                    order.address
+                  ) : (
+                    <>
+                      {order.address.name}<br />
+                      {order.address.line}, {order.address.city} - {order.address.pincode}<br />
+                      Phone: {order.address.phone}
+                    </>
+                  )}
                 </p>
               </div>
             </div>
@@ -107,7 +113,7 @@ export default function TrackPackage() {
 
                 <div className="o-timeline-bar">
                   {STATUS_STAGES.map((stage, i) => (
-                    <div key={stage} className={`o-timeline-step ${i <= currentStageIndex ? "o-active" : ""}`}>
+                    <div key={`${stage}-${i}`} className={`o-timeline-step ${i <= currentStageIndex ? "o-active" : ""}`}>
                       <div className="o-step-dot" />
                       <span>{stage}</span>
                       <p className="o-stage-time">
@@ -124,24 +130,25 @@ export default function TrackPackage() {
             )}
 
             {order.status !== "Cancelled" && (
-              <div className="o-agent-info">
-                <img src="/images/delivery-agent.png" alt="Agent" />
-                <div>
-                  <p className="o-agent-name">Delivery by: Rajesh Kumar</p>
-                  <p className="o-agent-contact">Phone: 9876543210</p>
-                </div>
-              </div>
-            )}
+  <div className="o-agent-info">
+    <img src="/images/agent.jpg" alt="Agent" />
+    <div>
+      <p className="o-agent-name">Delivery by: {order.agentName || "Not assigned"}</p>
+      <p className="o-agent-contact">Phone: {order.agentPhone || "N/A"}</p>
+    </div>
+  </div>
+)}
+
 
             <div className="o-track-products">
               {order.items.map(item => (
-                <div key={item.id} className="o-track-item">
+                <div key={item.id || `${item.name}-${item.qty}`} className="o-track-item">
                   <img
                     src={item.image}
                     alt={item.name}
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "/images/default-product.jpg";
+                      e.target.src = "/images/default-product.png";
                     }}
                   />
                   <p>{item.name} × {item.qty}</p>

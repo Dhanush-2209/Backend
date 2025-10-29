@@ -59,7 +59,10 @@ export default function OrderRecap({
 
         <div className="o-items-list">
           {orderData.items.map((item) => (
-            <div key={item.id} className="o-item-row">
+            <div
+              key={`${item.productId || item.id}-${item.name}-${item.qty}`}
+              className="o-item-row"
+            >
               <span>
                 {item.name} × {item.qty}
               </span>

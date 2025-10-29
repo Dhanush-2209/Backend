@@ -148,8 +148,23 @@ export default function Payment() {
 
   const formattedAddress = formatAddress(orderData.address);
 
+  // ✅ Transform items to ensure productId is present
+  const transformedItems = orderData.items.map(item => ({
+    productId: item.productId || item.id,
+    name: item.name || item.title,
+    price: item.price,
+    qty: item.qty || item.quantity,
+    unit: item.unit,
+    brand: item.brand,
+    category: item.category,
+    sku: item.sku,
+    description: item.description,
+    image: item.image
+  }));
+
   const payload = {
     ...orderData,
+    items: transformedItems, // ✅ Use transformed items
     address: formattedAddress,
     paymentMethod: paymentMethodString,
     orderedDate: now.toISOString().split("T")[0],
@@ -171,9 +186,8 @@ export default function Payment() {
     });
 
     if (!res.ok) throw new Error("Order failed");
-    const orderId = await res.json(); // ✅ FIXED
+    const orderId = await res.json();
 
-    console.log("Order placed with ID:", orderId);
     toast.success("Order placed successfully!");
     sessionStorage.setItem("lastOrderId", orderId);
     sessionStorage.setItem("orderPlaced", "true");
@@ -186,6 +200,7 @@ export default function Payment() {
     setShowConfirmModal(false);
   }
 }
+
 
   function formatAddress(addr) {
     if (!addr || typeof addr === "string") return addr;

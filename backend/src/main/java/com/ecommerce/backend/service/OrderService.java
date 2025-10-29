@@ -5,8 +5,10 @@ import com.ecommerce.backend.dto.ItemDTO;
 import com.ecommerce.backend.entity.Order;
 import com.ecommerce.backend.entity.Item;
 import com.ecommerce.backend.entity.User;
+import com.ecommerce.backend.entity.DeliveryAgent;
 import com.ecommerce.backend.repository.OrderRepository;
 import com.ecommerce.backend.repository.UserRepository;
+import com.ecommerce.backend.repository.DeliveryAgentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,10 @@ public class OrderService {
     @Autowired
     private UserRepository userRepository;
 
-    // ✅ Save new order
+    @Autowired
+    private DeliveryAgentRepository deliveryAgentRepository;
+
+    // ✅ Save new order with random delivery agent
     public Order saveOrder(OrderDTO dto) {
         Optional<User> userOpt = userRepository.findById(dto.getUserId());
         if (userOpt.isEmpty()) return null;
@@ -42,9 +47,17 @@ public class OrderService {
         order.setStatus(dto.getStatus());
         order.setPaymentMethod(dto.getPaymentMethod());
 
+        // ✅ Assign random delivery agent
+        List<DeliveryAgent> agents = deliveryAgentRepository.findAll();
+        if (!agents.isEmpty()) {
+            DeliveryAgent assignedAgent = agents.get(new Random().nextInt(agents.size()));
+            order.setDeliveryAgent(assignedAgent);
+        }
+
         List<Item> items = new ArrayList<>();
         for (ItemDTO itemDTO : dto.getItems()) {
             Item item = new Item();
+            item.setProductId(itemDTO.getProductId());
             item.setName(itemDTO.getName());
             item.setPrice(itemDTO.getPrice());
             item.setQty(itemDTO.getQty());
@@ -62,11 +75,13 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    // ✅ Convert Order to DTO
+    // ✅ Convert Order to DTO with agent and user info
     public OrderDTO mapToDTO(Order order) {
         OrderDTO dto = new OrderDTO();
         dto.setId(order.getId());
         dto.setUserId(order.getUser().getId());
+        dto.setUserName(order.getUser().getUsername()); // ✅ Added
+        dto.setUserEmail(order.getUser().getEmail());   // ✅ Added
         dto.setSubtotal(order.getSubtotal());
         dto.setShipping(order.getShipping());
         dto.setTax(order.getTax());
@@ -79,9 +94,16 @@ public class OrderService {
         dto.setStatus(order.getStatus());
         dto.setPaymentMethod(order.getPaymentMethod());
 
+        // ✅ Include delivery agent details
+        if (order.getDeliveryAgent() != null) {
+            dto.setAgentName(order.getDeliveryAgent().getName());
+            dto.setAgentPhone(order.getDeliveryAgent().getPhone());
+        }
+
         List<ItemDTO> itemDTOs = new ArrayList<>();
         for (Item item : order.getItems()) {
             ItemDTO i = new ItemDTO();
+            i.setProductId(item.getProductId());
             i.setName(item.getName());
             i.setPrice(item.getPrice());
             i.setQty(item.getQty());
@@ -118,6 +140,7 @@ public class OrderService {
 
         for (Item item : order.getItems()) {
             ItemDTO dto = new ItemDTO();
+            dto.setProductId(item.getProductId());
             dto.setName(item.getName());
             dto.setPrice(item.getPrice());
             dto.setQty(item.getQty());

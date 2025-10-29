@@ -11,65 +11,50 @@ function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState('');
   const ordersPerPage = 5;
 
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  const API_BASE = import.meta.env.VITE_API_URL;
+
   const adminProfile = {
     name: user?.username || user?.name || 'Admin',
     email: user?.email || 'admin@example.com'
   };
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchOrders = async () => {
       try {
-        const res = await fetch('http://localhost:3001/users');
-        const usersData = await res.json();
-
-        const allOrders = [];
-
-        usersData.forEach(u => {
-          const userName = `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim() || u.username || 'Unnamed';
-
-          if (Array.isArray(u.orders)) {
-            u.orders.forEach(o => {
-              const productsArr = Array.isArray(o.items) ? o.items : o.products;
-              const itemCount = Array.isArray(productsArr)
-                ? productsArr.reduce((sum, p) => sum + (p.qty || p.quantity || 0), 0)
-                : 0;
-              const productNames = Array.isArray(productsArr)
-                ? productsArr.map(p => p.name).join(', ')
-                : '';
-
-              const formattedDate = o.orderedDate
-                ? new Date(o.orderedDate).toLocaleDateString()
-                : new Date().toLocaleDateString();
-              const deliveryDate = o.deliveryDate
-                ? new Date(o.deliveryDate).toLocaleDateString()
-                : '';
-
-              allOrders.push({
-                id: o.id ?? `ORD-${Math.random().toString(36).slice(2, 8)}`,
-                orderId: o.id ?? o.orderId,
-                user: userName,
-                items: itemCount,
-                products: productNames,
-                status: o.status ?? 'Confirmed',
-                deliveryDate,
-                date: formattedDate
-              });
-            });
-          }
+        const res = await fetch(`${API_BASE}/orders`, {
+          headers: { Authorization: `Bearer ${token}` }
         });
 
-        setOrders(allOrders);
+        const contentType = res.headers.get('Content-Type');
+        if (!res.ok || !contentType?.includes('application/json')) {
+          throw new Error('Invalid response format');
+        }
+
+        const data = await res.json();
+
+        const mappedOrders = data.map(o => ({
+          id: o.id,
+          orderId: o.id,
+          user: o.userName || o.userEmail || o.userId,
+          items: o.items?.reduce((sum, item) => sum + item.qty, 0),
+          products: o.items?.map(item => item.name || 'Unnamed').join(', '),
+          status: o.status,
+          deliveryDate: o.deliveryDate ? new Date(o.deliveryDate).toLocaleDateString() : '',
+          date: o.orderedDate ? new Date(o.orderedDate).toLocaleDateString() : ''
+        }));
+
+        setOrders(mappedOrders);
         setLoading(false);
       } catch (err) {
-        console.error('Failed to fetch users/orders:', err);
+        console.error('Failed to fetch orders:', err);
         setError(true);
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, []);
+    fetchOrders();
+  }, [API_BASE, token]);
 
   const uniqueStatuses = Array.from(new Set(orders.map(o => o.status))).filter(Boolean);
 
@@ -119,13 +104,9 @@ function AdminOrders() {
                 <table className="a-orders-table">
                   <thead>
                     <tr>
-                      <th>Sno</th>
-                      <th>Order ID</th>
-                      <th>User</th>
-                      <th>Products</th>
-                      <th>Items</th>
-                      <th>Status</th>
-                      <th>Delivery Date</th>
+                      <th>Sno</th><th>Order ID</th><th>User</th>
+                      <th>Products</th><th>Items</th><th>Status</th>
+                      <th>Ordered Date</th><th>Delivery Date</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -137,37 +118,40 @@ function AdminOrders() {
                         <td>{o.products}</td>
                         <td>{o.items}</td>
                         <td>{o.status}</td>
+                        <td>{o.date}</td>
                         <td>{o.deliveryDate}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
 
-                <div className="a-pagination">
-                  <button
-                    className="a-page-btn a-arrow"
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                  >
-                    ⟨
-                  </button>
-                  {Array.from({ length: totalPages }, (_, i) => (
+                {totalPages > 1 && (
+                  <div className="a-pagination">
                     <button
-                      key={i}
-                      className={`a-page-btn ${currentPage === i + 1 ? 'a-active' : ''}`}
-                      onClick={() => setCurrentPage(i + 1)}
+                      className="a-page-btn a-arrow"
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
                     >
-                      {i + 1}
+                      ⟨
                     </button>
-                  ))}
-                  <button
-                    className="a-page-btn a-arrow"
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                  >
-                    ⟩
-                  </button>
-                </div>
+                    {Array.from({ length: totalPages }, (_, i) => (
+                      <button
+                        key={i}
+                        className={`a-page-btn ${currentPage === i + 1 ? 'a-active' : ''}`}
+                        onClick={() => setCurrentPage(i + 1)}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                    <button
+                      className="a-page-btn a-arrow"
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                    >
+                      ⟩
+                    </button>
+                  </div>
+                )}
               </>
             )}
           </div>

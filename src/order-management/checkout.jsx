@@ -145,9 +145,23 @@ export default function Checkout() {
   const tax = cartItems.length > 0 ? 2.0 : 0;
   const total = subtotal + shipping + tax;
 
+  // ✅ Transform cartItems to include productId and snapshot fields
+  const items = cartItems.map(item => ({
+    productId: item.productId || item.id, // ✅ Ensure productId is present
+    name: item.name || item.title,
+    price: item.price,
+    qty: item.qty || item.quantity,
+    unit: item.unit,
+    brand: item.brand,
+    category: item.category,
+    sku: item.sku,
+    description: item.description,
+    image: item.image
+  }));
+
   const payload = {
     userId,
-    items: cartItems,
+    items,
     subtotal,
     shipping,
     tax,
@@ -156,14 +170,15 @@ export default function Checkout() {
     deliveryDate: selectedDate
   };
 
-  // ✅ Pass cartItems explicitly for ProtectedRoute validation
+  // ✅ Pass transformed items to payment
   navigate("/payment", {
     state: {
       orderData: payload,
-      cartItems: cartItems
+      cartItems: items
     }
   });
 }
+
 
 
   useEffect(() => {

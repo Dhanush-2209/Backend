@@ -46,11 +46,19 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/products/**", "/uploads/**").permitAll() // Public routes
+                        // ✅ Public endpoints
+                        .requestMatchers("/api/auth/**", "/api/products/**", "/uploads/**").permitAll()
+                        .requestMatchers("/api/users/check-email", "/api/users/check-username").permitAll()
+                        .requestMatchers("/api/users").permitAll() // ✅ Allow registration
+
+                        // ✅ Protected endpoints
+                        .requestMatchers("/api/users/admin").authenticated()
                         .requestMatchers("/api/users/**").authenticated()
-                        .requestMatchers("/api/orders/**").authenticated() // ✅ Protect order routes
+                        .requestMatchers("/api/orders/**").authenticated()
                         .requestMatchers("/users/*/wishlist/**").authenticated()
                         .requestMatchers("/users/*/cart/**").authenticated()
+
+                        // ✅ Fallback
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)

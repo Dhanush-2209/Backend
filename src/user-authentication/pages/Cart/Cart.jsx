@@ -23,10 +23,11 @@ const Cart = () => {
     );
   };
 
+  // ✅ Ensure productId is passed for backend order placement
   const selectedItems = cart
     .filter(item => selectedIds.includes(item.id))
     .map(item => ({
-      id: item.id,
+      productId: item.id, // ✅ Explicitly pass productId
       name: item.title,
       price: Number(item.price || 0),
       qty: item.quantity || 1,

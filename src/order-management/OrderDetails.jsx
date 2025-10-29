@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import Confetti from "react-confetti";
 import "./orderDetails.css";
 import { generateInvoice } from "./invoiceGenerator";
 import { useAuth } from "../user-authentication/context/AuthContext";
+import { useCart } from "../user-authentication/context/CartContext"; // ✅ Adjust path if needed
 
 export default function OrderDetails() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, token } = useAuth();
+  const { addToCart } = useCart(); // ✅ Added
   const orderId = location.state?.orderId;
 
   const [order, setOrder] = useState(null);
@@ -60,6 +62,7 @@ export default function OrderDetails() {
 
   function getPaymentMethodLabel(pm) {
     if (!pm) return "N/A";
+    if (typeof pm === "string") return pm;
     if (pm.method) return pm.method;
     if (pm.cardType || pm.cardMasked || pm.cardLast4) return "Card";
     if (pm.upiId) return "UPI";
@@ -90,20 +93,39 @@ export default function OrderDetails() {
   }
 
   async function handleReorder() {
-    try {
-      const res = await fetch(`${API_BASE}/orders/${orderId}/reorder`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` }
-      });
+  try {
+    const res = await fetch(`${API_BASE}/orders/${orderId}/reorder`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` }
+    });
 
-      if (!res.ok) throw new Error("Reorder failed");
-      toast.success("Items added to cart!");
-      navigate("/cart");
-    } catch (err) {
-      console.error("Reorder error:", err);
-      toast.error("Failed to reorder items.");
-    }
+    if (!res.ok) throw new Error("Reorder failed");
+    const items = await res.json(); // ✅ Get reordered items
+
+    items.forEach(item => {
+      console.log("Reordering productId:", item.productId);
+      addToCart({
+        productId: item.productId, // ✅ Pass actual productId for backend lookup
+        title: item.name,
+        price: item.price,
+        quantity: item.qty,
+        thumbnail: item.image?.split("/").pop(),
+        unit: item.unit,
+        brand: item.brand,
+        category: item.category,
+        sku: item.sku,
+        description: item.description
+      });
+    });
+
+    toast.success("Items added to cart!");
+    navigate("/cart");
+  } catch (err) {
+    console.error("Reorder error:", err);
+    toast.error("Failed to reorder items.");
   }
+}
+
 
   const stageTimes = order ? getStageTimestamps(order.orderedTime, order.deliveryDate) : {};
   const currentStageIndex = order
@@ -111,7 +133,7 @@ export default function OrderDetails() {
     : 0;
 
 
-  return (
+ return (
   <div className="o-details-wrapper" aria-label="Order Details Page">
     <Toaster position="bottom-right" />
     {showConfetti && (
@@ -149,16 +171,18 @@ export default function OrderDetails() {
               <div className="o-info-card">
                 <h5>💳 Payment Details</h5>
                 <p><strong>Method:</strong> {getPaymentMethodLabel(order.paymentMethod)}</p>
-                {order.paymentMethod?.upiId && <p><strong>UPI ID:</strong> {order.paymentMethod.upiId}</p>}
-                {order.paymentMethod?.cardMasked && <p><strong>Card:</strong> {order.paymentMethod.cardMasked}</p>}
-                {order.paymentMethod?.cardType && <p><strong>Card Type:</strong> {order.paymentMethod.cardType}</p>}
-                {order.paymentMethod?.expiry && <p><strong>Expiry:</strong> {order.paymentMethod.expiry}</p>}
               </div>
               <div className="o-info-card">
                 <h5>🚚 Shipping Address</h5>
-                <p>{order.address.name}</p>
-                <p>{order.address.line}, {order.address.city} - {order.address.pincode}</p>
-                <p>Phone: {order.address.phone}</p>
+                {typeof order.address === "string" ? (
+                  <p>{order.address}</p>
+                ) : (
+                  <>
+                    <p>{order.address?.name || "—"}</p>
+                    <p>{order.address?.line || "—"}, {order.address?.city || "—"} - {order.address?.pincode || "—"}</p>
+                    <p>Phone: {order.address?.phone || "—"}</p>
+                  </>
+                )}
               </div>
             </div>
           </section>
@@ -166,8 +190,8 @@ export default function OrderDetails() {
           <section className="o-section-block">
             <h4>🛍️ Items Ordered</h4>
             <div className="o-product-list">
-              {order.items.map(item => (
-                <div key={item.id} className="o-product-row">
+              {order.items.map((item, i) => (
+                <div key={item.id || `${item.name}-${i}`} className="o-product-row">
                   <img
                     src={item.image}
                     alt={item.name}
@@ -178,18 +202,18 @@ export default function OrderDetails() {
                   />
                   <div className="o-product-info">
                     <p><strong>{item.name}</strong></p>
-                    <p>Qty: {item.qty} {item.unit}</p>
-                    <p>Price: ₹{item.price.toFixed(2)}</p>
-                    <p>Subtotal: ₹{(item.qty * item.price).toFixed(2)}</p>
-                    <p>Brand: {item.brand}</p>
-                    <p>Category: {item.category}</p>
-                    <p>SKU: {item.sku}</p>
-                    <p className="o-item-description">{item.description}</p>
+                    <p>Qty: {item.qty} {item.unit || ""}</p>
+                    <p>Price: ₹{item.price?.toFixed(2)}</p>
+                    <p>Subtotal: ₹{(item.qty * item.price)?.toFixed(2)}</p>
+                    {item.brand && <p>Brand: {item.brand}</p>}
+                    {item.category && <p>Category: {item.category}</p>}
+                    {item.sku && <p>SKU: {item.sku}</p>}
+                    {item.description && <p className="o-item-description">{item.description}</p>}
                   </div>
                 </div>
               ))}
               <div className="o-total-row">
-                <strong>Total Paid:</strong> ₹{order.total.toFixed(2)}
+                <strong>Total Paid:</strong> ₹{order.total?.toFixed(2)}
               </div>
             </div>
           </section>
@@ -206,7 +230,7 @@ export default function OrderDetails() {
               <div className="o-timeline-bar">
                 {Object.entries(stageTimes).map(([stage, time], i) => (
                   <div
-                    key={stage}
+                    key={`${stage}-${i}`}
                     className={`o-timeline-step ${i <= currentStageIndex ? "o-active" : ""}`}
                   >
                     <div className="o-step-dot" />
@@ -228,18 +252,19 @@ export default function OrderDetails() {
           {order.status !== "Cancelled" && (
             <section className="o-section-block">
               <h4>👤 Delivery Agent</h4>
-              <div className="o-agent-card">
-                <img src="/images/delivery-agent.png" alt="Agent" />
-                <div>
-                  <p><strong>Rajesh Kumar</strong></p>
-                  <p>Phone: 9876543210</p>
-                  <p>
-                    {order.status === "Delivered"
-                      ? "Delivered on: " + new Date(order.deliveryDate).toLocaleDateString()
-                      : "Expected Delivery: " + new Date(order.deliveryDate).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
+<div className="o-agent-card">
+  <img src="/images/agent.jpg" alt="Agent" />
+  <div>
+    <p><strong>{order.agentName || "Not assigned"}</strong></p>
+    <p>Phone: {order.agentPhone || "N/A"}</p>
+    <p>
+      {order.status === "Delivered"
+        ? "Delivered on: " + new Date(order.deliveryDate).toLocaleDateString()
+        : "Expected Delivery: " + new Date(order.deliveryDate).toLocaleDateString()}
+    </p>
+  </div>
+</div>
+
             </section>
           )}
 
@@ -274,5 +299,4 @@ export default function OrderDetails() {
     </div>
   </div>
 );
-
 }

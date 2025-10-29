@@ -1,6 +1,8 @@
 package com.ecommerce.backend.dto;
 
 public class ItemDTO {
+    private String productId; // ✅ Updated to String to match entity and DB
+
     private String name;
     private double price;
     private int qty;
@@ -12,7 +14,8 @@ public class ItemDTO {
     private String description;
     private String image;
 
-    // Getters
+    // ✅ Getters
+    public String getProductId() { return productId; }
     public String getName() { return name; }
     public double getPrice() { return price; }
     public int getQty() { return qty; }
@@ -23,7 +26,8 @@ public class ItemDTO {
     public String getDescription() { return description; }
     public String getImage() { return image; }
 
-    // Setters
+    // ✅ Setters
+    public void setProductId(String productId) { this.productId = productId; }
     public void setName(String name) { this.name = name; }
     public void setPrice(double price) { this.price = price; }
     public void setQty(int qty) { this.qty = qty; }

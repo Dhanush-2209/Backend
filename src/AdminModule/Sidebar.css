@@ -44,6 +44,9 @@
 }
 
 .a-sidebar-menu li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 12px;
   padding: 10px 16px;
   border-radius: 8px;
@@ -61,6 +64,10 @@
   background-color: #7d5fff;
   color: white;
   font-weight: 600;
+}
+
+.a-menu-icon {
+  font-size: 1.1rem;
 }
 
 /* Logout */

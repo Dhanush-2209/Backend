@@ -5,7 +5,6 @@ import Notification from '../../components/Notification/Notification';
 
 const API = import.meta.env.VITE_API_URL;
 
-
 export default function Register() {
   const [username, setUsername] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -40,7 +39,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const emailCheck = await fetch(`${API}/users?email=${encodeURIComponent(email.trim().toLowerCase())}`);
+      const emailCheck = await fetch(`${API}/users/check-email?email=${encodeURIComponent(email.trim().toLowerCase())}`);
       const emailExists = await emailCheck.json();
       if (emailExists) {
         setErrors({ email: 'Email already registered' });
@@ -48,7 +47,7 @@ export default function Register() {
         return;
       }
 
-      const usernameCheck = await fetch(`${API}/users?username=${encodeURIComponent(username.trim().toLowerCase())}`);
+      const usernameCheck = await fetch(`${API}/users/check-username?username=${encodeURIComponent(username.trim().toLowerCase())}`);
       const usernameExists = await usernameCheck.json();
       if (usernameExists) {
         setErrors({ username: 'Username already taken' });

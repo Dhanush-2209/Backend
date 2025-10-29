@@ -7,10 +7,12 @@ import { useAuth } from '../user-authentication/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 function AdminDashboard() {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const navigate = useNavigate();
+  const API_BASE = import.meta.env.VITE_API_URL;
 
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
 
   const [adminProfile, setAdminProfile] = useState({
@@ -53,7 +55,8 @@ function AdminDashboard() {
   }, [user]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/products')
+    // ✅ Fetch products
+    fetch(`${API_BASE}/products`)
       .then(res => res.json())
       .then(data => {
         const productList = Array.isArray(data) ? data : data.products || [];
@@ -62,50 +65,59 @@ function AdminDashboard() {
       })
       .catch(err => console.error('Failed to fetch products:', err));
 
-    fetch('http://localhost:3001/users')
+    // ✅ Fetch users
+    fetch(`${API_BASE}/users`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
           setUsers(data);
           setMetrics(m => ({ ...m, totalUsers: data.length }));
-
-          let totalRevenue = 0;
-          let totalSales = 0;
-          let totalOrders = 0;
-          let outfordelivery = 0;
-          let shippingOrders = 0;
-          let cancelledOrders = 0;
-
-          data.forEach(user => {
-            if (Array.isArray(user.orders)) {
-              totalOrders += user.orders.length;
-
-              user.orders.forEach(order => {
-                const items = Array.isArray(order.items) ? order.items : [];
-                items.forEach(item => {
-                  totalRevenue += (item.price || 0) * (item.qty || 0);
-                  totalSales += (item.qty || 0);
-                });
-
-                const status = order.status;
-                if (status === 'Out for Delivery') outfordelivery++;
-                else if (status === 'Shipping') shippingOrders++;
-                else if (status === 'Cancelled') cancelledOrders++;
-              });
-            }
-          });
-
-          setMetrics(m => ({
-            ...m,
-            totalRevenue,
-            totalSales
-          }));
-
-          setOrderStats({ totalOrders, outfordelivery, shippingOrders, cancelledOrders });
         }
       })
-      .catch(err => console.error('Failed to fetch users/orders:', err));
-  }, []);
+      .catch(err => console.error('Failed to fetch users:', err));
+
+    // ✅ Fetch orders
+    fetch(`${API_BASE}/orders`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (!Array.isArray(data)) return;
+
+        setOrders(data);
+
+        let totalRevenue = 0;
+        let totalSales = 0;
+        let totalOrders = data.length;
+        let outfordelivery = 0;
+        let shippingOrders = 0;
+        let cancelledOrders = 0;
+
+        data.forEach(order => {
+          const items = Array.isArray(order.items) ? order.items : [];
+          items.forEach(item => {
+            totalRevenue += (item.price || 0) * (item.qty || 0);
+            totalSales += (item.qty || 0);
+          });
+
+          const status = order.status;
+          if (status === 'Out for Delivery') outfordelivery++;
+          else if (status === 'Shipping') shippingOrders++;
+          else if (status === 'Cancelled') cancelledOrders++;
+        });
+
+        setMetrics(m => ({
+          ...m,
+          totalRevenue,
+          totalSales
+        }));
+
+        setOrderStats({ totalOrders, outfordelivery, shippingOrders, cancelledOrders });
+      })
+      .catch(err => console.error('Failed to fetch orders:', err));
+  }, [API_BASE, token]);
 
   return (
     <div className="a-admin-dashboard">

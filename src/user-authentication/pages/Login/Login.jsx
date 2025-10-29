@@ -18,11 +18,13 @@ export default function Login() {
 
   useEffect(() => {
     if (user) {
-      if (user.isAdmin) {
-        navigate('/admin', { replace: true });
-      } else {
-        navigate('/', { replace: true });
-      }
+      setTimeout(() => {
+        if (user.isAdmin) {
+          navigate('/admin', { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
+      }, 0); // ✅ Avoid navigating during render
     }
   }, [user, navigate]);
 
@@ -56,7 +58,11 @@ export default function Login() {
         body: JSON.stringify(payload)
       });
 
-      if (!res.ok) throw new Error('Login request failed');
+      const contentType = res.headers.get('Content-Type');
+      if (!res.ok || !contentType?.includes('application/json')) {
+        throw new Error('Invalid response format');
+      }
+
       const { token, user } = await res.json();
 
       if (!token || !user?.id) {
@@ -82,7 +88,8 @@ export default function Login() {
         }
         setRedirectPath(null);
       }, 700);
-    } catch {
+    } catch (err) {
+      console.error('❌ Login error:', err);
       setNotif({ message: 'Login failed. Try again.', type: 'error', visible: true });
       setTimeout(() => setNotif(v => ({ ...v, visible: false })), 1200);
     } finally {

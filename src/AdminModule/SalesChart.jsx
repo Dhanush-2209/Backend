@@ -10,10 +10,14 @@ import {
   Legend,
 } from 'chart.js';
 import './ChartStyles.css';
+import { useAuth } from '../user-authentication/context/AuthContext';
 
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 function SalesChart() {
+  const { token } = useAuth();
+  const API_BASE = import.meta.env.VITE_API_URL;
+
   const [weeklySales, setWeeklySales] = useState({
     thisMonth: [],
     completedWeeks: 0,
@@ -21,41 +25,39 @@ function SalesChart() {
   const [totalMonthSales, setTotalMonthSales] = useState(0);
 
   useEffect(() => {
-    fetch('http://localhost:3001/users')
+    fetch(`${API_BASE}/orders`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => res.json())
-      .then(users => {
+      .then(orders => {
         const now = new Date();
         const currentMonth = now.getMonth();
         const currentYear = now.getFullYear();
         const today = now.getDate();
-        const completedWeeks = Math.ceil(today / 7);
+        const completedWeeks = Math.min(Math.ceil(today / 7), 4); // ✅ Clamp to max 4
 
         const thisMonthSales = [0, 0, 0, 0];
         let monthTotal = 0;
 
-        users.forEach(user => {
-          if (!Array.isArray(user.orders)) return;
+        orders.forEach(order => {
+          const orderDate = new Date(order.orderedDate);
+          const month = orderDate.getMonth();
+          const year = orderDate.getFullYear();
+          const day = orderDate.getDate();
 
-          user.orders.forEach(order => {
-            const orderDate = new Date(order.orderDate || order.orderedDate);
-            const month = orderDate.getMonth();
-            const year = orderDate.getFullYear();
-            const day = orderDate.getDate();
+          if (month !== currentMonth || year !== currentYear) return;
 
-            if (month !== currentMonth || year !== currentYear) return;
+          let weekIndex = 0;
+          if (day <= 7) weekIndex = 0;
+          else if (day <= 14) weekIndex = 1;
+          else if (day <= 21) weekIndex = 2;
+          else weekIndex = 3;
 
-            let weekIndex = 0;
-            if (day <= 7) weekIndex = 0;
-            else if (day <= 14) weekIndex = 1;
-            else if (day <= 21) weekIndex = 2;
-            else weekIndex = 3;
-
-            if (Array.isArray(order.items)) {
-              const soldUnits = order.items.reduce((sum, item) => sum + (item.qty || 0), 0);
-              thisMonthSales[weekIndex] += soldUnits;
-              monthTotal += soldUnits;
-            }
-          });
+          if (Array.isArray(order.items)) {
+            const soldUnits = order.items.reduce((sum, item) => sum + (item.qty || 0), 0);
+            thisMonthSales[weekIndex] += soldUnits;
+            monthTotal += soldUnits;
+          }
         });
 
         setWeeklySales({
@@ -65,7 +67,7 @@ function SalesChart() {
         setTotalMonthSales(monthTotal);
       })
       .catch(err => console.error('Failed to fetch sales data:', err));
-  }, []);
+  }, [API_BASE, token]);
 
   const labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
 
@@ -76,7 +78,7 @@ function SalesChart() {
         label: 'This Month',
         data: [
           ...weeklySales.thisMonth,
-          ...Array(4 - weeklySales.completedWeeks).fill(null),
+          ...Array(Math.max(0, 4 - weeklySales.completedWeeks)).fill(null), // ✅ Safe fallback
         ],
         borderColor: '#2ed573',
         backgroundColor: '#2ed57333',
