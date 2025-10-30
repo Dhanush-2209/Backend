@@ -26,18 +26,31 @@ function AdminProducts() {
     email: user?.email || 'admin@example.com'
   };
 
-  useEffect(() => {
-    if (!token) return;
+  const fetchProducts = () => {
     fetch(`${BASE_URL}/products`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(err => toast.error('Failed to fetch products'));
+  };
+
+  useEffect(() => {
+    if (!token) return;
+    fetchProducts();
   }, [token]);
 
   const openModal = () => {
-    setNewProduct({ title: '', description: '', category: '', price: '', stock: '', rating: '', brand: '', thumbnail: null });
+    setNewProduct({
+      title: '',
+      description: '',
+      category: '',
+      price: '',
+      stock: '',
+      rating: '',
+      brand: '',
+      thumbnail: null
+    });
     setShowModal(true);
   };
 
@@ -60,8 +73,8 @@ function AdminProducts() {
       body: formData
     })
       .then(res => res.json())
-      .then(data => {
-        setProducts(prev => [...prev, data]);
+      .then(() => {
+        fetchProducts(); // ✅ Ensures image loads immediately
         setShowModal(false);
         toast.success("Product added");
       })
@@ -84,26 +97,23 @@ function AdminProducts() {
   };
 
   const handleInlineEdit = (id, field, value) => {
-  if (!token) return;
+    if (!token) return;
 
-  fetch(`${BASE_URL}/products/${id}`, {
-    method: 'PATCH',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ [field]: value })
-  })
-    .then(res => res.json()) // ✅ Expect updated product object
-    .then(updated => {
-      setProducts(prev =>
-        prev.map(p => p.id === id ? updated : p)
-      );
-      toast.success(`${field} updated`);
+    fetch(`${BASE_URL}/products/${id}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ [field]: value })
     })
-    .catch(err => toast.error(`Failed to update ${field}`));
-};
-
+      .then(res => res.json())
+      .then(() => {
+        fetchProducts(); // ✅ Refetch to prevent thumbnail flicker
+        toast.success(`${field} updated`);
+      })
+      .catch(err => toast.error(`Failed to update ${field}`));
+  };
 
   const handleCheckboxChange = (id) => {
     setSelectedIds(prev =>
@@ -130,13 +140,14 @@ function AdminProducts() {
   };
 
   const filteredProducts = products
-    .filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    .filter(p => p.title?.toLowerCase().includes(searchTerm.toLowerCase()))
     .sort((a, b) => sortByPrice ? a.price - b.price : 0);
 
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
 
   return (
   <div className="a-admin-user-wrapper">
@@ -254,6 +265,10 @@ function AdminProducts() {
                       src={p.thumbnail.startsWith("http") ? p.thumbnail : `${BASE_URL}/uploads/${p.thumbnail}`}
                       alt={p.title}
                       className="a-thumbnail-hover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/images/default-product.jpg";
+                      }}
                     />
                   )}
                 </td>
