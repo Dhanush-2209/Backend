@@ -110,4 +110,17 @@ public class ProductService {
         dto.setUpdatedAt(product.getUpdatedAt());
         return dto;
     }
+
+    // ✅ NEW: Decrement stock by quantity
+    public Product decrementStock(String productId, int decrementBy) {
+        Optional<Product> optionalProduct = getById(productId);
+        if (optionalProduct.isEmpty()) {
+            throw new IllegalArgumentException("Product not found");
+        }
+
+        Product product = optionalProduct.get();
+        int newStock = Math.max(0, product.getStock() - decrementBy);
+        product.setStock(newStock);
+        return save(product);
+    }
 }

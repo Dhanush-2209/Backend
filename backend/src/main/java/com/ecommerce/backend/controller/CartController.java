@@ -77,4 +77,19 @@ public class CartController {
         cartService.clearCart(userId);
         return ResponseEntity.ok(Map.of("status", "cleared"));
     }
+
+    // ✅ NEW: Remove multiple selected items from cart
+    @DeleteMapping("/users/{userId}/cart/items")
+    public ResponseEntity<Map<String, String>> removeMultipleItems(
+            @PathVariable UUID userId,
+            @RequestBody Map<String, List<String>> body
+    ) {
+        List<String> productIds = body.get("productIds");
+        if (productIds == null || productIds.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "No product IDs provided"));
+        }
+
+        cartService.removeMultipleFromCart(userId, productIds);
+        return ResponseEntity.ok(Map.of("status", "selected items removed"));
+    }
 }

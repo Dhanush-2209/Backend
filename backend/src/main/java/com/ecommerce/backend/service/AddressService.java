@@ -18,17 +18,45 @@ public class AddressService {
     @Autowired
     private UserRepository userRepo;
 
-    // ✅ Fetch all addresses for a user
     public List<Address> getAddresses(UUID userId) {
         return addressRepo.findByUserId(userId);
     }
 
-    // ✅ Add a single address for a user
     public void addAddress(UUID userId, Address address) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        address.setUser(user); // ✅ Link address to user
+        address.setUser(user);
         addressRepo.save(address);
+    }
+
+    // ✅ Update an address
+    public boolean updateAddress(UUID userId, Long addressId, Address updatedAddress) {
+        Optional<Address> existingOpt = addressRepo.findById(addressId);
+        if (existingOpt.isEmpty()) return false;
+
+        Address existing = existingOpt.get();
+        if (!existing.getUser().getId().equals(userId)) return false;
+
+        existing.setName(updatedAddress.getName());
+        existing.setPhone(updatedAddress.getPhone());
+        existing.setLine(updatedAddress.getLine());
+        existing.setCity(updatedAddress.getCity());
+        existing.setPincode(updatedAddress.getPincode());
+
+        addressRepo.save(existing);
+        return true;
+    }
+
+    // ✅ Delete an address
+    public boolean deleteAddress(UUID userId, Long addressId) {
+        Optional<Address> existingOpt = addressRepo.findById(addressId);
+        if (existingOpt.isEmpty()) return false;
+
+        Address existing = existingOpt.get();
+        if (!existing.getUser().getId().equals(userId)) return false;
+
+        addressRepo.delete(existing);
+        return true;
     }
 }

@@ -14,7 +14,7 @@ import HomePage from "./product-management/components/HomePage";
 import Login from "./user-authentication/pages/Login/Login";
 import Register from "./user-authentication/pages/Register/Register";
 import User from "./user-authentication/pages/User/User";
-import Profile from "./user-authentication/pages/Profile/Profile";
+import ProfilePage from "./user-authentication/pages/Profile/ProfilePage";
 import Cart from "./user-authentication/pages/Cart/Cart";
 import Wishlist from "./user-authentication/pages/Wishlist/Wishlist";
 
@@ -81,13 +81,14 @@ function App() {
                       }
                     />
                     <Route
-                      path="/profile/:username"
-                      element={
-                        <ProtectedRoute>
-                          <Profile />
-                        </ProtectedRoute>
-                      }
-                    />
+  path="/profile/:username"
+  element={
+    <ProtectedRoute>
+      <ProfilePage />
+    </ProtectedRoute>
+  }
+/>
+
 
                     <Route
                       path="/orders"

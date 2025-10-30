@@ -236,12 +236,12 @@ export default function OrderDetails() {
                     <div className="o-step-dot" />
                     <span>{stage}</span>
                     <p>
-                      {time.toLocaleDateString()}
-                      <br />
-                      {time.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit"
-                      })}
+                      {i <= currentStageIndex
+                        ? <>
+                            {time.toLocaleDateString()}<br />
+                            {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          </>
+                        : "—"}
                     </p>
                   </div>
                 ))}
@@ -252,19 +252,18 @@ export default function OrderDetails() {
           {order.status !== "Cancelled" && (
             <section className="o-section-block">
               <h4>👤 Delivery Agent</h4>
-<div className="o-agent-card">
-  <img src="/images/agent.jpg" alt="Agent" />
-  <div>
-    <p><strong>{order.agentName || "Not assigned"}</strong></p>
-    <p>Phone: {order.agentPhone || "N/A"}</p>
-    <p>
-      {order.status === "Delivered"
-        ? "Delivered on: " + new Date(order.deliveryDate).toLocaleDateString()
-        : "Expected Delivery: " + new Date(order.deliveryDate).toLocaleDateString()}
-    </p>
-  </div>
-</div>
-
+              <div className="o-agent-card">
+                <img src="/images/agent.jpg" alt="Agent" />
+                <div>
+                  <p><strong>{order.agentName || "Not assigned"}</strong></p>
+                  <p>Phone: {order.agentPhone || "N/A"}</p>
+                  <p>
+                    {order.status === "Delivered"
+                      ? "Delivered on: " + new Date(order.deliveryDate).toLocaleDateString()
+                      : "Expected Delivery: " + new Date(order.deliveryDate).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
             </section>
           )}
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./PaymentOptions.css";
 
 export default function PaymentOptions({
@@ -19,6 +19,8 @@ export default function PaymentOptions({
   setUpiId,
   handleVerifyUpi
 }) {
+  const [selectedCardCVV, setSelectedCardCVV] = useState("");
+
   return (
     <div className="o-payment-left">
       <div className="o-payment-card">
@@ -41,15 +43,35 @@ export default function PaymentOptions({
             <div className="o-saved-cards">
               {paymentDetails.length > 0 ? (
                 paymentDetails.map((card, idx) => (
-                  <label key={idx}>
-                    <input
-                      type="radio"
-                      name="paymentCard"
-                      checked={selectedCardIndex === idx}
-                      onChange={() => setSelectedCardIndex(idx)}
-                    />
-                    {card.cardType} - {card.cardMasked} (Exp: {card.expiry})
-                  </label>
+                  <div key={idx} className="o-card-option">
+                    <label>
+                      <input
+                        type="radio"
+                        name="paymentCard"
+                        checked={selectedCardIndex === idx}
+                        onChange={() => {
+                          setSelectedCardIndex(idx);
+                          setSelectedCardCVV(""); // reset CVV on card change
+                        }}
+                      />
+                      {card.cardType} - {card.cardMasked} (Exp: {card.expiry})
+                    </label>
+
+                    {selectedCardIndex === idx && (
+                      <div className="o-cvv-field">
+                        <label htmlFor={`cvv-${idx}`}>Enter CVV</label>
+                        <input
+                          id={`cvv-${idx}`}
+                          type="password"
+                          maxLength={3}
+                          value={selectedCardCVV}
+                          onChange={(e) => setSelectedCardCVV(e.target.value)}
+                          placeholder="CVV"
+                          required
+                        />
+                      </div>
+                    )}
+                  </div>
                 ))
               ) : (
                 <p className="o-no-cards">No saved cards yet.</p>

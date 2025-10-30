@@ -1,6 +1,7 @@
 package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.dto.ProfileDTO;
+import com.ecommerce.backend.dto.UserHeaderStatsDTO;
 import com.ecommerce.backend.service.ProfileService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,14 @@ public class ProfileController {
         UUID userId = extractUserIdFromJWT(request);
         ProfileDTO profile = profileService.getProfile(userId);
         return ResponseEntity.ok(profile);
+    }
+
+    // ✅ Get header stats (wishlist, cart, saved cards)
+    @GetMapping("/header-stats")
+    public ResponseEntity<UserHeaderStatsDTO> getHeaderStats(HttpServletRequest request) {
+        UUID userId = extractUserIdFromJWT(request);
+        UserHeaderStatsDTO stats = profileService.getHeaderStats(userId);
+        return ResponseEntity.ok(stats);
     }
 
     // ✅ Update profile (user info + addresses + cards)

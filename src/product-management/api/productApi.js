@@ -181,6 +181,26 @@ export const clearUserCart = async (userId, token) => {
   }
 };
 
+// ✅ Remove multiple selected items from cart
+export const removeMultipleFromUserCart = async (userId, productIds, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/users/${userId}/cart/items`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ productIds }),
+    });
+
+    if (!response.ok) throw new Error("Failed to remove selected items from cart");
+    return true;
+  } catch (error) {
+    console.error("Remove multiple cart items error:", error);
+    throw error;
+  }
+};
+
 // ✅ Get user's cart
 export const getUserCart = async (userId, token) => {
   try {

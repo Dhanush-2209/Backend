@@ -5,7 +5,8 @@ import {
   updateCartItem,
   removeFromUserCart,
   clearUserCart,
-  getUserCart
+  getUserCart,
+  removeMultipleFromUserCart // ✅ NEW import
 } from '../../product-management/api/productApi';
 
 const CartContext = createContext();
@@ -55,13 +56,10 @@ export function CartProvider({ children }) {
     if (!user?.id || !token) return;
     try {
       if (product.productId) {
-        // ✅ Reorder flow: use productId from previous order
         await addToUserCart(user.id, product.productId, token);
       } else if (product.id && typeof product.id === "string") {
-        // ✅ Normal flow: use product.id
         await addToUserCart(user.id, product.id, token);
       } else {
-        // Fallback: send full product object
         await addToUserCart(user.id, product, token);
       }
       await fetchUserCart();
@@ -103,6 +101,17 @@ export function CartProvider({ children }) {
     }
   }
 
+  // ✅ NEW: Remove selected items from cart
+  async function removeMultipleFromCart(productIds) {
+    if (!user?.id || !token || !Array.isArray(productIds) || productIds.length === 0) return;
+    try {
+      await removeMultipleFromUserCart(user.id, productIds, token);
+      await fetchUserCart();
+    } catch (error) {
+      console.error("Remove multiple items failed:", error);
+    }
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -111,7 +120,8 @@ export function CartProvider({ children }) {
         updateQuantity,
         removeFromCart,
         clearCart,
-        fetchUserCart
+        fetchUserCart,
+        removeMultipleFromCart // ✅ Expose new method
       }}
     >
       {children}

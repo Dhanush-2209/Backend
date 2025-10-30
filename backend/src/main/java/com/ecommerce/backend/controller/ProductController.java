@@ -73,7 +73,7 @@ public class ProductController {
                                            @RequestParam("stock") int stock,
                                            @RequestParam("rating") double rating,
                                            @RequestParam("brand") String brand,
-                                           @RequestParam("discountPercentage") double discountPercentage,
+                                           @RequestParam(value = "discountPercentage", required = false, defaultValue = "0") double discountPercentage,
                                            @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail) {
         try {
             Claims claims = (Claims) request.getAttribute("claims");
@@ -152,6 +152,27 @@ public class ProductController {
         });
 
         Product updated = productService.save(product);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{id}/decrement")
+    public ResponseEntity<?> decrementStock(@PathVariable String id,
+                                            @RequestBody Map<String, Integer> body) {
+        Integer decrementBy = body.get("decrementBy");
+        if (decrementBy == null || decrementBy < 1) {
+            return ResponseEntity.badRequest().body("Invalid decrement value");
+        }
+
+        Optional<Product> optionalProduct = productService.getById(id);
+        if (optionalProduct.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+        }
+
+        Product product = optionalProduct.get();
+        int newStock = Math.max(0, product.getStock() - decrementBy);
+        product.setStock(newStock);
+        Product updated = productService.save(product);
+
         return ResponseEntity.ok(updated);
     }
 }

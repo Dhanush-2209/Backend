@@ -26,7 +26,6 @@ export function AuthProvider({ children }) {
         if (parsedUser?.id) {
           setUser(parsedUser);
           setToken(storedToken);
-          
         }
       }
     } catch {
@@ -41,23 +40,20 @@ export function AuthProvider({ children }) {
       if (user && token) {
         localStorage.setItem("authUser", JSON.stringify(user));
         localStorage.setItem("authToken", token);
-        
       } else {
         localStorage.removeItem("authUser");
         localStorage.removeItem("authToken");
-        
       }
     } catch {}
   }, [user, token]);
 
   // ✅ Login with token + user
   const login = ({ token, user }, onLoginSuccess) => {
-    
     setUser(user);
     setToken(token);
     setRedirectPath(null);
     if (typeof onLoginSuccess === "function") {
-      setTimeout(() => onLoginSuccess(user), 0); // ✅ Avoid calling during render
+      setTimeout(() => onLoginSuccess(user), 0);
     }
   };
 
@@ -73,7 +69,7 @@ export function AuthProvider({ children }) {
       sessionStorage.clear();
     } catch {}
     if (typeof onLogout === "function") {
-      setTimeout(() => onLogout(), 0); // ✅ Avoid calling during render
+      setTimeout(() => onLogout(), 0);
     }
     window.location.replace("/login");
   };
@@ -110,6 +106,32 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // ✅ Smarter wishlist count update: avoids unnecessary re-renders
+  const updateWishlistCount = (count) => {
+    setUser(prev => {
+      if (!prev || prev.wishlistCount === count) return prev;
+      return { ...prev, wishlistCount: count };
+    });
+  };
+
+  // ✅ Optimized sync: only update if data actually changed (lastLogin removed)
+  const syncProfileStats = ({ orders, payments }) => {
+    setUser(prev => {
+      if (!prev) return prev;
+
+      const ordersChanged = JSON.stringify(prev.orders) !== JSON.stringify(orders || []);
+      const paymentsChanged = JSON.stringify(prev.payments) !== JSON.stringify(payments || []);
+
+      if (!ordersChanged && !paymentsChanged) return prev;
+
+      return {
+        ...prev,
+        orders: orders || [],
+        payments: payments || []
+      };
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -121,7 +143,9 @@ export function AuthProvider({ children }) {
         logout,
         loginWithBackend,
         redirectPath,
-        setRedirectPath
+        setRedirectPath,
+        updateWishlistCount,
+        syncProfileStats
       }}
     >
       {children}

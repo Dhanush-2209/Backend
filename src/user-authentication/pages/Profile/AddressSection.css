@@ -1,0 +1,173 @@
+.u-address-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+}
+
+/* Address list */
+.u-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.u-list li {
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s ease;
+  position: relative;
+}
+
+.u-list li:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.u-actions {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 0.8rem;
+}
+
+.u-actions button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.u-actions button:hover {
+  opacity: 0.9;
+}
+
+.u-actions button:first-child {
+  background-color: #5e66e7;
+  color: white;
+}
+
+.u-actions button:last-child {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Modal overlay */
+.u-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Modal card */
+.u-modal-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-out;
+}
+
+.u-modal-card h4 {
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+/* Modal form fields */
+.u-modal-card input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.u-modal-card input:focus {
+  outline: none;
+  border-color: #5e66e7;
+  box-shadow: 0 0 0 2px rgba(94, 102, 231, 0.2);
+}
+
+/* Modal actions */
+.u-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.u-modal-actions button {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.u-modal-actions button[type="submit"] {
+  background-color: #5e66e7;
+  color: white;
+}
+
+.u-modal-actions button[type="submit"]:hover {
+  background-color: #3e45c7;
+}
+
+.u-modal-actions button[type="button"] {
+  background-color: #ccc;
+  color: #333;
+}
+
+.u-modal-actions button[type="button"]:hover {
+  background-color: #bbb;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .u-modal-card {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+
+  .u-modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .u-modal-actions button {
+    width: 100%;
+  }
+}

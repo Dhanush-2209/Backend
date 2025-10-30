@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { HashLink } from 'react-router-hash-link';
 import { useAuth } from '../../context/AuthContext';
-
 import './Header.css';
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 export default function Header({ minimal = false }) {
-  const { user, logout, setRedirectPath } = useAuth();
+  const { user, logout, setRedirectPath, token } = useAuth();
   const [open, setOpen] = useState(false);
+  const [stats, setStats] = useState({ wishlistCount: 0, cartCount: 0 });
   const containerRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,6 +28,25 @@ export default function Header({ minimal = false }) {
   useEffect(() => {
     setOpen(false);
   }, [location]);
+
+  useEffect(() => {
+    if (!user || !token) return;
+
+    async function fetchHeaderStats() {
+      try {
+        const res = await fetch(`${API_BASE}/profile/header-stats`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Failed to fetch header stats");
+        const data = await res.json();
+        setStats(data);
+      } catch (err) {
+        console.error("Header stats error:", err);
+      }
+    }
+
+    fetchHeaderStats();
+  }, [user, token]);
 
   useEffect(() => {
     if (user) return;
@@ -69,7 +90,7 @@ export default function Header({ minimal = false }) {
   }
 
   function handleLogout() {
-    logout(); // logout already handles redirect and cleanup
+    logout();
     setRedirectPath(null);
   }
 
@@ -81,9 +102,6 @@ export default function Header({ minimal = false }) {
       setOpen(v => !v);
     }
   }
-
-  const cartCount = user?.cartCount || 0;
-  const wishlistCount = user?.wishlistCount || 0;
 
   return (
     <header className="u-site-header">
@@ -137,14 +155,14 @@ export default function Header({ minimal = false }) {
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z" fill="none" stroke="#374151" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <span className="u-icon-label">Wishlist ({wishlistCount})</span>
+                <span className="u-icon-label">Wishlist ({stats.wishlistCount})</span>
               </button>
 
               <button className="u-icon-btn u-with-label" title="Cart" onClick={handleCartClick} aria-label="Cart">
                 <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
                   <path d="M7 4h-2l-1 2h2l3.6 7.59-1.35 2.44A1 1 0 0 0 9.1 18h8.45a1 1 0 0 0 .92-.62L22 8H6.21" fill="none" stroke="#374151" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <span className="u-icon-label">Cart ({cartCount})</span>
+                <span className="u-icon-label">Cart ({stats.cartCount})</span>
               </button>
 
               {user && (
@@ -170,7 +188,7 @@ export default function Header({ minimal = false }) {
                     </svg>
                     <span className="u-account-name">{user ? user.username : 'Account'}</span>
                     <svg className={`u-chev ${open ? 'u-open' : ''}`} width="12" height="12" viewBox="0 0 24 24" aria-hidden>
-                      <path d="M6 9l6 6 6-6" stroke="#374151" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M6 9l6 6 6-6" stroke="#374151" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
 
@@ -187,7 +205,7 @@ export default function Header({ minimal = false }) {
                     Logout
                   </button>
                 )}
-                            </div>
+              </div>
             </div>
           </>
         )}

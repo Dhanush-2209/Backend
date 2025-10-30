@@ -17,7 +17,6 @@ public class AddressController {
     @Autowired
     private AddressService addressService;
 
-    // ✅ Get all addresses for a user
     @PreAuthorize("hasAuthority('USER')")
     @GetMapping
     public ResponseEntity<List<Address>> getAddresses(@PathVariable UUID userId, Authentication auth) {
@@ -29,7 +28,6 @@ public class AddressController {
         return ResponseEntity.ok(addresses);
     }
 
-    // ✅ Add a single address for a user
     @PreAuthorize("hasAuthority('USER')")
     @PostMapping
     public ResponseEntity<Map<String, Object>> addAddress(@PathVariable UUID userId, @RequestBody Address address, Authentication auth) {
@@ -39,5 +37,46 @@ public class AddressController {
 
         addressService.addAddress(userId, address);
         return ResponseEntity.ok(Map.of("status", "created"));
+    }
+
+    // ✅ Update an address
+    @PreAuthorize("hasAuthority('USER')")
+    @PutMapping("/{addressId}")
+    public ResponseEntity<Map<String, Object>> updateAddress(
+            @PathVariable UUID userId,
+            @PathVariable Long addressId,
+            @RequestBody Address updatedAddress,
+            Authentication auth) {
+
+        if (!auth.getName().equals(userId.toString())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        boolean success = addressService.updateAddress(userId, addressId, updatedAddress);
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Address not found"));
+        }
+
+        return ResponseEntity.ok(Map.of("status", "updated"));
+    }
+
+    // ✅ Delete an address
+    @PreAuthorize("hasAuthority('USER')")
+    @DeleteMapping("/{addressId}")
+    public ResponseEntity<Map<String, Object>> deleteAddress(
+            @PathVariable UUID userId,
+            @PathVariable Long addressId,
+            Authentication auth) {
+
+        if (!auth.getName().equals(userId.toString())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        boolean success = addressService.deleteAddress(userId, addressId);
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Address not found"));
+        }
+
+        return ResponseEntity.ok(Map.of("status", "deleted"));
     }
 }

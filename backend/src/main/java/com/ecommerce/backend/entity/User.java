@@ -2,6 +2,7 @@ package com.ecommerce.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -26,15 +27,15 @@ public class User {
     private String phone;
     private boolean isAdmin = false;
 
+    private LocalDateTime lastLogin;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnore // ✅ Prevent circular reference when serializing User
+    @JsonIgnore
     private List<Order> orders;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnore // ✅ Prevent circular reference when serializing Address
+    @JsonIgnore
     private List<Address> addresses;
-
-    // ✅ Removed wishlist and cart relationships
 
     // Getters and setters
     public UUID getId() { return id; }
@@ -60,6 +61,9 @@ public class User {
 
     public boolean isAdmin() { return isAdmin; }
     public void setAdmin(boolean admin) { isAdmin = admin; }
+
+    public LocalDateTime getLastLogin() { return lastLogin; }
+    public void setLastLogin(LocalDateTime lastLogin) { this.lastLogin = lastLogin; }
 
     public List<Order> getOrders() { return orders; }
     public void setOrders(List<Order> orders) { this.orders = orders; }

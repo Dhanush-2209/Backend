@@ -7,11 +7,13 @@ import "./payment.css";
 import "./ConfirmModal.css";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../user-authentication/context/AuthContext";
+import { useCart } from "../user-authentication/context/CartContext"; // ✅ NEW
 
 export default function Payment() {
   const navigate = useNavigate();
   const location = useLocation();
   const { token } = useAuth();
+  const { removeMultipleFromCart } = useCart(); // ✅ NEW
   const orderData = location.state?.orderData;
 
   const [paymentDetails, setPaymentDetails] = useState([]);
@@ -133,74 +135,90 @@ export default function Payment() {
   }
 
   async function handlePayNow() {
-  if (!canPay()) return;
-  setIsProcessing(true);
+    if (!canPay()) return;
+    setIsProcessing(true);
 
-  const now = new Date();
+    const now = new Date();
 
-  const masked = paymentDetails[selectedCardIndex]?.cardMasked || "**** **** **** XXXX";
-  const paymentMethodString =
-    paymentMethod === "card"
-      ? `${paymentDetails[selectedCardIndex].cardType} - ${masked} (Exp: ${paymentDetails[selectedCardIndex].expiry})`
-      : paymentMethod === "upi"
-      ? `UPI ID: ${upiId}`
-      : "Cash on Delivery";
+    const masked = paymentDetails[selectedCardIndex]?.cardMasked || "**** **** **** XXXX";
+    const paymentMethodString =
+      paymentMethod === "card"
+        ? `${paymentDetails[selectedCardIndex].cardType} - ${masked} (Exp: ${paymentDetails[selectedCardIndex].expiry})`
+        : paymentMethod === "upi"
+        ? `UPI ID: ${upiId}`
+        : "Cash on Delivery";
 
-  const formattedAddress = formatAddress(orderData.address);
+    const formattedAddress = formatAddress(orderData.address);
 
-  // ✅ Transform items to ensure productId is present
-  const transformedItems = orderData.items.map(item => ({
-    productId: item.productId || item.id,
-    name: item.name || item.title,
-    price: item.price,
-    qty: item.qty || item.quantity,
-    unit: item.unit,
-    brand: item.brand,
-    category: item.category,
-    sku: item.sku,
-    description: item.description,
-    image: item.image
-  }));
+    const transformedItems = orderData.items.map(item => ({
+      productId: item.productId || item.id,
+      name: item.name || item.title,
+      price: item.price,
+      qty: item.qty || item.quantity,
+      unit: item.unit,
+      brand: item.brand,
+      category: item.category,
+      sku: item.sku,
+      description: item.description,
+      image: item.image
+    }));
 
-  const payload = {
-    ...orderData,
-    items: transformedItems, // ✅ Use transformed items
-    address: formattedAddress,
-    paymentMethod: paymentMethodString,
-    orderedDate: now.toISOString().split("T")[0],
-    orderedDay: now.toLocaleDateString("en-US", { weekday: "long" }),
-    orderedTime: now.toISOString(),
-    status: "Ordered"
-  };
+    const payload = {
+      ...orderData,
+      items: transformedItems,
+      address: formattedAddress,
+      paymentMethod: paymentMethodString,
+      orderedDate: now.toISOString().split("T")[0],
+      orderedDay: now.toLocaleDateString("en-US", { weekday: "long" }),
+      orderedTime: now.toISOString(),
+      status: "Ordered"
+    };
 
-  console.log("Payload being sent:", payload);
+    console.log("Payload being sent:", payload);
 
-  try {
-    const res = await fetch(`${API_BASE}/orders`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-    });
+    try {
+      const res = await fetch(`${API_BASE}/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
 
-    if (!res.ok) throw new Error("Order failed");
-    const orderId = await res.json();
+      if (!res.ok) throw new Error("Order failed");
+      const orderId = await res.json();
 
-    toast.success("Order placed successfully!");
-    sessionStorage.setItem("lastOrderId", orderId);
-    sessionStorage.setItem("orderPlaced", "true");
-    navigate("/order-confirmation", { state: { orderId } });
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to place order.");
-  } finally {
-    setIsProcessing(false);
-    setShowConfirmModal(false);
+      // ✅ Remove ordered items from cart
+      const productIdsToRemove = transformedItems.map(item => item.productId);
+      await removeMultipleFromCart(productIdsToRemove);
+
+      // ✅ Decrement stock for each product
+      await Promise.all(
+        transformedItems.map(item =>
+          fetch(`${API_BASE}/products/${item.productId}/decrement`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ decrementBy: item.qty })
+          })
+        )
+      );
+
+      toast.success("Order placed successfully!");
+      sessionStorage.setItem("lastOrderId", orderId);
+      sessionStorage.setItem("orderPlaced", "true");
+      navigate("/order-confirmation", { state: { orderId } });
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to place order.");
+    } finally {
+      setIsProcessing(false);
+      setShowConfirmModal(false);
+    }
   }
-}
-
 
   function formatAddress(addr) {
     if (!addr || typeof addr === "string") return addr;
@@ -220,6 +238,8 @@ export default function Payment() {
     if (paymentMethod === "cod") return `Confirm Cash on Delivery`;
     return "Pay Now";
   }
+
+ 
 
   return (
     <div className="o-payment-container">

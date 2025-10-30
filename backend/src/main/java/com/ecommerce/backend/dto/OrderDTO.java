@@ -29,6 +29,17 @@ public class OrderDTO {
     private String userName;
     private String userEmail;
 
+    // ✅ No-arg constructor for frameworks and manual use
+    public OrderDTO() {}
+
+    // ✅ Constructor for ProfileService mapping
+    public OrderDTO(Long id, String status, double total, String orderedDate) {
+        this.id = id;
+        this.status = status;
+        this.total = total;
+        this.orderedDate = orderedDate;
+    }
+
     // Getters
     public Long getId() { return id; }
     public UUID getUserId() { return userId; }

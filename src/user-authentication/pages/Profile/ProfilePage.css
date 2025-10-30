@@ -1,0 +1,97 @@
+.u-profile-page {
+  padding: 32px 16px 64px;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+/* Profile cards */
+.u-profile-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(16, 24, 40, 0.06);
+  padding: 28px;
+  margin: 0 auto 32px;
+  max-width: 920px;
+  transition: all 0.3s ease;
+}
+
+/* Section titles */
+.u-section-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #23262f;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.u-section-title:hover {
+  color: #5e66e7;
+}
+
+/* Loading state */
+.u-loading {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #6c757d;
+  padding: 2rem;
+}
+
+/* Notification */
+.u-notification {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 6px;
+  color: white;
+  font-weight: 500;
+  z-index: 1000;
+  animation: u-slideIn 0.3s ease-out;
+}
+
+@keyframes u-slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.u-notification.success {
+  background-color: #28a745;
+}
+
+.u-notification.error {
+  background-color: #dc3545;
+}
+
+.u-notification.info {
+  background-color: #17a2b8;
+}
+
+/* Responsive layout */
+@media (max-width: 960px) {
+  .u-profile-card {
+    padding: 20px;
+  }
+
+  .u-section-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .u-profile-page {
+    padding: 24px 12px;
+  }
+
+  .u-profile-card {
+    margin-bottom: 24px;
+  }
+}

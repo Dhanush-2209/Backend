@@ -14,6 +14,9 @@ public class ProfileService {
     @Autowired private UserRepository userRepo;
     @Autowired private AddressRepository addressRepo;
     @Autowired private PaymentRepository paymentRepo;
+    @Autowired private OrderRepository orderRepo;
+    @Autowired private WishlistItemRepository wishlistRepo;
+    @Autowired private CartItemRepository cartItemRepo;
 
     public ProfileDTO getProfile(UUID userId) {
         User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
@@ -24,17 +27,39 @@ public class ProfileService {
         dto.setEmail(user.getEmail());
         dto.setPhone(user.getPhone());
 
+        // ✅ Derive role from isAdmin
+        dto.setRole(user.isAdmin() ? "Admin" : "Verified User");
+
         List<AddressDTO> addressDTOs = addressRepo.findByUserId(userId).stream()
-            .map(this::mapAddress)
-            .toList();
+                .map(this::mapAddress)
+                .toList();
         dto.setAddresses(addressDTOs);
 
         List<PaymentDTO> paymentDTOs = paymentRepo.findByUser(user).stream()
-            .map(this::mapPayment)
-            .toList();
+                .map(this::mapPayment)
+                .toList();
         dto.setPayments(paymentDTOs);
 
+        List<OrderDTO> orderDTOs = orderRepo.findByUserId(userId).stream()
+                .map(this::mapOrder)
+                .toList();
+        dto.setOrders(orderDTOs);
+
+        List<WishlistDTO> wishlistDTOs = wishlistRepo.findByUserId(userId).stream()
+                .map(this::mapWishlist)
+                .toList();
+        dto.setWishlist(wishlistDTOs);
+
         return dto;
+    }
+
+    public UserHeaderStatsDTO getHeaderStats(UUID userId) {
+        int wishlistCount = wishlistRepo.findByUserId(userId).size();
+        int cartCount = cartItemRepo.findByUserId(userId).size();
+        User user = userRepo.findById(userId).orElseThrow();
+        int savedCardCount = paymentRepo.findByUser(user).size();
+
+        return new UserHeaderStatsDTO(wishlistCount, cartCount, savedCardCount);
     }
 
     public void updateProfile(UUID userId, ProfileDTO dto) {
@@ -51,7 +76,6 @@ public class ProfileService {
 
         userRepo.save(user);
 
-        // Replace addresses
         List<Address> existingAddresses = addressRepo.findByUserId(userId);
         addressRepo.deleteAll(existingAddresses);
 
@@ -68,7 +92,6 @@ public class ProfileService {
             }
         }
 
-        // Replace cards
         List<Payment> existingCards = paymentRepo.findByUser(user);
         paymentRepo.deleteAll(existingCards);
 
@@ -90,8 +113,8 @@ public class ProfileService {
 
     public boolean isEmailTaken(String email, UUID excludeId) {
         return userRepo.findByEmail(email)
-            .map(u -> !u.getId().equals(excludeId))
-            .orElse(false);
+                .map(u -> !u.getId().equals(excludeId))
+                .orElse(false);
     }
 
     private AddressDTO mapAddress(Address a) {
@@ -107,6 +130,18 @@ public class ProfileService {
         dto.setCardLast4(p.getCardLast4());
         dto.setExpiry(p.getExpiry());
         return dto;
+    }
+
+    private OrderDTO mapOrder(Order o) {
+        return new OrderDTO(o.getId(), o.getStatus(), o.getTotal(), o.getOrderedDate());
+    }
+
+    private WishlistDTO mapWishlist(WishlistItem w) {
+        Product p = w.getProduct();
+        WishlistProductDTO productDTO = new WishlistProductDTO(
+                p.getId(), p.getTitle(), p.getThumbnail(), p.getDescription(), p.getPrice()
+        );
+        return new WishlistDTO(w.getId().toString(), productDTO);
     }
 
     private String maskCard(String number) {

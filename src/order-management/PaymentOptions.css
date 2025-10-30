@@ -224,3 +224,31 @@
 @keyframes o-cardIn {
   to { transform: translateY(0); opacity: 1; }
 }
+.o-cvv-field {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  max-width: 160px;
+}
+
+.o-cvv-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.o-cvv-field input {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.o-cvv-field input:focus {
+  outline: none;
+  border-color: #5f6af2;
+  box-shadow: 0 0 0 2px rgba(95, 106, 242, 0.2);
+}

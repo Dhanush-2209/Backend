@@ -34,12 +34,11 @@ public class PaymentService {
 
         User user = userOpt.get();
 
-        // ✅ Use cardNumber from frontend payload
         String cardNumber = dto.getCardNumber();
         if (cardNumber == null || cardNumber.length() != 16) return Collections.emptyList();
 
-        String masked = "**** **** **** " + cardNumber.substring(12);
         String last4 = cardNumber.substring(12);
+        String masked = "**** **** **** " + last4;
 
         Payment card = new Payment();
         card.setUser(user);
@@ -51,8 +50,44 @@ public class PaymentService {
 
         paymentRepository.save(card);
 
-        List<Payment> updatedCards = paymentRepository.findByUser(user);
-        return updatedCards.stream().map(this::toDTO).collect(Collectors.toList());
+        return getCardsByUserId(userId);
+    }
+
+    public List<PaymentDTO> updateCard(UUID userId, UUID cardId, PaymentDTO dto) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Payment> cardOpt = paymentRepository.findById(cardId);
+
+        if (userOpt.isEmpty() || cardOpt.isEmpty()) return Collections.emptyList();
+
+        Payment card = cardOpt.get();
+        if (!card.getUser().getId().equals(userId)) return Collections.emptyList();
+
+        card.setCardType(dto.getCardType());
+        card.setCardName(dto.getCardName());
+        card.setExpiry(dto.getExpiry());
+
+        String cardNumber = dto.getCardNumber();
+        if (cardNumber != null && cardNumber.length() == 16) {
+            String last4 = cardNumber.substring(12);
+            card.setCardLast4(last4);
+            card.setCardMasked("**** **** **** " + last4);
+        }
+
+        paymentRepository.save(card);
+        return getCardsByUserId(userId);
+    }
+
+    public List<PaymentDTO> deleteCard(UUID userId, UUID cardId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Payment> cardOpt = paymentRepository.findById(cardId);
+
+        if (userOpt.isEmpty() || cardOpt.isEmpty()) return Collections.emptyList();
+
+        Payment card = cardOpt.get();
+        if (!card.getUser().getId().equals(userId)) return Collections.emptyList();
+
+        paymentRepository.delete(card);
+        return getCardsByUserId(userId);
     }
 
     private PaymentDTO toDTO(Payment card) {

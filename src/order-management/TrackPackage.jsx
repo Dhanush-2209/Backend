@@ -117,7 +117,9 @@ export default function TrackPackage() {
                       <div className="o-step-dot" />
                       <span>{stage}</span>
                       <p className="o-stage-time">
-                        {stageTimes[stage]?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        {i <= currentStageIndex
+                          ? stageTimes[stage]?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                          : "—"}
                       </p>
                     </div>
                   ))}
@@ -130,15 +132,14 @@ export default function TrackPackage() {
             )}
 
             {order.status !== "Cancelled" && (
-  <div className="o-agent-info">
-    <img src="/images/agent.jpg" alt="Agent" />
-    <div>
-      <p className="o-agent-name">Delivery by: {order.agentName || "Not assigned"}</p>
-      <p className="o-agent-contact">Phone: {order.agentPhone || "N/A"}</p>
-    </div>
-  </div>
-)}
-
+              <div className="o-agent-info">
+                <img src="/images/agent.jpg" alt="Agent" />
+                <div>
+                  <p className="o-agent-name">Delivery by: {order.agentName || "Not assigned"}</p>
+                  <p className="o-agent-contact">Phone: {order.agentPhone || "N/A"}</p>
+                </div>
+              </div>
+            )}
 
             <div className="o-track-products">
               {order.items.map(item => (

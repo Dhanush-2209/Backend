@@ -87,4 +87,13 @@ public class CartService {
         cartRepo.deleteAll(items);
         logger.info("Cleared cart for user {}", userId);
     }
+
+    // ✅ NEW: Remove multiple items from cart
+    @Transactional
+    public void removeMultipleFromCart(UUID userId, List<String> productIds) {
+        for (String productId : productIds) {
+            cartRepo.deleteByUserIdAndProductId(userId, productId);
+            logger.info("Removed product {} from cart for user {}", productId, userId);
+        }
+    }
 }

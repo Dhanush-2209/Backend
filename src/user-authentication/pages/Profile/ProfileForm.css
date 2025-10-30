@@ -1,0 +1,97 @@
+.u-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Row layout */
+.u-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Field styling */
+.u-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+}
+
+.u-field-full {
+  flex: 1 1 100%;
+}
+
+.u-field label {
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.u-field input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.u-field input:focus {
+  outline: none;
+  border-color: #5e66e7;
+  box-shadow: 0 0 0 2px rgba(94, 102, 231, 0.2);
+}
+
+/* Action buttons */
+.u-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.u-btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.u-btn.u-primary {
+  background-color: #5e66e7;
+  color: white;
+}
+
+.u-btn.u-primary:hover {
+  background-color: #3e45c7;
+}
+
+.u-btn.u-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.u-btn.u-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .u-row {
+    flex-direction: column;
+  }
+
+  .u-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .u-btn {
+    width: 100%;
+  }
+}
